@@ -1,0 +1,289 @@
+name: semantic-portfree-s4
+
+on:
+  push:
+    branches:
+      - research/semantic-interface
+    paths:
+      - '.github/workflows/semantic-portfree-s4.yml'
+      - 'tools/semantic_cegis_portfree.py'
+      - 'requirements.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: semantic-portfree-s4
+  cancel-in-progress: false
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  CHECKPOINT: checkpoints/semantic_portfree_s4.json.gz
+  RESULT_DIR: results/semantic-portfree-s4
+
+jobs:
+  stage1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 220
+    steps:
+      - name: Checkout lab branch
+        uses: actions/checkout@v4
+        with:
+          ref: research/semantic-interface
+          fetch-depth: 0
+
+      - name: Checkout pinned upstream handoff
+        uses: actions/checkout@v4
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+
+      - name: Verify upstream pin
+        run: test "$(git -C upstream rev-parse HEAD)" = "$UPSTREAM_SHA"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install solver dependencies
+        run: pip install -r requirements.txt
+
+      - name: Compile search code
+        run: python -m py_compile tools/semantic_cegis_portfree.py
+
+      - name: Run search slice 1
+        shell: bash
+        run: |
+          mkdir -p checkpoints "$RESULT_DIR"
+          set +e
+          python tools/semantic_cegis_portfree.py \
+            --data-dir upstream/handoff/data \
+            --checkpoint "$CHECKPOINT" \
+            --result-dir "$RESULT_DIR" \
+            --time-limit-sec 12000 \
+            --checkpoint-every 20
+          rc=$?
+          set -e
+          if [[ "$rc" -ne 0 && "$rc" -ne 75 ]]; then
+            exit "$rc"
+          fi
+
+      - name: Upload stage 1 state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semantic-stage-1
+          path: |
+            checkpoints
+            results
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Commit stage 1 checkpoint
+        if: success()
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add checkpoints results
+          if ! git diff --cached --quiet; then
+            git commit -m 'Checkpoint support-4 semantic search stage 1 [skip ci]'
+            git push origin HEAD:research/semantic-interface
+          fi
+
+  stage2:
+    needs: stage1
+    runs-on: ubuntu-latest
+    timeout-minutes: 220
+    steps:
+      - name: Checkout current lab branch
+        uses: actions/checkout@v4
+        with:
+          ref: research/semantic-interface
+          fetch-depth: 0
+
+      - name: Download stage 1 state
+        uses: actions/download-artifact@v4
+        with:
+          name: semantic-stage-1
+          path: incoming
+
+      - name: Restore stage 1 state
+        shell: bash
+        run: |
+          mkdir -p checkpoints results
+          if [[ -d incoming/checkpoints ]]; then cp -a incoming/checkpoints/. checkpoints/; fi
+          if [[ -d incoming/results ]]; then cp -a incoming/results/. results/; fi
+
+      - name: Check for terminal result
+        id: gate
+        shell: bash
+        run: |
+          if [[ -f "$RESULT_DIR/FINAL.json" || -f "$RESULT_DIR/INTERFACE.json" ]]; then
+            echo 'terminal=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'terminal=false' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout pinned upstream handoff
+        if: steps.gate.outputs.terminal != 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+
+      - name: Set up Python
+        if: steps.gate.outputs.terminal != 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install solver dependencies
+        if: steps.gate.outputs.terminal != 'true'
+        run: pip install -r requirements.txt
+
+      - name: Run search slice 2
+        if: steps.gate.outputs.terminal != 'true'
+        shell: bash
+        run: |
+          test "$(git -C upstream rev-parse HEAD)" = "$UPSTREAM_SHA"
+          set +e
+          python tools/semantic_cegis_portfree.py \
+            --data-dir upstream/handoff/data \
+            --checkpoint "$CHECKPOINT" \
+            --result-dir "$RESULT_DIR" \
+            --time-limit-sec 12000 \
+            --checkpoint-every 20
+          rc=$?
+          set -e
+          if [[ "$rc" -ne 0 && "$rc" -ne 75 ]]; then
+            exit "$rc"
+          fi
+
+      - name: Upload stage 2 state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semantic-stage-2
+          path: |
+            checkpoints
+            results
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Commit stage 2 checkpoint
+        if: success()
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add checkpoints results
+          if ! git diff --cached --quiet; then
+            git commit -m 'Checkpoint support-4 semantic search stage 2 [skip ci]'
+            git pull --rebase origin research/semantic-interface
+            git push origin HEAD:research/semantic-interface
+          fi
+
+  stage3:
+    needs: stage2
+    runs-on: ubuntu-latest
+    timeout-minutes: 220
+    steps:
+      - name: Checkout current lab branch
+        uses: actions/checkout@v4
+        with:
+          ref: research/semantic-interface
+          fetch-depth: 0
+
+      - name: Download stage 2 state
+        uses: actions/download-artifact@v4
+        with:
+          name: semantic-stage-2
+          path: incoming
+
+      - name: Restore stage 2 state
+        shell: bash
+        run: |
+          mkdir -p checkpoints results
+          if [[ -d incoming/checkpoints ]]; then cp -a incoming/checkpoints/. checkpoints/; fi
+          if [[ -d incoming/results ]]; then cp -a incoming/results/. results/; fi
+
+      - name: Check for terminal result
+        id: gate
+        shell: bash
+        run: |
+          if [[ -f "$RESULT_DIR/FINAL.json" || -f "$RESULT_DIR/INTERFACE.json" ]]; then
+            echo 'terminal=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'terminal=false' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout pinned upstream handoff
+        if: steps.gate.outputs.terminal != 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+
+      - name: Set up Python
+        if: steps.gate.outputs.terminal != 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install solver dependencies
+        if: steps.gate.outputs.terminal != 'true'
+        run: pip install -r requirements.txt
+
+      - name: Run search slice 3
+        if: steps.gate.outputs.terminal != 'true'
+        shell: bash
+        run: |
+          test "$(git -C upstream rev-parse HEAD)" = "$UPSTREAM_SHA"
+          set +e
+          python tools/semantic_cegis_portfree.py \
+            --data-dir upstream/handoff/data \
+            --checkpoint "$CHECKPOINT" \
+            --result-dir "$RESULT_DIR" \
+            --time-limit-sec 12000 \
+            --checkpoint-every 20
+          rc=$?
+          set -e
+          if [[ "$rc" -ne 0 && "$rc" -ne 75 ]]; then
+            exit "$rc"
+          fi
+
+      - name: Upload stage 3 state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semantic-stage-3
+          path: |
+            checkpoints
+            results
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Commit stage 3 checkpoint
+        if: success()
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add checkpoints results
+          if ! git diff --cached --quiet; then
+            git commit -m 'Checkpoint support-4 semantic search stage 3 [skip ci]'
+            git pull --rebase origin research/semantic-interface
+            git push origin HEAD:research/semantic-interface
+          fi
