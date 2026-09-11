@@ -1,11 +1,11 @@
 {
   "atom_count": 76245,
-  "checkpoint_iterations": 6133,
+  "checkpoint_iterations": 6134,
   "checkpoint_status": "RUNNING-AFTER-EXACT-MASTER-CUT",
-  "cut_library_sha256": "1feb41a40c13026b22ed196c470106d45d623d414bc48804531896856e6c10c9",
+  "cut_library_sha256": "e40186b19499715b56e1328d2d645bb236c51b44165336232ed03d98327333af",
   "cut_size_max": 25171,
-  "cut_size_mean": 24607.357040845473,
-  "cut_size_median": 24653.0,
+  "cut_size_mean": 24607.353277166927,
+  "cut_size_median": 24653,
   "cut_size_min": 23440,
   "duplicate_cut_count": 3,
   "first_pivot_edge_positions": [
@@ -16,19 +16,19 @@
     26,
     316
   ],
-  "full_pair_count": 7005,
-  "lab_pair_count": 6133,
+  "full_pair_count": 7006,
+  "lab_pair_count": 6134,
   "last_process_stats": {
-    "canonical_prunes": 3811618,
-    "pair_states": 1143,
-    "quad_leaves": 43377765,
-    "root_edges_completed_this_process": 1142,
-    "triple_branch_vertices": 20450383,
+    "canonical_prunes": 4832195,
+    "pair_states": 1306,
+    "quad_leaves": 50198246,
+    "root_edges_completed_this_process": 1305,
+    "triple_branch_vertices": 24486830,
     "triple_incident_prunes": 0,
-    "triple_states": 137848
+    "triple_states": 162193
   },
   "method": "exact edge-branching four-set master",
-  "next_root_rank": 1142,
+  "next_root_rank": 1305,
   "nonport_vertex_count": 391,
   "pivot_cut_index": 6060,
   "pivot_cut_size": 23440,
@@ -36,7 +36,7 @@
   "pivot_root_edge_count": 23440,
   "seed_pair_count": 872,
   "status": "TIME-SLICE-COMPLETE",
-  "unique_cut_count": 7002,
+  "unique_cut_count": 7003,
   "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8",
   "version": 1
 }
