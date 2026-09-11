@@ -1,0 +1,104 @@
+name: exact-fourset-master
+
+on:
+  workflow_dispatch:
+    inputs:
+      time_limit_sec:
+        description: 'Internal exact-search time limit in seconds'
+        required: false
+        default: '14400'
+      lookahead_cuts:
+        description: 'Number of uncovered cuts considered for triple branching'
+        required: false
+        default: '32'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: exact-fourset-master
+  cancel-in-progress: false
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  SEARCH_BRANCH: research/exact-fourset-master
+  CHECKPOINT: checkpoints/semantic_portfree_s4.json.gz
+  RESULT_DIR: results/exact-fourset-master
+
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    timeout-minutes: 270
+
+    steps:
+      - name: Checkout exact-master research branch
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ env.SEARCH_BRANCH }}
+          fetch-depth: 0
+
+      - name: Checkout pinned upstream handoff
+        uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+
+      - name: Verify inputs and self-test exact search
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C upstream rev-parse HEAD)" = "$UPSTREAM_SHA"
+          gzip -t "$CHECKPOINT"
+          python -m py_compile tools/exact_fourset_master.py
+          python tools/exact_fourset_master.py --self-test
+
+      - name: Run guarded exact master
+        shell: bash
+        env:
+          TIME_LIMIT_SEC: ${{ inputs.time_limit_sec }}
+          LOOKAHEAD_CUTS: ${{ inputs.lookahead_cuts }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RESULT_DIR"
+          set +e
+          timeout --signal=TERM --kill-after=60s 15000s \
+            python tools/exact_fourset_master.py \
+              --data-dir upstream/handoff/data \
+              --checkpoint "$CHECKPOINT" \
+              --result-dir "$RESULT_DIR" \
+              --time-limit-sec "$TIME_LIMIT_SEC" \
+              --lookahead-cuts "$LOOKAHEAD_CUTS"
+          rc=$?
+          set -e
+
+          # 0 = candidate or exact exhaustion; 75 = clean time-slice continuation.
+          # Outer timeout/termination is not mathematical evidence.
+          case "$rc" in
+            0|75|124|137|143) ;;
+            *) echo "unexpected exact-master exit code: $rc"; exit "$rc" ;;
+          esac
+
+      - name: Persist exact-master state
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$RESULT_DIR" || true
+          if ! git diff --cached --quiet; then
+            git commit -m 'Checkpoint exact four-set master [skip ci]'
+            git pull --rebase origin "$SEARCH_BRANCH"
+            git push origin HEAD:"$SEARCH_BRANCH"
+          fi
+
+      - name: Upload exact-master result
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: exact-fourset-master-${{ github.run_id }}
+          path: results/exact-fourset-master
+          if-no-files-found: warn
+          retention-days: 30
