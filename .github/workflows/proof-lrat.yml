@@ -1,0 +1,98 @@
+name: proof-lrat
+
+on:
+  push:
+    branches: [research/proof-structure]
+    paths:
+      - '.github/workflows/proof-lrat.yml'
+      - 'tools/lrat_export.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: proof-lrat
+  cancel-in-progress: false
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  DRAT_TRIM_SHA: 2e3b2dc0ecf938addbd779d42877b6ed69d9a985
+  RESULT_DIR: results/proof-lrat
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: research/proof-structure
+          fetch-depth: 0
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+      - uses: actions/checkout@v7
+        with:
+          repository: marijnheule/drat-trim
+          ref: ${{ env.DRAT_TRIM_SHA }}
+          path: drat-trim
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Build pinned proof checker
+        run: make -C drat-trim drat-trim lrat-check
+      - name: Export normalized partitioned CNF and DRUP
+        run: |
+          mkdir -p "$RESULT_DIR"
+          python tools/lrat_export.py \
+            --data-dir upstream/handoff/data \
+            --out-dir "$RESULT_DIR"
+      - name: Verify DRUP and convert core proof to LRAT
+        run: |
+          timeout --signal=TERM --kill-after=60s 4200s \
+            ./drat-trim/drat-trim \
+              "$RESULT_DIR/p2_partitioned.cnf" \
+              "$RESULT_DIR/p2_partitioned.drup" \
+              -L "$RESULT_DIR/p2_partitioned.lrat"
+      - name: Independently check LRAT
+        run: |
+          timeout --signal=TERM --kill-after=60s 2400s \
+            ./drat-trim/lrat-check \
+              "$RESULT_DIR/p2_partitioned.cnf" \
+              "$RESULT_DIR/p2_partitioned.lrat"
+      - name: Analyze final LRAT dependency cone
+        run: |
+          python tools/lrat_export.py \
+            --data-dir upstream/handoff/data \
+            --out-dir "$RESULT_DIR" \
+            --analyze-lrat "$RESULT_DIR/p2_partitioned.lrat"
+      - name: Commit compact metadata
+        if: success()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$RESULT_DIR/PARTITION.json" "$RESULT_DIR/LRAT_CONE.json"
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record LRAT proof cone metadata [skip ci]'
+            git pull --rebase origin research/proof-structure
+            git push origin HEAD:research/proof-structure
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: proof-lrat-${{ github.run_id }}
+          path: |
+            results/proof-lrat/PARTITION.json
+            results/proof-lrat/LRAT_CONE.json
+            results/proof-lrat/p2_partitioned.cnf
+            results/proof-lrat/p2_partitioned.drup
+            results/proof-lrat/p2_partitioned.lrat
+          if-no-files-found: warn
+          retention-days: 30
