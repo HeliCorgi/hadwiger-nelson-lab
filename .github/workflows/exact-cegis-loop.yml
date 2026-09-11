@@ -7,6 +7,7 @@ on:
       - main
     paths:
       - '.github/workflows/exact-cegis-loop.yml'
+      - '.github/exact-cegis-loop.trigger'
 
 permissions:
   contents: write
@@ -20,8 +21,6 @@ env:
   UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
   CHECKPOINT: checkpoints/semantic_portfree_s4.json.gz
   ROOT: results/exact-cegis-loop
-  RECOVERY_RUN_ID: '34581550567'
-  RECOVERY_ARTIFACT: exact-cegis-loop-34581550567
 
 jobs:
   search:
@@ -50,83 +49,6 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Recover cancelled-run state when newer
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          rm -rf /tmp/exact-cegis-recovery
-          mkdir -p /tmp/exact-cegis-recovery
-          gh run download "$RECOVERY_RUN_ID" \
-            -R "$GITHUB_REPOSITORY" \
-            -n "$RECOVERY_ARTIFACT" \
-            -D /tmp/exact-cegis-recovery
-
-          python - <<'PY'
-          import gzip, json, shutil
-          from collections import Counter
-          from pathlib import Path
-
-          current = Path('checkpoints/semantic_portfree_s4.json.gz')
-          recovered_root = Path('/tmp/exact-cegis-recovery')
-          recovered = recovered_root / 'checkpoints/semantic_portfree_s4.json.gz'
-
-          with gzip.open(current, 'rt', encoding='utf-8') as f:
-              cur = json.load(f)
-          with gzip.open(recovered, 'rt', encoding='utf-8') as f:
-              rec = json.load(f)
-
-          cur_iter = int(cur['iterations'])
-          rec_iter = int(rec['iterations'])
-          print(f'checkpoint iterations: repository={cur_iter}, recovered={rec_iter}')
-
-          root = Path('results/exact-cegis-loop')
-          root.mkdir(parents=True, exist_ok=True)
-          if rec_iter > cur_iter:
-              shutil.copy2(recovered, current)
-              src_master = recovered_root / 'results/exact-cegis-loop/master-current'
-              dst_master = root / 'master-current'
-              dst_master.mkdir(parents=True, exist_ok=True)
-              for name in ('STATE.json', 'LIBRARY.json'):
-                  src = src_master / name
-                  if src.exists():
-                      shutil.copy2(src, dst_master / name)
-
-              history = recovered_root / 'results/exact-cegis-loop/history'
-              oracle_files = sorted(history.glob('oracle-*.json'))
-              master_files = sorted(history.glob('master-before-*.json'))
-              statuses = Counter()
-              for path in oracle_files:
-                  statuses[json.loads(path.read_text(encoding='utf-8')).get('status')] += 1
-              state = {}
-              state_path = dst_master / 'STATE.json'
-              if state_path.exists():
-                  state = json.loads(state_path.read_text(encoding='utf-8'))
-              summary = {
-                  'source_run': 34581550567,
-                  'source_artifact_id': 10263882716,
-                  'source_artifact_digest': 'sha256:b0f36dc8fc648915fccc34fd2a121a2877d2934b3a94a934cb82557a876284aa',
-                  'reason': 'Run 1 hit the workflow job timeout of 220 minutes before the final git persistence step.',
-                  'repository_iterations_before_recovery': cur_iter,
-                  'recovered_iterations': rec_iter,
-                  'recovered_total_cuts': rec_iter + 872,
-                  'oracle_history_count': len(oracle_files),
-                  'master_history_count': len(master_files),
-                  'oracle_status_counts': dict(statuses),
-                  'exact_master_next_root_rank': state.get('next_root_rank'),
-                  'exact_master_status': state.get('status'),
-                  'cut_library_sha256': state.get('cut_library_sha256'),
-                  'note': 'Full per-iteration history remains in Actions artifact 10263882716; only compact recovery metadata and resumable master state are committed.',
-              }
-              (root / 'RECOVERY_RUN_34581550567.json').write_text(
-                  json.dumps(summary, indent=2, sort_keys=True) + '\n', encoding='utf-8'
-              )
-              print('recovered newer checkpoint and exact-master state')
-          else:
-              print('repository checkpoint is already at least as new; recovery copy skipped')
-          PY
-
       - name: Compile tools and validate checkpoint
         shell: bash
         run: |
@@ -138,19 +60,6 @@ jobs:
             tools/check_fourset_candidate.py \
             tools/append_semantic_fooling_pair.py
           python tools/exact_fourset_master.py --self-test
-
-      - name: Persist recovered state before new compute
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add "$CHECKPOINT" "$ROOT" || true
-          if ! git diff --cached --quiet; then
-            git commit -m 'Recover exact CEGIS state from cancelled run [skip ci]'
-            git pull --rebase origin main
-            git push origin HEAD:main
-          fi
 
       - name: Run exact CEGIS loop
         shell: bash
@@ -177,7 +86,7 @@ jobs:
 
           # Consume the already independently checked first candidate if this
           # checkpoint has not yet seen its fooling-pair witness. The append
-          # tool is duplicate-safe, so recovered checkpoints make this a no-op.
+          # tool is duplicate-safe, so current checkpoints make this a no-op.
           if [[ -f results/fourset-candidate-check/analysis.json ]]; then
             status=$(python - <<'PY'
           import json
@@ -189,9 +98,6 @@ jobs:
                 --data-dir upstream/handoff/data \
                 --checkpoint "$CHECKPOINT" \
                 --oracle-result results/fourset-candidate-check/analysis.json
-              # Keep a recovered master-current state iff the append was a
-              # duplicate. If it genuinely changed the checkpoint, the state
-              # hash will be rejected and we rebuild from root rank zero.
             fi
           fi
 
@@ -286,9 +192,21 @@ jobs:
               fi
             fi
 
-            if [[ "$rc" == "75" || "$rc" == "124" || "$rc" == "137" || "$rc" == "143" ]]; then
-              echo "nonterminal exact-master slice ended; preserve state for next run"
+            # Exit code 75 is the exact master's own safe time-slice boundary.
+            # STATE.json is resumable, so keep using the remaining workflow
+            # budget instead of ending the whole job after one 15-minute slice.
+            if [[ "$rc" == "75" ]]; then
+              echo "safe exact-master slice ended; persist and continue from STATE.json"
               persist_progress 'Checkpoint nonterminal exact-master slice'
+              continue
+            fi
+
+            # Outer timeout / kill codes are emergency guards, not certified
+            # resumable boundaries. Persist whatever is valid and stop rather
+            # than assuming the interrupted process wrote a complete state.
+            if [[ "$rc" == "124" || "$rc" == "137" || "$rc" == "143" ]]; then
+              echo "outer timeout/signal ended exact master; stopping defensively"
+              persist_progress 'Checkpoint guarded exact-master stop'
               break
             fi
 
@@ -305,6 +223,62 @@ jobs:
           print('durable lab iterations',d['iterations'],'total cuts',d['iterations']+872,'status',d['status'])
           PY
           persist_progress 'Checkpoint exact semantic CEGIS loop final state'
+
+      - name: Write human-readable status
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$ROOT"
+          python - <<'PY'
+          import gzip, json, os
+          from pathlib import Path
+
+          root = Path('results/exact-cegis-loop')
+          lines = ['# Exact CEGIS status', '']
+
+          checkpoint = Path('checkpoints/semantic_portfree_s4.json.gz')
+          if checkpoint.exists():
+              with gzip.open(checkpoint, 'rt', encoding='utf-8') as f:
+                  cp = json.load(f)
+              lab = int(cp.get('iterations', 0))
+              lines += [
+                  f'- Lab fooling pairs: **{lab}**',
+                  f'- Total sound fooling pairs/cuts before dedup: **{lab + 872}**',
+                  f'- Checkpoint status: `{cp.get("status")}`',
+              ]
+
+          state_path = root / 'master-current' / 'STATE.json'
+          if state_path.exists():
+              st = json.loads(state_path.read_text(encoding='utf-8'))
+              nxt = st.get('next_root_rank')
+              total = st.get('pivot_root_edge_count')
+              lines += [
+                  f'- Exact-master state: `{st.get("status")}`',
+                  f'- Unique cuts: **{st.get("unique_cut_count")}**',
+                  f'- Duplicate cuts: **{st.get("duplicate_cut_count")}**',
+                  f'- Root rank: **{nxt} / {total}** (rank count only; not a runtime-completion percentage)',
+                  f'- Pivot source: `{st.get("pivot_cut_source")}`',
+                  f'- Cut-library SHA256: `{st.get("cut_library_sha256")}`',
+              ]
+
+          if (root / 'INTERFACE_CANDIDATE.json').exists():
+              lines += ['', '**Terminal event:** semantic support-4 interface candidate found; independent verification required.']
+          elif (root / 'MASTER_FINAL.json').exists():
+              lines += ['', '**Terminal event:** exact four-set master exhausted; independent verification required before theorem promotion.']
+          elif (root / 'ORACLE_ERROR.json').exists():
+              lines += ['', '**Terminal event:** semantic oracle error.']
+          else:
+              lines += ['', 'No mathematical terminal event is recorded; this state is resumable.']
+
+          text = '\n'.join(lines) + '\n'
+          (root / 'STATUS.md').write_text(text, encoding='utf-8')
+          summary = os.environ.get('GITHUB_STEP_SUMMARY')
+          if summary:
+              with open(summary, 'a', encoding='utf-8') as f:
+                  f.write(text)
+          print(text)
+          PY
 
       - name: Persist checkpoint and loop state
         if: always()
