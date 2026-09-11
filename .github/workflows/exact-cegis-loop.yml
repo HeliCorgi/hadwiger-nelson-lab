@@ -1,0 +1,203 @@
+name: exact-cegis-loop
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/exact-cegis-loop.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: exact-cegis-loop
+  cancel-in-progress: false
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  CHECKPOINT: checkpoints/semantic_portfree_s4.json.gz
+  ROOT: results/exact-cegis-loop
+
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    timeout-minutes: 220
+    steps:
+      - name: Checkout lab
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Checkout pinned upstream handoff
+        uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Compile tools and validate checkpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C upstream rev-parse HEAD)" = "$UPSTREAM_SHA"
+          gzip -t "$CHECKPOINT"
+          python -m py_compile \
+            tools/exact_fourset_master.py \
+            tools/check_fourset_candidate.py \
+            tools/append_semantic_fooling_pair.py
+          python tools/exact_fourset_master.py --self-test
+
+      - name: Run exact CEGIS loop
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$ROOT/history" "$ROOT/master-current"
+
+          # Consume the already independently checked first candidate if this
+          # checkpoint has not yet seen its fooling-pair witness.
+          if [[ -f results/fourset-candidate-check/analysis.json ]]; then
+            status=$(python - <<'PY'
+          import json
+          print(json.load(open('results/fourset-candidate-check/analysis.json'))['status'])
+          PY
+          )
+            if [[ "$status" == "SAT-FOOLING-PAIR" ]]; then
+              python tools/append_semantic_fooling_pair.py \
+                --data-dir upstream/handoff/data \
+                --checkpoint "$CHECKPOINT" \
+                --oracle-result results/fourset-candidate-check/analysis.json
+              rm -rf "$ROOT/master-current"
+              mkdir -p "$ROOT/master-current"
+            fi
+          fi
+
+          for loop in $(seq 1 200); do
+            echo "=== exact CEGIS iteration $loop ==="
+            set +e
+            timeout --signal=TERM --kill-after=30s 930s \
+              python tools/exact_fourset_master.py \
+                --data-dir upstream/handoff/data \
+                --checkpoint "$CHECKPOINT" \
+                --result-dir "$ROOT/master-current" \
+                --time-limit-sec 870 \
+                --lookahead-cuts 32
+            rc=$?
+            set -e
+
+            case "$rc" in
+              0|75|124|137|143) ;;
+              *) echo "unexpected exact-master exit code $rc"; exit "$rc" ;;
+            esac
+
+            if [[ -f "$ROOT/master-current/FINAL.json" ]]; then
+              cp "$ROOT/master-current/FINAL.json" "$ROOT/MASTER_FINAL.json"
+              echo "terminal exact-master result produced"
+              break
+            fi
+
+            if [[ -f "$ROOT/master-current/CANDIDATE.json" ]]; then
+              mapfile -t support < <(python - <<'PY'
+          import json
+          d=json.load(open('results/exact-cegis-loop/master-current/CANDIDATE.json'))
+          for v in d['support_vertices']:
+              print(v)
+          PY
+          )
+              if [[ "${#support[@]}" -ne 4 ]]; then
+                echo "bad candidate support"; exit 2
+              fi
+
+              oracle_tmp="/tmp/semantic-$loop.json"
+              python tools/check_fourset_candidate.py \
+                --data-dir upstream/handoff/data \
+                --result "$oracle_tmp" \
+                --support "${support[@]}"
+
+              lab_iter=$(python - <<'PY'
+          import gzip,json
+          with gzip.open('checkpoints/semantic_portfree_s4.json.gz','rt') as f:
+              print(json.load(f)['iterations'])
+          PY
+          )
+              cp "$ROOT/master-current/CANDIDATE.json" \
+                "$ROOT/history/master-before-${lab_iter}.json"
+              cp "$oracle_tmp" "$ROOT/history/oracle-${lab_iter}.json"
+
+              oracle_status=$(python - "$oracle_tmp" <<'PY'
+          import json,sys
+          print(json.load(open(sys.argv[1]))['status'])
+          PY
+          )
+              echo "oracle status=$oracle_status support=${support[*]}"
+
+              if [[ "$oracle_status" == "SAT-FOOLING-PAIR" ]]; then
+                python tools/append_semantic_fooling_pair.py \
+                  --data-dir upstream/handoff/data \
+                  --checkpoint "$CHECKPOINT" \
+                  --oracle-result "$oracle_tmp"
+                rm -rf "$ROOT/master-current"
+                mkdir -p "$ROOT/master-current"
+                continue
+              elif [[ "$oracle_status" == "UNSAT-INTERFACE-CANDIDATE" ]]; then
+                cp "$oracle_tmp" "$ROOT/INTERFACE_CANDIDATE.json"
+                echo "terminal semantic interface candidate produced"
+                break
+              else
+                cp "$oracle_tmp" "$ROOT/ORACLE_ERROR.json"
+                exit 2
+              fi
+            fi
+
+            if [[ "$rc" == "75" || "$rc" == "124" || "$rc" == "137" || "$rc" == "143" ]]; then
+              echo "nonterminal exact-master slice ended; preserve state for next run"
+              break
+            fi
+
+            echo "exact master returned without candidate/final; stopping defensively"
+            break
+          done
+
+          gzip -t "$CHECKPOINT"
+          python - <<'PY'
+          import gzip,json
+          with gzip.open('checkpoints/semantic_portfree_s4.json.gz','rt') as f:
+              d=json.load(f)
+          print('durable lab iterations',d['iterations'],'total cuts',d['iterations']+872,'status',d['status'])
+          PY
+
+      - name: Persist checkpoint and loop state
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$CHECKPOINT" "$ROOT" || true
+          if ! git diff --cached --quiet; then
+            git commit -m 'Checkpoint exact semantic CEGIS loop [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Upload loop state
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: exact-cegis-loop-${{ github.run_id }}
+          path: |
+            checkpoints/semantic_portfree_s4.json.gz
+            results/exact-cegis-loop
+          if-no-files-found: warn
+          retention-days: 30
