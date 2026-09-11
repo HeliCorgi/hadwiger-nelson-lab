@@ -21,9 +21,45 @@ Define:
 
 No result in this handoff is an unconditional finite unit-distance 6-chromatic graph. Nothing here changes the known Hadwiger–Nelson lower bound.
 
-## Verified structural results now merged to `main`
+## Research-recording policy: preserve interesting mathematics, not only wins
 
-Before continuing the support-4 search, preserve the following proof-level finite statements. They are useful context and must not be lost during branch conflict resolution.
+The user does not want to be responsible for judging whether an observed structure is mathematically interesting. Future work should therefore **proactively record potentially interesting mathematical or geometric structure** rather than only terminal solver results.
+
+Whenever computation reveals something that looks structurally non-generic, concise, symmetric, extremal, unexpectedly rigid, or repeatedly recurring, add a short note to the README or a nearby structural-notes file and link it from the README when appropriate. Do this even when the observation does not immediately advance the Hadwiger–Nelson lower bound.
+
+Examples worth recording include:
+
+- unexpectedly small separators, interfaces, critical substructures, or forcing witnesses;
+- exact symmetries or color-symmetric state descriptions;
+- repeated Kempe-chain or path skeletons;
+- forced-equality classes or other rigid relations among many vertices;
+- unusually small projection/state spaces relative to the ambient graph;
+- local graph-theoretic lemmas such as common-neighborhood forcing;
+- geometric regularities in coordinates, distances, rotations, reflections, lattice structure, or repeated unit-distance motifs;
+- near-misses that are one state / one edge / one constraint away from becoming a separator or obstruction;
+- computational phase changes, such as a search suddenly collapsing from many possibilities to a tiny exact interface.
+
+Every such note must be labeled by evidence level:
+
+1. **proved / independently verified finite statement** — exact exhaustive computation or proof certificate, preferably independently checked;
+2. **exact computational observation** — exact for the stated finite sample/system, but not independently rechecked;
+3. **empirical pattern** — observed in sampled colorings/search trajectories only;
+4. **conjectural interpretation** — a proposed explanation or possible geometric significance.
+
+For each recorded item include, when available:
+
+- the precise finite statement or observation;
+- why it may be interesting;
+- the generating script/result path;
+- solver/checker and sample size or exhaustive scope;
+- independent-verification status;
+- an explicit warning if it is conditional on `C88`, quotient contraction, sampled colorings, or another non-geometric assumption.
+
+Do **not** wait for the user to ask whether something is interesting. Preserve it first, with scope clearly stated. Conversely, do not promote an empirical pattern to a theorem merely because it looks striking.
+
+For geometric observations, also record exact coordinates/distances when practical and state explicitly whether the object is already a genuine unit-distance construction or only an abstract/conditional graph pattern.
+
+## Verified structural results now merged to `main`
 
 ### Quotient criticality
 
@@ -84,6 +120,18 @@ Compact evidence:
 
 Full proof artifact: Actions artifact `10185491584` from run `34564305431`, ZIP SHA-256 `fc062d366b78700baf008ef18b8d424a30400717691c8be42f2ff153371c423f`.
 
+## Interesting structural observations already worth preserving
+
+These are summarized more fully in `STRUCTURAL_NOTES.md`.
+
+- The six-boundary state space collapses very asymmetrically: the 261-vertex `p` side permits only `012202` and `012203`, while the 38-vertex `q` side permits 81 states. Their intersection is the single state `012203`. This is an unusually sharp finite interface.
+- Exact port-relation scanning found 20 quotient vertices forced to the same color as the port class containing 217.
+- Among those forced-equal classes, there is a clean local lemma: `p` and qnode 22 are forced equal because their common neighborhood is exactly a `K4`.
+- In 300 sampled 5-colorings of the quotient, the required two-color Kempe connectivity between the two ports repeatedly used the same four shortest path skeletons. This is currently an empirical structural pattern, not a theorem.
+- Proof-guided color-symmetric support searches at sizes 4, 5, and 6 repeatedly produced candidates whose A/B projection overlap was only one state. These are near-separators but not certified interfaces.
+
+Future work should add comparable observations automatically when they appear.
+
 ## Why exact four-sets suffice
 
 For a support `S`, the semantic state is the equality partition of colors on `S`. If the projected A-state and B-state sets are disjoint on a support of size at most three, adding arbitrary non-port vertices cannot make two previously different restrictions equal.
@@ -110,23 +158,13 @@ The semantic oracle fixes the six equality observables of a proposed four-set an
 
 ## Latest durable state — Run 4 complete
 
-Search branch:
-
-`research/semantic-interface`
-
-Checkpoint:
-
-`checkpoints/semantic_portfree_s4.json.gz`
-
-Latest durable checkpoint commit:
+Search branch checkpoint commit:
 
 `43915f71caff21b316ba1ebcc901a758d0218ea7`
 
 Workflow run:
 
 `34562068005`
-
-Run 4 completed successfully at the workflow level on 2026-09-11.
 
 Final durable counts:
 
@@ -143,106 +181,21 @@ Final durable counts:
 - no exact master-UNSAT / `FINAL.json`;
 - final continuation state: **`MASTER-UNKNOWN`**.
 
-Run-4 artifact:
+Run-4 artifact id `10187878072`, digest `sha256:f32e432c7f4cc8b30ce9ddbc449e9e8b23d863ad0d83772c745ed73cb1be8bcd`.
 
-- id: `10187878072`;
-- digest: `sha256:f32e432c7f4cc8b30ce9ddbc449e9e8b23d863ad0d83772c745ed73cb1be8bcd`.
+## Specialized exact master
 
-This is the checkpoint to resume from. Do **not** fall back to Run-2 commit `a10e0f9` unless the Run-4 checkpoint itself fails validation.
+The bottleneck after Run 4 is whether any four vertices have six internal pair-atoms whose coverage bitsets jointly hit all 6782 known cuts.
 
-## Run history
+`tools/exact_fourset_master.py` implements a standalone exact combinatorial solver for this question. It branches only on logically necessary edges from uncovered difference graphs; heuristics affect branch order, not completeness. It self-tests against brute force on small random instances. A timeout remains UNKNOWN.
 
-### Run 1
+The exact-master workflow is `.github/workflows/exact-fourset-master.yml`.
 
-Workflow `34436888946`.
+Interpret outcomes carefully:
 
-- 2525 lab fooling pairs;
-- 3397 total cuts;
-- checkpoint `5283a5f`;
-- no terminal result.
-
-### Run 2
-
-Workflow `34493404794`.
-
-Slice endpoints:
-
-- 2525 -> 2669;
-- 2669 -> 2778;
-- 2778 -> 2922;
-- 2922 -> 3008;
-- 3008 -> 3131;
-- 3131 -> 3205.
-
-Final Run-2 state: 3205 lab pairs + 872 seeds = 4077 cuts. The sixth slice was stopped by the outer guard after iteration 3205 was already atomically checkpointed. No timeout was interpreted as logical evidence.
-
-### Run 3
-
-Workflow `34561883743`.
-
-The first hybrid implementation attempted PySAT/CaDiCaL interrupt clearing. `clear_interrupt()` is unsupported in the pinned wrapper. The smoke test failed before production search; the real checkpoint remained untouched. Run 3 contributes zero mathematical progress.
-
-### Run 4
-
-Workflow `34562068005`, based on corrected commit `b163d55`.
-
-The corrected implementation uses CaDiCaL decision budgets:
-
-- `dec_budget(N)`;
-- `solve_limited()`;
-- `True` = SAT;
-- `False` = UNSAT;
-- `None` = UNKNOWN / budget exhausted;
-- reset budget afterward.
-
-The hybrid candidate path is
-
-`fast pair-coverage bitsets + local search -> exact semantic oracle -> sound cut`.
-
-Across Run 4, the fast layer generated 2705 usable candidates and the exact oracle resolved all 2705 as SAT, with no oracle UNKNOWNs. The run therefore added 2705 new sound cuts.
-
-At the end, the heuristic candidate layer ceased finding a four-set that hits all current cuts within its search budget. The fallback exact SAT master then exhausted its decision budget and returned `MASTER-UNKNOWN`.
-
-### Performance conclusion from Run 4
-
-The bottleneck is now sharply localized:
-
-> the current expensive question is whether **any four vertices have six internal pair-atoms whose coverage bitsets jointly hit all 6782 known cuts**.
-
-The semantic oracle is not presently the bottleneck: every Run-4 oracle query completed SAT within budget.
-
-## Immediate continuation — specialized exact master
-
-Do **not** spend the next large compute budget merely repeating the same hybrid CEGIS loop from iteration 5910. First replace or supplement the generic SAT master with a specialized exact solver for the current 6782-cut combinatorial problem.
-
-For each unordered vertex pair `{u,v}`, let
-
-`C[u,v] = bitset of known cuts hit by that pair`.
-
-For a four-set `{a,b,c,d}`, define
-
-`C4 = C[a,b] | C[a,c] | C[a,d] | C[b,c] | C[b,d] | C[c,d]`.
-
-The current exact master question is simply whether some four-set has all 6782 bits set.
-
-Recommended exact-search requirements:
-
-1. **Reuse the packed coverage representation.** Avoid rebuilding the original large SAT master merely to rediscover pair coverage.
-2. **Apply only sound reductions.** Safe examples include pair-coverage dominance and exact upper-bound pruning. Every reduction must preserve the existence/nonexistence of a four-set.
-3. **Use exact branch-and-bound / meet-in-the-middle as the primary candidate.** Precompute pair or triple coverage summaries and prune only when the maximum possible remaining coverage cannot reach all cuts.
-4. **Keep the semantic oracle boundary unchanged.** If the exact combinatorial master finds a four-set, send it to the existing A/B oracle. A master candidate is not itself an interface.
-5. **Treat inability to finish as UNKNOWN.** A wall-clock timeout or resource cap must not be reported as exhaustion.
-6. **If the specialized master proves no four-set exists, retain an independently checkable exhaustion certificate or deterministic reconstruction/checker.** Only then promote the result to support-`<=4` exclusion.
-
-A useful implementation sequence is:
-
-- add a standalone tool, e.g. `tools/exact_fourset_master.py`, that reads the Run-4 checkpoint and constructs exactly the same 6782 cut-coverage bitsets;
-- verify on random four-sets that its coverage score exactly matches the existing hybrid code;
-- implement deterministic exact search with progress counters/checkpointing;
-- test it first against prefixes of the cut library where surviving four-sets are known to exist;
-- run it on all 6782 cuts;
-- if SAT, feed the resulting support immediately to the semantic oracle and continue CEGIS from 5910;
-- if exact UNSAT, stop normal search and independently certify exhaustion.
+- found four-set -> candidate only; send it back to the exact semantic oracle;
+- exact exhaustion -> complete negative for this 6782-cut master, but independently recheck before promoting to a theorem-level README claim;
+- timeout / interrupted run -> UNKNOWN.
 
 ## Secondary structural lane
 
@@ -254,15 +207,13 @@ The eventual Hadwiger–Nelson objective remains geometric: obtain an unconditio
 
 ## Checkpoint and UNKNOWN policy
 
-The v3 checkpoint contains the complete generated fooling-pair library plus instrumentation fields including `unresolved_supports`, `last_support`, master/oracle call counts, UNKNOWN counts, and maximum observed solve times.
-
 Keep these invariants:
 
 - `iterations == len(new_pairs)` for the lab-generated portion;
 - every seed and generated A/B coloring pair must validate against its defining formula;
 - oracle UNKNOWN never generates a blocking clause;
 - heuristic failure never modifies the exact master proof space;
-- writes remain atomic (`temp -> os.replace`) and gzip integrity is checked before persistence;
+- writes remain atomic and gzip integrity is checked before persistence;
 - checkpoints are committed after completed guarded slices.
 
 ## Certificate policy
@@ -271,12 +222,10 @@ Any terminal result must be independently checked before being promoted to a mat
 
 For `INTERFACE.json`:
 
-- preserve the exact four vertex IDs;
-- preserve all six equality observables;
+- preserve the exact four vertex IDs and all six equality observables;
 - preserve the pinned upstream SHA;
 - independently reconstruct the oracle query;
-- check UNSAT with a second solver and preferably a standalone certificate/checker;
-- only after that begin geometric interpretation.
+- check UNSAT with a second solver and preferably a standalone certificate/checker.
 
 For exact master UNSAT / `FINAL.json`:
 
@@ -289,16 +238,14 @@ For a global empty-difference fooling pair:
 - independently validate both A and B colorings;
 - verify identical equality pattern on all 391 non-port vertices.
 
-Lean is appropriate only after the finite statement and certificate format stabilize. Do not formalize a moving heuristic search state.
+Lean is appropriate only after the finite statement and certificate format stabilize.
 
 ## Resume checklist
 
-When continuing from this handoff:
-
-1. use checkpoint commit `43915f71caff21b316ba1ebcc901a758d0218ea7`;
-2. confirm `5910` lab pairs + `872` seeds = `6782` cuts;
-3. confirm no `FINAL.json` / `INTERFACE.json` is present;
-4. validate the checkpoint gzip and historical invariant;
-5. implement/test the specialized exact four-set master before launching another long generic CEGIS run;
-6. on a found four-set, return to the exact semantic oracle;
-7. on any terminal result, stop and independently verify before making a stronger mathematical claim.
+1. Use the Run-4 checkpoint containing `5910` lab pairs + `872` seeds = `6782` cuts.
+2. Confirm no terminal `FINAL.json` / `INTERFACE.json` already supersedes it.
+3. Validate the checkpoint and coloring-pair invariants.
+4. Prefer the specialized exact four-set master over another generic long CEGIS run.
+5. If a four-set is found, return it to the exact semantic oracle.
+6. If exact exhaustion is claimed, independently verify before promoting it.
+7. Whenever interesting mathematical/geometric structure appears, record it proactively under the research-recording policy above.
