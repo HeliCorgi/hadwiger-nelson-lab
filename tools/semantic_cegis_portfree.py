@@ -20,9 +20,10 @@ Candidate generation is hybrid:
   * the exact SAT master is retained as the completeness backstop whenever the
     heuristic does not find a candidate.
 
-Every oracle/master SAT call has a wall-clock interrupt. Interrupted calls are
-UNKNOWN, are never converted into SAT/UNSAT facts, and oracle-UNKNOWN supports
-are recorded for retry. The checkpoint stores newly found fooling pairs plus
+Every oracle/master SAT call has a deterministic CaDiCaL decision budget. Calls
+that exhaust the budget return UNKNOWN, are never converted into SAT/UNSAT facts,
+and oracle-UNKNOWN supports are recorded for retry. The workflow also keeps an
+outer wall-clock guard. The checkpoint stores newly found fooling pairs plus
 safe search metadata; seed pairs are reloaded from the pinned upstream handoff.
 """
 from __future__ import annotations
@@ -34,7 +35,6 @@ import os
 import random
 import time
 from pathlib import Path
-from threading import Timer
 
 import numpy as np
 from pysat.card import CardEnc, EncType
@@ -171,27 +171,23 @@ def load_seed_pairs(data_dir: Path, verts, edges, c88, vidx):
     return seeds
 
 
-def timed_limited_solve(solver, timeout_sec: float):
+def budgeted_solve(solver, decision_budget: int):
     """Return (True/False/None, elapsed_wall_seconds).
 
-    None means UNKNOWN because the timer interrupted the limited solve. No
-    caller may interpret None as UNSAT.
+    CaDiCaL 1.9.dev7 in PySAT does not expose a usable interrupt/clear-interrupt
+    pair, but it does support decision budgets. Reaching the budget returns
+    None (UNKNOWN). No caller may interpret None as UNSAT. The outer workflow
+    timeout remains the independent hard wall-clock guard.
     """
     t0 = time.monotonic()
-    if timeout_sec <= 0:
+    if decision_budget <= 0:
         return None, 0.0
 
-    timer = Timer(timeout_sec, solver.interrupt)
-    timer.daemon = True
-    timer.start()
+    solver.dec_budget(int(decision_budget))
     try:
-        status = solver.solve_limited(expect_interrupt=True)
+        status = solver.solve_limited()
     finally:
-        timer.cancel()
-        try:
-            solver.clear_interrupt()
-        except Exception:
-            pass
+        solver.dec_budget(-1)
     return status, time.monotonic() - t0
 
 
@@ -202,8 +198,8 @@ def main():
     ap.add_argument("--result-dir", type=Path, required=True)
     ap.add_argument("--time-limit-sec", type=int, default=15000)
     ap.add_argument("--checkpoint-every", type=int, default=20)
-    ap.add_argument("--query-timeout-sec", type=float, default=180.0)
-    ap.add_argument("--max-query-timeout-sec", type=float, default=600.0)
+    ap.add_argument("--query-decision-budget", type=int, default=2_000_000)
+    ap.add_argument("--max-query-decision-budget", type=int, default=16_000_000)
     ap.add_argument("--fast-search-sec", type=float, default=20.0)
     ap.add_argument("--fast-restarts", type=int, default=48)
     args = ap.parse_args()
@@ -366,7 +362,7 @@ def main():
     def clear_unresolved(support):
         unresolved.pop(tuple(named_support(support)), None)
 
-    def oracle_for_support(support, timeout_sec):
+    def oracle_for_support(support, decision_budget):
         selected = []
         for a_pos in range(4):
             for b_pos in range(a_pos + 1, 4):
@@ -396,7 +392,7 @@ def main():
             cls.append([ea, -eb])
 
         with Cadical195(bootstrap_with=cls) as s:
-            raw, elapsed = timed_limited_solve(s, timeout_sec)
+            raw, elapsed = budgeted_solve(s, decision_budget)
             if raw is None:
                 status = "UNKNOWN"
                 record_timing("oracle", status, elapsed)
@@ -655,13 +651,13 @@ def main():
                 f"fast search found no candidate in {fast_elapsed:.3f}s "
                 f"best_uncovered={best_miss}; invoking exact master"
             )
-            timeout = min(args.query_timeout_sec, max(0.0, remaining_time() - 5.0))
-            raw, master_elapsed = timed_limited_solve(master, timeout)
+            budget = args.query_decision_budget
+            raw, master_elapsed = budgeted_solve(master, budget)
             master_status = "UNKNOWN" if raw is None else ("SAT" if raw else "UNSAT")
             record_timing("master", master_status, master_elapsed)
             log(
                 f"master status={master_status} elapsed={master_elapsed:.3f}s "
-                f"cuts={known_cut_count}"
+                f"budget={budget} cuts={known_cut_count}"
             )
             if raw is None:
                 save_checkpoint("MASTER-UNKNOWN")
@@ -701,20 +697,21 @@ def main():
 
         key = tuple(last_support_named)
         previous_unknowns = unresolved.get(key, {}).get("attempts", 0)
-        requested_timeout = min(
-            args.max_query_timeout_sec,
-            args.query_timeout_sec * (2 ** min(previous_unknowns, 2)),
+        decision_budget = min(
+            args.max_query_decision_budget,
+            args.query_decision_budget * (2 ** min(previous_unknowns, 3)),
         )
-        timeout = min(requested_timeout, max(0.0, remaining_time() - 5.0))
-        if timeout <= 0:
+        if remaining_time() <= 5:
             save_checkpoint("TIME-SLICE-COMPLETE")
             return 75
 
-        oracle_status, payload, oracle_elapsed = oracle_for_support(support, timeout)
+        oracle_status, payload, oracle_elapsed = oracle_for_support(
+            support, decision_budget
+        )
         log(
             f"oracle source={source} support={last_support_named} "
             f"status={oracle_status} elapsed={oracle_elapsed:.3f}s "
-            f"timeout={timeout:.1f}s"
+            f"decision_budget={decision_budget}"
         )
 
         if oracle_status == "UNKNOWN":
