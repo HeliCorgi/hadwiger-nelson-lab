@@ -1,0 +1,62 @@
+name: local-equality-chain
+on:
+  push:
+    branches: [research/quotient-critical]
+    paths:
+      - '.github/workflows/local-equality-chain.yml'
+      - 'tools/local_equality_chain.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: local-equality-chain
+  cancel-in-progress: false
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: research/quotient-critical
+          fetch-depth: 0
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m py_compile tools/local_equality_chain.py
+      - name: Search local 4-chromatic common-neighborhood chain
+        run: |
+          mkdir -p results/local-equality-chain
+          test -f results/port-relation-scan/analysis.json
+          timeout --signal=TERM --kill-after=30s 3000s python tools/local_equality_chain.py \
+            --data-dir upstream/handoff/data \
+            --relations results/port-relation-scan/analysis.json \
+            --out results/local-equality-chain/analysis.json
+      - name: Commit result
+        if: success()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add results/local-equality-chain/analysis.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record local equality-chain analysis [skip ci]'
+            git pull --rebase origin research/quotient-critical
+            git push origin HEAD:research/quotient-critical
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: local-equality-chain-${{ github.run_id }}
+          path: results/local-equality-chain
+          if-no-files-found: error
+          retention-days: 30

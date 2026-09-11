@@ -1,0 +1,72 @@
+{
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8",
+  "quotient_vertices": 305,
+  "quotient_edges": 1599,
+  "p_qnodes": [
+    5,
+    270
+  ],
+  "min_vertex_cut_value": 6,
+  "separator_qnodes": [
+    0,
+    6,
+    8,
+    9,
+    10,
+    266
+  ],
+  "separator_components": [
+    [
+      0,
+      324,
+      376
+    ],
+    [
+      8,
+      18,
+      364
+    ],
+    [
+      10,
+      12,
+      54
+    ],
+    [
+      11,
+      55,
+      288
+    ],
+    [
+      19
+    ],
+    [
+      375,
+      394
+    ]
+  ],
+  "components_after_cut_sizes": [
+    38,
+    261
+  ],
+  "p_component_size": 261,
+  "q_component_size": 38,
+  "other_component_sizes": [],
+  "viable_boundary_state_count": 1,
+  "states": [
+    {
+      "boundary_state": "012203",
+      "blocks": 4,
+      "p_colors": [
+        1
+      ],
+      "q_colors": [
+        1
+      ],
+      "all_cross_pairs_equal": true
+    }
+  ],
+  "all_viable_states_force_p_eq_q": true,
+  "bad_states": [],
+  "singleton_same_color_states": 1,
+  "interpretation": "Removing the six separator qnodes disconnects p from q. For each canonical color partition of the separator, component colorings are independent. Thus p/q option sets can be combined by Cartesian product; if every viable boundary state has only equal cross-pairs, p=q follows from the boundary table."
+}

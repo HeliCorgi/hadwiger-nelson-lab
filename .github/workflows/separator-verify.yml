@@ -1,0 +1,61 @@
+name: separator-verify
+on:
+  push:
+    branches: [research/quotient-critical]
+    paths:
+      - '.github/workflows/separator-verify.yml'
+      - 'tools/separator_verify.py'
+      - 'tools/separator_interface.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: separator-verify
+  cancel-in-progress: false
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: research/quotient-critical
+          fetch-depth: 0
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m py_compile tools/separator_interface.py tools/separator_verify.py
+      - name: Independently verify left/right separator tables with Glucose4
+        run: |
+          mkdir -p results/separator-verify
+          timeout --signal=TERM --kill-after=30s 3000s python tools/separator_verify.py \
+            --data-dir upstream/handoff/data \
+            --out results/separator-verify/analysis.json
+      - name: Commit verification
+        if: success()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add results/separator-verify/analysis.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Independently verify separator interface [skip ci]'
+            git pull --rebase origin research/quotient-critical
+            git push origin HEAD:research/quotient-critical
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: separator-verify-${{ github.run_id }}
+          path: results/separator-verify
+          if-no-files-found: error
+          retention-days: 30

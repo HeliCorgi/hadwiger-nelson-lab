@@ -1,0 +1,2156 @@
+{
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8",
+  "quotient_vertices": 305,
+  "quotient_edges": 1599,
+  "p_qnodes": [
+    5,
+    270
+  ],
+  "forced_equal_to_p_count": 20,
+  "forced_equal_to_p": [
+    {
+      "qnode": 3,
+      "component": [
+        4,
+        5
+      ],
+      "dist_p": 2,
+      "dist_q": 3,
+      "degree": 21
+    },
+    {
+      "qnode": 5,
+      "component": [
+        7,
+        28,
+        30,
+        217,
+        323
+      ],
+      "dist_p": 0,
+      "dist_q": 3,
+      "degree": 41
+    },
+    {
+      "qnode": 6,
+      "component": [
+        8,
+        18,
+        364
+      ],
+      "dist_p": 2,
+      "dist_q": 3,
+      "degree": 14
+    },
+    {
+      "qnode": 22,
+      "component": [
+        36
+      ],
+      "dist_p": 2,
+      "dist_q": 3,
+      "degree": 10
+    },
+    {
+      "qnode": 33,
+      "component": [
+        47,
+        296
+      ],
+      "dist_p": 2,
+      "dist_q": 3,
+      "degree": 11
+    },
+    {
+      "qnode": 54,
+      "component": [
+        73
+      ],
+      "dist_p": 2,
+      "dist_q": 4,
+      "degree": 14
+    },
+    {
+      "qnode": 63,
+      "component": [
+        82
+      ],
+      "dist_p": 2,
+      "dist_q": 4,
+      "degree": 13
+    },
+    {
+      "qnode": 65,
+      "component": [
+        84
+      ],
+      "dist_p": 2,
+      "dist_q": 4,
+      "degree": 20
+    },
+    {
+      "qnode": 86,
+      "component": [
+        107,
+        272
+      ],
+      "dist_p": 2,
+      "dist_q": 4,
+      "degree": 21
+    },
+    {
+      "qnode": 189,
+      "component": [
+        238
+      ],
+      "dist_p": 2,
+      "dist_q": 4,
+      "degree": 10
+    },
+    {
+      "qnode": 210,
+      "component": [
+        271
+      ],
+      "dist_p": 2,
+      "dist_q": 4,
+      "degree": 12
+    },
+    {
+      "qnode": 222,
+      "component": [
+        293
+      ],
+      "dist_p": 2,
+      "dist_q": 4,
+      "degree": 10
+    },
+    {
+      "qnode": 252,
+      "component": [
+        349
+      ],
+      "dist_p": 2,
+      "dist_q": 4,
+      "degree": 10
+    },
+    {
+      "qnode": 267,
+      "component": [
+        378,
+        403,
+        502
+      ],
+      "dist_p": 2,
+      "dist_q": 2,
+      "degree": 13
+    },
+    {
+      "qnode": 270,
+      "component": [
+        385,
+        490
+      ],
+      "dist_p": 3,
+      "dist_q": 0,
+      "degree": 7
+    },
+    {
+      "qnode": 274,
+      "component": [
+        393,
+        436,
+        489
+      ],
+      "dist_p": 2,
+      "dist_q": 2,
+      "degree": 14
+    },
+    {
+      "qnode": 284,
+      "component": [
+        420
+      ],
+      "dist_p": 3,
+      "dist_q": 2,
+      "degree": 7
+    },
+    {
+      "qnode": 287,
+      "component": [
+        424
+      ],
+      "dist_p": 3,
+      "dist_q": 2,
+      "degree": 5
+    },
+    {
+      "qnode": 290,
+      "component": [
+        437
+      ],
+      "dist_p": 2,
+      "dist_q": 2,
+      "degree": 6
+    },
+    {
+      "qnode": 299,
+      "component": [
+        464
+      ],
+      "dist_p": 3,
+      "dist_q": 2,
+      "degree": 8
+    }
+  ],
+  "forced_different_from_p_count": 155,
+  "flexible_vs_p_count": 130,
+  "forced_different_qnodes": [
+    0,
+    1,
+    2,
+    4,
+    7,
+    8,
+    9,
+    10,
+    11,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    23,
+    26,
+    27,
+    30,
+    31,
+    32,
+    34,
+    38,
+    39,
+    40,
+    41,
+    46,
+    47,
+    50,
+    55,
+    56,
+    57,
+    58,
+    59,
+    61,
+    62,
+    67,
+    68,
+    69,
+    71,
+    72,
+    74,
+    77,
+    78,
+    79,
+    80,
+    82,
+    84,
+    85,
+    88,
+    90,
+    92,
+    93,
+    94,
+    95,
+    98,
+    99,
+    100,
+    103,
+    104,
+    105,
+    106,
+    108,
+    109,
+    110,
+    116,
+    123,
+    126,
+    133,
+    138,
+    148,
+    152,
+    153,
+    157,
+    159,
+    160,
+    161,
+    164,
+    167,
+    169,
+    172,
+    173,
+    175,
+    177,
+    181,
+    183,
+    184,
+    185,
+    186,
+    188,
+    190,
+    192,
+    193,
+    196,
+    197,
+    198,
+    201,
+    204,
+    205,
+    208,
+    212,
+    213,
+    214,
+    220,
+    221,
+    223,
+    224,
+    226,
+    229,
+    230,
+    231,
+    233,
+    236,
+    237,
+    238,
+    242,
+    245,
+    250,
+    251,
+    254,
+    256,
+    263,
+    266,
+    268,
+    269,
+    271,
+    272,
+    273,
+    275,
+    277,
+    278,
+    279,
+    280,
+    281,
+    282,
+    285,
+    286,
+    288,
+    289,
+    291,
+    292,
+    293,
+    294,
+    295,
+    296,
+    297,
+    298,
+    300,
+    301,
+    302,
+    303,
+    304
+  ],
+  "flexible_qnodes": [
+    12,
+    24,
+    25,
+    28,
+    29,
+    35,
+    36,
+    37,
+    42,
+    43,
+    44,
+    45,
+    48,
+    49,
+    51,
+    52,
+    53,
+    60,
+    64,
+    66,
+    70,
+    73,
+    75,
+    76,
+    81,
+    83,
+    87,
+    89,
+    91,
+    96,
+    97,
+    101,
+    102,
+    107,
+    111,
+    112,
+    113,
+    114,
+    115,
+    117,
+    118,
+    119,
+    120,
+    121,
+    122,
+    124,
+    125,
+    127,
+    128,
+    129,
+    130,
+    131,
+    132,
+    134,
+    135,
+    136,
+    137,
+    139,
+    140,
+    141,
+    142,
+    143,
+    144,
+    145,
+    146,
+    147,
+    149,
+    150,
+    151,
+    154,
+    155,
+    156,
+    158,
+    162,
+    163,
+    165,
+    166,
+    168,
+    170,
+    171,
+    174,
+    176,
+    178,
+    179,
+    180,
+    182,
+    187,
+    191,
+    194,
+    195,
+    199,
+    200,
+    202,
+    203,
+    206,
+    207,
+    209,
+    211,
+    215,
+    216,
+    217,
+    218,
+    219,
+    225,
+    227,
+    228,
+    232,
+    234,
+    235,
+    239,
+    240,
+    241,
+    243,
+    244,
+    246,
+    247,
+    248,
+    249,
+    253,
+    255,
+    257,
+    258,
+    259,
+    260,
+    261,
+    262,
+    264,
+    265,
+    276,
+    283
+  ],
+  "equal_class_boundary_count": 147,
+  "equal_class_boundary": [
+    {
+      "qnode": 0,
+      "component": [
+        0,
+        324,
+        376
+      ],
+      "neighbors_in_equal_class": [
+        3,
+        5,
+        6,
+        22,
+        33,
+        267,
+        274,
+        290
+      ],
+      "degree": 36
+    },
+    {
+      "qnode": 1,
+      "component": [
+        1,
+        320
+      ],
+      "neighbors_in_equal_class": [
+        3,
+        5
+      ],
+      "degree": 16
+    },
+    {
+      "qnode": 2,
+      "component": [
+        2,
+        3,
+        325
+      ],
+      "neighbors_in_equal_class": [
+        3,
+        222
+      ],
+      "degree": 22
+    },
+    {
+      "qnode": 4,
+      "component": [
+        6,
+        102,
+        163,
+        221,
+        298,
+        316
+      ],
+      "neighbors_in_equal_class": [
+        3,
+        5,
+        22,
+        33,
+        86,
+        189,
+        252
+      ],
+      "degree": 40
+    },
+    {
+      "qnode": 7,
+      "component": [
+        9,
+        117,
+        233,
+        240
+      ],
+      "neighbors_in_equal_class": [
+        5,
+        6,
+        65,
+        189
+      ],
+      "degree": 28
+    },
+    {
+      "qnode": 8,
+      "component": [
+        10,
+        12,
+        54
+      ],
+      "neighbors_in_equal_class": [
+        5,
+        22,
+        267
+      ],
+      "degree": 16
+    },
+    {
+      "qnode": 9,
+      "component": [
+        11,
+        55,
+        288
+      ],
+      "neighbors_in_equal_class": [
+        5
+      ],
+      "degree": 18
+    },
+    {
+      "qnode": 10,
+      "component": [
+        19
+      ],
+      "neighbors_in_equal_class": [
+        54
+      ],
+      "degree": 6
+    },
+    {
+      "qnode": 11,
+      "component": [
+        22,
+        307
+      ],
+      "neighbors_in_equal_class": [
+        65
+      ],
+      "degree": 14
+    },
+    {
+      "qnode": 13,
+      "component": [
+        25,
+        239
+      ],
+      "neighbors_in_equal_class": [
+        5,
+        33,
+        63,
+        86
+      ],
+      "degree": 19
+    },
+    {
+      "qnode": 14,
+      "component": [
+        26
+      ],
+      "neighbors_in_equal_class": [
+        5,
+        54,
+        210,
+        222
+      ],
+      "degree": 17
+    },
+    {
+      "qnode": 15,
+      "component": [
+        27
+      ],
+      "neighbors_in_equal_class": [
+        5,
+        86
+      ],
+      "degree": 13
+    },
+    {
+      "qnode": 16,
+      "component": [
+        29
+      ],
+      "neighbors_in_equal_class": [
+        5,
+        65
+      ],
+      "degree": 14
+    },
+    {
+      "qnode": 17,
+      "component": [
+        31
+      ],
+      "neighbors_in_equal_class": [
+        6,
+        22,
+        65,
+        252
+      ],
+      "degree": 15
+    },
+    {
+      "qnode": 18,
+      "component": [
+        32
+      ],
+      "neighbors_in_equal_class": [
+        6
+      ],
+      "degree": 16
+    },
+    {
+      "qnode": 19,
+      "component": [
+        33
+      ],
+      "neighbors_in_equal_class": [
+        54
+      ],
+      "degree": 16
+    },
+    {
+      "qnode": 20,
+      "component": [
+        34
+      ],
+      "neighbors_in_equal_class": [
+        63,
+        86
+      ],
+      "degree": 15
+    },
+    {
+      "qnode": 21,
+      "component": [
+        35,
+        120,
+        321
+      ],
+      "neighbors_in_equal_class": [
+        5,
+        6,
+        22,
+        210
+      ],
+      "degree": 27
+    },
+    {
+      "qnode": 23,
+      "component": [
+        37,
+        339
+      ],
+      "neighbors_in_equal_class": [
+        5
+      ],
+      "degree": 19
+    },
+    {
+      "qnode": 26,
+      "component": [
+        40,
+        309
+      ],
+      "neighbors_in_equal_class": [
+        5
+      ],
+      "degree": 19
+    },
+    {
+      "qnode": 27,
+      "component": [
+        41
+      ],
+      "neighbors_in_equal_class": [
+        5
+      ],
+      "degree": 13
+    },
+    {
+      "qnode": 30,
+      "component": [
+        44
+      ],
+      "neighbors_in_equal_class": [
+        22
+      ],
+      "degree": 12
+    },
+    {
+      "qnode": 31,
+      "component": [
+        45,
+        315
+      ],
+      "neighbors_in_equal_class": [
+        5
+      ],
+      "degree": 19
+    },
+    {
+      "qnode": 38,
+      "component": [
+        52
+      ],
+      "neighbors_in_equal_class": [
+        3
+      ],
+      "degree": 8
+    },
+    {
+      "qnode": 39,
+      "component": [
+        53,
+        350
+      ],
+      "neighbors_in_equal_class": [
+        5,
+        189
+      ],
+      "degree": 16
+    },
+    {
+      "qnode": 40,
+      "component": [
+        56,
+        268,
+        283
+      ],
+      "neighbors_in_equal_class": [
+        5,
+        189
+      ],
+      "degree": 22
+    },
+    {
+      "qnode": 41,
+      "component": [
+        57,
+        269
+      ],
+      "neighbors_in_equal_class": [
+        5,
+        222
+      ],
+      "degree": 20
+    },
+    {
+      "qnode": 47,
+      "component": [
+        65,
+        258
+      ],
+      "neighbors_in_equal_class": [
+        63,
+        65,
+        86,
+        189
+      ],
+      "degree": 19
+    },
+    {
+      "qnode": 55,
+      "component": [
+        74
+      ],
+      "neighbors_in_equal_class": [
+        86,
+        189
+      ],
+      "degree": 14
+    },
+    {
+      "qnode": 56,
+      "component": [
+        75,
+        305
+      ],
+      "neighbors_in_equal_class": [
+        5
+      ],
+      "degree": 18
+    },
+    {
+      "qnode": 57,
+      "component": [
+        76,
+        306
+      ],
+      "neighbors_in_equal_class": [
+        3,
+        86
+      ],
+      "degree": 14
+    },
+    {
+      "qnode": 58,
+      "component": [
+        77
+      ],
+      "neighbors_in_equal_class": [
+        5,
+        65,
+        210
+      ],
+      "degree": 12
+    },
+    {
+      "qnode": 59,
+      "component": [
+        78
+      ],
+      "neighbors_in_equal_class": [
+        22,
+        65,
+        86
+      ],
+      "degree": 13
+    },
+    {
+      "qnode": 61,
+      "component": [
+        80,
+        292
+      ],
+      "neighbors_in_equal_class": [
+        3,
+        252
+      ],
+      "degree": 19
+    },
+    {
+      "qnode": 62,
+      "component": [
+        81,
+        237
+      ],
+      "neighbors_in_equal_class": [
+        5,
+        210,
+        222,
+        252
+      ],
+      "degree": 21
+    },
+    {
+      "qnode": 67,
+      "component": [
+        86
+      ],
+      "neighbors_in_equal_class": [
+        3
+      ],
+      "degree": 10
+    },
+    {
+      "qnode": 68,
+      "component": [
+        87
+      ],
+      "neighbors_in_equal_class": [
+        22,
+        222
+      ],
+      "degree": 20
+    },
+    {
+      "qnode": 69,
+      "component": [
+        88
+      ],
+      "neighbors_in_equal_class": [
+        222
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 71,
+      "component": [
+        90,
+        278
+      ],
+      "neighbors_in_equal_class": [
+        33,
+        63,
+        65,
+        210
+      ],
+      "degree": 24
+    },
+    {
+      "qnode": 72,
+      "component": [
+        91
+      ],
+      "neighbors_in_equal_class": [
+        3,
+        33
+      ],
+      "degree": 17
+    },
+    {
+      "qnode": 74,
+      "component": [
+        93,
+        280
+      ],
+      "neighbors_in_equal_class": [
+        5,
+        54,
+        63,
+        86,
+        189,
+        210
+      ],
+      "degree": 26
+    },
+    {
+      "qnode": 77,
+      "component": [
+        96
+      ],
+      "neighbors_in_equal_class": [
+        54,
+        65,
+        86
+      ],
+      "degree": 21
+    },
+    {
+      "qnode": 78,
+      "component": [
+        97
+      ],
+      "neighbors_in_equal_class": [
+        3
+      ],
+      "degree": 16
+    },
+    {
+      "qnode": 79,
+      "component": [
+        98
+      ],
+      "neighbors_in_equal_class": [
+        3
+      ],
+      "degree": 10
+    },
+    {
+      "qnode": 80,
+      "component": [
+        99
+      ],
+      "neighbors_in_equal_class": [
+        5
+      ],
+      "degree": 24
+    },
+    {
+      "qnode": 84,
+      "component": [
+        104,
+        199
+      ],
+      "neighbors_in_equal_class": [
+        54
+      ],
+      "degree": 19
+    },
+    {
+      "qnode": 85,
+      "component": [
+        105
+      ],
+      "neighbors_in_equal_class": [
+        63
+      ],
+      "degree": 7
+    },
+    {
+      "qnode": 88,
+      "component": [
+        109
+      ],
+      "neighbors_in_equal_class": [
+        86
+      ],
+      "degree": 11
+    },
+    {
+      "qnode": 90,
+      "component": [
+        111
+      ],
+      "neighbors_in_equal_class": [
+        210
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 92,
+      "component": [
+        113,
+        115,
+        187,
+        189
+      ],
+      "neighbors_in_equal_class": [
+        6,
+        33,
+        86
+      ],
+      "degree": 36
+    },
+    {
+      "qnode": 93,
+      "component": [
+        114
+      ],
+      "neighbors_in_equal_class": [
+        210
+      ],
+      "degree": 8
+    },
+    {
+      "qnode": 94,
+      "component": [
+        116
+      ],
+      "neighbors_in_equal_class": [
+        86
+      ],
+      "degree": 8
+    },
+    {
+      "qnode": 95,
+      "component": [
+        118,
+        251
+      ],
+      "neighbors_in_equal_class": [
+        54,
+        252
+      ],
+      "degree": 16
+    },
+    {
+      "qnode": 98,
+      "component": [
+        122
+      ],
+      "neighbors_in_equal_class": [
+        3,
+        222
+      ],
+      "degree": 10
+    },
+    {
+      "qnode": 99,
+      "component": [
+        123
+      ],
+      "neighbors_in_equal_class": [
+        63,
+        189
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 100,
+      "component": [
+        124,
+        206,
+        290
+      ],
+      "neighbors_in_equal_class": [
+        3,
+        65,
+        222
+      ],
+      "degree": 30
+    },
+    {
+      "qnode": 103,
+      "component": [
+        127
+      ],
+      "neighbors_in_equal_class": [
+        3,
+        5,
+        54
+      ],
+      "degree": 11
+    },
+    {
+      "qnode": 104,
+      "component": [
+        128
+      ],
+      "neighbors_in_equal_class": [
+        5,
+        33
+      ],
+      "degree": 7
+    },
+    {
+      "qnode": 105,
+      "component": [
+        129
+      ],
+      "neighbors_in_equal_class": [
+        22
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 106,
+      "component": [
+        130
+      ],
+      "neighbors_in_equal_class": [
+        63
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 108,
+      "component": [
+        132,
+        266
+      ],
+      "neighbors_in_equal_class": [
+        3
+      ],
+      "degree": 18
+    },
+    {
+      "qnode": 109,
+      "component": [
+        133
+      ],
+      "neighbors_in_equal_class": [
+        3,
+        65
+      ],
+      "degree": 8
+    },
+    {
+      "qnode": 110,
+      "component": [
+        134
+      ],
+      "neighbors_in_equal_class": [
+        5,
+        54
+      ],
+      "degree": 8
+    },
+    {
+      "qnode": 116,
+      "component": [
+        145
+      ],
+      "neighbors_in_equal_class": [
+        86
+      ],
+      "degree": 5
+    },
+    {
+      "qnode": 123,
+      "component": [
+        154
+      ],
+      "neighbors_in_equal_class": [
+        210
+      ],
+      "degree": 7
+    },
+    {
+      "qnode": 133,
+      "component": [
+        166
+      ],
+      "neighbors_in_equal_class": [
+        86
+      ],
+      "degree": 7
+    },
+    {
+      "qnode": 138,
+      "component": [
+        171
+      ],
+      "neighbors_in_equal_class": [
+        33,
+        65,
+        189
+      ],
+      "degree": 7
+    },
+    {
+      "qnode": 148,
+      "component": [
+        181
+      ],
+      "neighbors_in_equal_class": [
+        6
+      ],
+      "degree": 11
+    },
+    {
+      "qnode": 152,
+      "component": [
+        188
+      ],
+      "neighbors_in_equal_class": [
+        63
+      ],
+      "degree": 10
+    },
+    {
+      "qnode": 153,
+      "component": [
+        190
+      ],
+      "neighbors_in_equal_class": [
+        54,
+        252
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 157,
+      "component": [
+        195
+      ],
+      "neighbors_in_equal_class": [
+        33,
+        63
+      ],
+      "degree": 6
+    },
+    {
+      "qnode": 159,
+      "component": [
+        197
+      ],
+      "neighbors_in_equal_class": [
+        54
+      ],
+      "degree": 11
+    },
+    {
+      "qnode": 161,
+      "component": [
+        201
+      ],
+      "neighbors_in_equal_class": [
+        5
+      ],
+      "degree": 8
+    },
+    {
+      "qnode": 164,
+      "component": [
+        204
+      ],
+      "neighbors_in_equal_class": [
+        5
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 167,
+      "component": [
+        208
+      ],
+      "neighbors_in_equal_class": [
+        5
+      ],
+      "degree": 6
+    },
+    {
+      "qnode": 169,
+      "component": [
+        210
+      ],
+      "neighbors_in_equal_class": [
+        33
+      ],
+      "degree": 14
+    },
+    {
+      "qnode": 172,
+      "component": [
+        213
+      ],
+      "neighbors_in_equal_class": [
+        6
+      ],
+      "degree": 7
+    },
+    {
+      "qnode": 173,
+      "component": [
+        214
+      ],
+      "neighbors_in_equal_class": [
+        65,
+        252
+      ],
+      "degree": 10
+    },
+    {
+      "qnode": 175,
+      "component": [
+        216
+      ],
+      "neighbors_in_equal_class": [
+        5,
+        252
+      ],
+      "degree": 7
+    },
+    {
+      "qnode": 177,
+      "component": [
+        220
+      ],
+      "neighbors_in_equal_class": [
+        189
+      ],
+      "degree": 8
+    },
+    {
+      "qnode": 181,
+      "component": [
+        226
+      ],
+      "neighbors_in_equal_class": [
+        65
+      ],
+      "degree": 10
+    },
+    {
+      "qnode": 183,
+      "component": [
+        228
+      ],
+      "neighbors_in_equal_class": [
+        33
+      ],
+      "degree": 6
+    },
+    {
+      "qnode": 184,
+      "component": [
+        231
+      ],
+      "neighbors_in_equal_class": [
+        5
+      ],
+      "degree": 6
+    },
+    {
+      "qnode": 185,
+      "component": [
+        232
+      ],
+      "neighbors_in_equal_class": [
+        63
+      ],
+      "degree": 10
+    },
+    {
+      "qnode": 186,
+      "component": [
+        234
+      ],
+      "neighbors_in_equal_class": [
+        252
+      ],
+      "degree": 8
+    },
+    {
+      "qnode": 188,
+      "component": [
+        236
+      ],
+      "neighbors_in_equal_class": [
+        5,
+        54
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 190,
+      "component": [
+        242
+      ],
+      "neighbors_in_equal_class": [
+        210
+      ],
+      "degree": 10
+    },
+    {
+      "qnode": 192,
+      "component": [
+        244
+      ],
+      "neighbors_in_equal_class": [
+        86
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 193,
+      "component": [
+        245
+      ],
+      "neighbors_in_equal_class": [
+        63
+      ],
+      "degree": 8
+    },
+    {
+      "qnode": 196,
+      "component": [
+        248
+      ],
+      "neighbors_in_equal_class": [
+        65
+      ],
+      "degree": 8
+    },
+    {
+      "qnode": 197,
+      "component": [
+        249
+      ],
+      "neighbors_in_equal_class": [
+        6,
+        54
+      ],
+      "degree": 11
+    },
+    {
+      "qnode": 198,
+      "component": [
+        250
+      ],
+      "neighbors_in_equal_class": [
+        6,
+        65
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 204,
+      "component": [
+        257
+      ],
+      "neighbors_in_equal_class": [
+        86
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 205,
+      "component": [
+        259
+      ],
+      "neighbors_in_equal_class": [
+        65
+      ],
+      "degree": 8
+    },
+    {
+      "qnode": 208,
+      "component": [
+        267
+      ],
+      "neighbors_in_equal_class": [
+        5,
+        54,
+        65,
+        222
+      ],
+      "degree": 12
+    },
+    {
+      "qnode": 212,
+      "component": [
+        274
+      ],
+      "neighbors_in_equal_class": [
+        3
+      ],
+      "degree": 10
+    },
+    {
+      "qnode": 213,
+      "component": [
+        275
+      ],
+      "neighbors_in_equal_class": [
+        5
+      ],
+      "degree": 14
+    },
+    {
+      "qnode": 214,
+      "component": [
+        276
+      ],
+      "neighbors_in_equal_class": [
+        63,
+        65
+      ],
+      "degree": 14
+    },
+    {
+      "qnode": 220,
+      "component": [
+        289
+      ],
+      "neighbors_in_equal_class": [
+        65,
+        86
+      ],
+      "degree": 5
+    },
+    {
+      "qnode": 221,
+      "component": [
+        291
+      ],
+      "neighbors_in_equal_class": [
+        5
+      ],
+      "degree": 5
+    },
+    {
+      "qnode": 223,
+      "component": [
+        294
+      ],
+      "neighbors_in_equal_class": [
+        6,
+        22
+      ],
+      "degree": 8
+    },
+    {
+      "qnode": 224,
+      "component": [
+        295
+      ],
+      "neighbors_in_equal_class": [
+        210,
+        252
+      ],
+      "degree": 7
+    },
+    {
+      "qnode": 226,
+      "component": [
+        299
+      ],
+      "neighbors_in_equal_class": [
+        5
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 229,
+      "component": [
+        302
+      ],
+      "neighbors_in_equal_class": [
+        3,
+        86
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 230,
+      "component": [
+        303
+      ],
+      "neighbors_in_equal_class": [
+        5
+      ],
+      "degree": 7
+    },
+    {
+      "qnode": 231,
+      "component": [
+        304
+      ],
+      "neighbors_in_equal_class": [
+        3
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 233,
+      "component": [
+        311
+      ],
+      "neighbors_in_equal_class": [
+        210
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 236,
+      "component": [
+        314
+      ],
+      "neighbors_in_equal_class": [
+        86
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 237,
+      "component": [
+        317
+      ],
+      "neighbors_in_equal_class": [
+        5
+      ],
+      "degree": 6
+    },
+    {
+      "qnode": 238,
+      "component": [
+        318
+      ],
+      "neighbors_in_equal_class": [
+        6
+      ],
+      "degree": 6
+    },
+    {
+      "qnode": 242,
+      "component": [
+        333
+      ],
+      "neighbors_in_equal_class": [
+        6
+      ],
+      "degree": 6
+    },
+    {
+      "qnode": 245,
+      "component": [
+        337
+      ],
+      "neighbors_in_equal_class": [
+        5
+      ],
+      "degree": 7
+    },
+    {
+      "qnode": 250,
+      "component": [
+        347
+      ],
+      "neighbors_in_equal_class": [
+        3
+      ],
+      "degree": 7
+    },
+    {
+      "qnode": 251,
+      "component": [
+        348
+      ],
+      "neighbors_in_equal_class": [
+        222
+      ],
+      "degree": 10
+    },
+    {
+      "qnode": 254,
+      "component": [
+        353
+      ],
+      "neighbors_in_equal_class": [
+        3
+      ],
+      "degree": 10
+    },
+    {
+      "qnode": 256,
+      "component": [
+        358
+      ],
+      "neighbors_in_equal_class": [
+        86
+      ],
+      "degree": 6
+    },
+    {
+      "qnode": 263,
+      "component": [
+        371
+      ],
+      "neighbors_in_equal_class": [
+        5
+      ],
+      "degree": 5
+    },
+    {
+      "qnode": 266,
+      "component": [
+        375,
+        394
+      ],
+      "neighbors_in_equal_class": [
+        5,
+        274
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 268,
+      "component": [
+        379,
+        396,
+        408,
+        447
+      ],
+      "neighbors_in_equal_class": [
+        267,
+        270,
+        274,
+        284,
+        287
+      ],
+      "degree": 15
+    },
+    {
+      "qnode": 269,
+      "component": [
+        380
+      ],
+      "neighbors_in_equal_class": [
+        267
+      ],
+      "degree": 5
+    },
+    {
+      "qnode": 271,
+      "component": [
+        386,
+        401
+      ],
+      "neighbors_in_equal_class": [
+        6,
+        267,
+        290
+      ],
+      "degree": 11
+    },
+    {
+      "qnode": 272,
+      "component": [
+        387,
+        465,
+        482
+      ],
+      "neighbors_in_equal_class": [
+        267,
+        274,
+        284
+      ],
+      "degree": 12
+    },
+    {
+      "qnode": 273,
+      "component": [
+        390,
+        406,
+        409
+      ],
+      "neighbors_in_equal_class": [
+        267,
+        284
+      ],
+      "degree": 14
+    },
+    {
+      "qnode": 275,
+      "component": [
+        395,
+        473
+      ],
+      "neighbors_in_equal_class": [
+        274,
+        287
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 277,
+      "component": [
+        398,
+        456
+      ],
+      "neighbors_in_equal_class": [
+        270,
+        274,
+        290,
+        299
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 278,
+      "component": [
+        399
+      ],
+      "neighbors_in_equal_class": [
+        284,
+        290
+      ],
+      "degree": 10
+    },
+    {
+      "qnode": 279,
+      "component": [
+        400,
+        417
+      ],
+      "neighbors_in_equal_class": [
+        274,
+        290
+      ],
+      "degree": 7
+    },
+    {
+      "qnode": 280,
+      "component": [
+        402,
+        412,
+        431,
+        446
+      ],
+      "neighbors_in_equal_class": [
+        267,
+        287
+      ],
+      "degree": 12
+    },
+    {
+      "qnode": 281,
+      "component": [
+        404,
+        444
+      ],
+      "neighbors_in_equal_class": [
+        267,
+        299
+      ],
+      "degree": 10
+    },
+    {
+      "qnode": 282,
+      "component": [
+        407
+      ],
+      "neighbors_in_equal_class": [
+        274,
+        299
+      ],
+      "degree": 7
+    },
+    {
+      "qnode": 285,
+      "component": [
+        421,
+        500
+      ],
+      "neighbors_in_equal_class": [
+        267
+      ],
+      "degree": 7
+    },
+    {
+      "qnode": 286,
+      "component": [
+        423,
+        441
+      ],
+      "neighbors_in_equal_class": [
+        274
+      ],
+      "degree": 7
+    },
+    {
+      "qnode": 288,
+      "component": [
+        425,
+        491
+      ],
+      "neighbors_in_equal_class": [
+        274
+      ],
+      "degree": 9
+    },
+    {
+      "qnode": 289,
+      "component": [
+        427
+      ],
+      "neighbors_in_equal_class": [
+        267,
+        270,
+        274
+      ],
+      "degree": 7
+    },
+    {
+      "qnode": 291,
+      "component": [
+        438
+      ],
+      "neighbors_in_equal_class": [
+        274
+      ],
+      "degree": 5
+    },
+    {
+      "qnode": 292,
+      "component": [
+        442
+      ],
+      "neighbors_in_equal_class": [
+        270,
+        299
+      ],
+      "degree": 7
+    },
+    {
+      "qnode": 293,
+      "component": [
+        445
+      ],
+      "neighbors_in_equal_class": [
+        299
+      ],
+      "degree": 6
+    },
+    {
+      "qnode": 294,
+      "component": [
+        450
+      ],
+      "neighbors_in_equal_class": [
+        299
+      ],
+      "degree": 6
+    },
+    {
+      "qnode": 295,
+      "component": [
+        452,
+        462,
+        476
+      ],
+      "neighbors_in_equal_class": [
+        267,
+        270,
+        284,
+        287
+      ],
+      "degree": 17
+    },
+    {
+      "qnode": 296,
+      "component": [
+        454
+      ],
+      "neighbors_in_equal_class": [
+        274
+      ],
+      "degree": 6
+    },
+    {
+      "qnode": 297,
+      "component": [
+        457
+      ],
+      "neighbors_in_equal_class": [
+        284,
+        299
+      ],
+      "degree": 10
+    },
+    {
+      "qnode": 298,
+      "component": [
+        458
+      ],
+      "neighbors_in_equal_class": [
+        274
+      ],
+      "degree": 5
+    },
+    {
+      "qnode": 300,
+      "component": [
+        468
+      ],
+      "neighbors_in_equal_class": [
+        267,
+        270
+      ],
+      "degree": 10
+    },
+    {
+      "qnode": 301,
+      "component": [
+        470
+      ],
+      "neighbors_in_equal_class": [
+        287
+      ],
+      "degree": 5
+    },
+    {
+      "qnode": 302,
+      "component": [
+        472
+      ],
+      "neighbors_in_equal_class": [
+        299
+      ],
+      "degree": 5
+    },
+    {
+      "qnode": 303,
+      "component": [
+        492
+      ],
+      "neighbors_in_equal_class": [
+        284,
+        290
+      ],
+      "degree": 7
+    },
+    {
+      "qnode": 304,
+      "component": [
+        495
+      ],
+      "neighbors_in_equal_class": [
+        270
+      ],
+      "degree": 5
+    }
+  ],
+  "equal_class_induced_edges": [],
+  "q_is_forced_equal": true
+}

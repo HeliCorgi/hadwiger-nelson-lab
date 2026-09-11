@@ -1,0 +1,303 @@
+{
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8",
+  "quotient_vertices": 305,
+  "quotient_edges": 1599,
+  "critical_graph_edges_with_217_490": 1600,
+  "p_qnodes": [
+    5,
+    270
+  ],
+  "p_component": [
+    7,
+    28,
+    30,
+    217,
+    323
+  ],
+  "q_component": [
+    385,
+    490
+  ],
+  "p_q_distance_in_Q": 3,
+  "one_shortest_path_qnodes": [
+    5,
+    0,
+    268,
+    270
+  ],
+  "p_q_vertex_connectivity_in_Q": 6,
+  "degree_min": 5,
+  "degree_max": 42,
+  "degree_histogram": {
+    "5": 34,
+    "6": 31,
+    "7": 41,
+    "8": 27,
+    "9": 31,
+    "10": 39,
+    "11": 17,
+    "12": 11,
+    "13": 12,
+    "14": 14,
+    "15": 4,
+    "16": 7,
+    "17": 6,
+    "18": 4,
+    "19": 7,
+    "20": 3,
+    "21": 5,
+    "22": 2,
+    "24": 2,
+    "26": 1,
+    "27": 1,
+    "28": 1,
+    "30": 1,
+    "36": 2,
+    "40": 1,
+    "42": 1
+  },
+  "p_degree_in_G": 42,
+  "q_degree_in_G": 8,
+  "articulation_points_count": 0,
+  "articulation_points": [],
+  "two_vertex_cuts_count": 0,
+  "two_vertex_cuts_smallest_sides": [],
+  "five_colorable_G": false,
+  "vertex_deletion_all_5_colorable": true,
+  "vertex_deletion_failures": [],
+  "degree5_vertices_count": 34,
+  "degree5_induced_edges": 6,
+  "degree5_component_stats": [
+    {
+      "size": 3,
+      "edges": 2,
+      "cycle_rank": 0,
+      "qnodes": [
+        115,
+        116,
+        234
+      ]
+    },
+    {
+      "size": 3,
+      "edges": 2,
+      "cycle_rank": 0,
+      "qnodes": [
+        218,
+        248,
+        259
+      ]
+    },
+    {
+      "size": 2,
+      "edges": 1,
+      "cycle_rank": 0,
+      "qnodes": [
+        206,
+        243
+      ]
+    },
+    {
+      "size": 2,
+      "edges": 1,
+      "cycle_rank": 0,
+      "qnodes": [
+        287,
+        301
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        35
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        37
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        130
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        174
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        178
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        180
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        187
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        191
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        200
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        207
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        220
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        221
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        241
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        246
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        255
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        260
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        263
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        265
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        269
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        283
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        291
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        298
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        302
+      ]
+    },
+    {
+      "size": 1,
+      "edges": 0,
+      "cycle_rank": 0,
+      "qnodes": [
+        304
+      ]
+    }
+  ],
+  "interpretation": "G=Q+(217,490). whole=False means G is not 5-colorable; all vertex deletions SAT verifies vertex-criticality."
+}
