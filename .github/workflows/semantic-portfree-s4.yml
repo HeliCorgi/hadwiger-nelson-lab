@@ -54,10 +54,46 @@ jobs:
       - name: Install solver dependencies
         run: pip install -r requirements.txt
 
-      - name: Compile search code
-        run: python -m py_compile tools/semantic_cegis_portfree.py
+      - name: Compile and smoke-test limited solver calls
+        shell: bash
+        run: |
+          python -m py_compile tools/semantic_cegis_portfree.py
+          python - <<'PY'
+          from pysat.solvers import Cadical195
+          with Cadical195(bootstrap_with=[[1]]) as s:
+              assert s.solve_limited(expect_interrupt=True) is True
+              s.clear_interrupt()
+          print('Cadical195 limited-call smoke test: OK')
+          PY
 
-      - name: Run guarded resumable slices
+      - name: Preflight checkpoint compatibility
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/hn-preflight
+          mkdir -p /tmp/hn-preflight/results
+          cp "$CHECKPOINT" /tmp/hn-preflight/checkpoint.json.gz
+          set +e
+          timeout --signal=TERM --kill-after=30s 180s \
+            python tools/semantic_cegis_portfree.py \
+              --data-dir upstream/handoff/data \
+              --checkpoint /tmp/hn-preflight/checkpoint.json.gz \
+              --result-dir /tmp/hn-preflight/results \
+              --time-limit-sec 60 \
+              --checkpoint-every 1 \
+              --query-timeout-sec 20 \
+              --max-query-timeout-sec 20 \
+              --fast-search-sec 5 \
+              --fast-restarts 8
+          rc=$?
+          set -e
+          case "$rc" in
+            0|75|124|137|143) ;;
+            *) echo "preflight failed with exit code: $rc"; exit "$rc" ;;
+          esac
+          gzip -t /tmp/hn-preflight/checkpoint.json.gz
+
+      - name: Run guarded hybrid slices
         shell: bash
         run: |
           set -euo pipefail
@@ -66,17 +102,13 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
 
-          # Six short slices keep the total useful compute similar to a long run,
-          # while leaving a large margin before the 330-minute job timeout.
-          # The Python process should normally stop itself at 45 minutes. GNU
-          # timeout is a second guard if one SAT call runs past the internal clock.
           for slice in 1 2 3 4 5 6; do
             if [[ -f "$RESULT_DIR/FINAL.json" || -f "$RESULT_DIR/INTERFACE.json" ]]; then
               echo "terminal result already present before slice $slice"
               break
             fi
 
-            echo "=== search slice $slice / 6 ==="
+            echo "=== hybrid search slice $slice / 6 ==="
             set +e
             timeout --signal=TERM --kill-after=60s 3000s \
               python tools/semantic_cegis_portfree.py \
@@ -84,27 +116,26 @@ jobs:
                 --checkpoint "$CHECKPOINT" \
                 --result-dir "$RESULT_DIR" \
                 --time-limit-sec 2700 \
-                --checkpoint-every 1
+                --checkpoint-every 1 \
+                --query-timeout-sec 180 \
+                --max-query-timeout-sec 600 \
+                --fast-search-sec 20 \
+                --fast-restarts 48
             rc=$?
             set -e
 
-            # 0: terminal result; 75: normal time-slice completion;
-            # 124/137/143: outer timeout/termination. None of these timeout
-            # codes is interpreted as a mathematical SAT/UNSAT result.
+            # 0: terminal result; 75: sound nonterminal continuation state;
+            # 124/137/143: outer timeout/termination. None is SAT/UNSAT evidence.
             case "$rc" in
               0|75|124|137|143) ;;
               *) echo "unexpected search exit code: $rc"; exit "$rc" ;;
             esac
 
-            if [[ -f "$CHECKPOINT" ]]; then
-              gzip -t "$CHECKPOINT"
-            fi
+            gzip -t "$CHECKPOINT"
 
-            # Persist after every slice. Checkpoint writes are atomic in Python,
-            # so a killed process leaves the previous complete gzip intact.
             git add checkpoints results
             if ! git diff --cached --quiet; then
-              git commit -m "Checkpoint support-4 semantic search slice $slice [skip ci]"
+              git commit -m "Checkpoint hybrid support-4 search slice $slice [skip ci]"
               git pull --rebase origin research/semantic-interface
               git push origin HEAD:research/semantic-interface
             fi

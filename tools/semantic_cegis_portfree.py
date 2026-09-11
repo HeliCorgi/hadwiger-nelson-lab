@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Exact, resumable CEGIS for the remaining port-free support-4 semantic interface.
+Hybrid, resumable CEGIS for the remaining port-free support-4 semantic interface.
 
 Pinned upstream: HeliCorgi/five-color-forcing-anatomy
 commit d1e80998bda337d9fa721f2e96d203ae54e97fc8.
@@ -14,20 +14,16 @@ semantic interface. Conversely, every equality-atom interface supported on
 <=4 non-port vertices extends monotonically to a separating 4-set. Therefore
 exhausting all 4-sets is complete for the port-free support<=4 question.
 
-Master:
-  choose exactly four non-port vertices z_i;
-  y_ij <-> (z_i and z_j);
-  for each known A/B fooling pair, require at least one y_ij on which their
-  equality patterns differ.
+Candidate generation is hybrid:
+  * a fast bitset/local-search layer proposes four-sets satisfying every known
+    fooling-pair cut;
+  * the exact SAT master is retained as the completeness backstop whenever the
+    heuristic does not find a candidate.
 
-Oracle:
-  for the chosen 4-set, ask whether an A-model and B-model have the same
-  complete equality pattern on all six pairs.
-  SAT  -> add that fooling pair as a sound master cut.
-  UNSAT -> genuine support-4 semantic interface.
-
-The checkpoint stores only newly found fooling pairs. Seed pairs are reloaded
-from the pinned upstream handoff each invocation.
+Every oracle/master SAT call has a wall-clock interrupt. Interrupted calls are
+UNKNOWN, are never converted into SAT/UNSAT facts, and oracle-UNKNOWN supports
+are recorded for retry. The checkpoint stores newly found fooling pairs plus
+safe search metadata; seed pairs are reloaded from the pinned upstream handoff.
 """
 from __future__ import annotations
 
@@ -35,8 +31,10 @@ import argparse
 import gzip
 import json
 import os
+import random
 import time
 from pathlib import Path
+from threading import Timer
 
 import numpy as np
 from pysat.card import CardEnc, EncType
@@ -173,6 +171,30 @@ def load_seed_pairs(data_dir: Path, verts, edges, c88, vidx):
     return seeds
 
 
+def timed_limited_solve(solver, timeout_sec: float):
+    """Return (True/False/None, elapsed_wall_seconds).
+
+    None means UNKNOWN because the timer interrupted the limited solve. No
+    caller may interpret None as UNSAT.
+    """
+    t0 = time.monotonic()
+    if timeout_sec <= 0:
+        return None, 0.0
+
+    timer = Timer(timeout_sec, solver.interrupt)
+    timer.daemon = True
+    timer.start()
+    try:
+        status = solver.solve_limited(expect_interrupt=True)
+    finally:
+        timer.cancel()
+        try:
+            solver.clear_interrupt()
+        except Exception:
+            pass
+    return status, time.monotonic() - t0
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--data-dir", type=Path, required=True)
@@ -180,6 +202,10 @@ def main():
     ap.add_argument("--result-dir", type=Path, required=True)
     ap.add_argument("--time-limit-sec", type=int, default=15000)
     ap.add_argument("--checkpoint-every", type=int, default=20)
+    ap.add_argument("--query-timeout-sec", type=float, default=180.0)
+    ap.add_argument("--max-query-timeout-sec", type=float, default=600.0)
+    ap.add_argument("--fast-search-sec", type=float, default=20.0)
+    ap.add_argument("--fast-restarts", type=int, default=48)
     args = ap.parse_args()
 
     t0 = time.monotonic()
@@ -198,7 +224,6 @@ def main():
     nonports = [i for i in range(n) if i not in (pi, qi)]
     m = len(nonports)
 
-    # Pair atom universe among the 391 non-port vertices.
     atoms = []
     atom_id = {}
     for ii, i in enumerate(nonports):
@@ -214,15 +239,59 @@ def main():
         f"nonports={m}, port-free atoms={na}"
     )
 
-    # Master variable layout:
-    # y_a = a+1, z_i = na + rank(i) + 1.
+    def cut_for_pair(av, bv):
+        same_a = av[atom_i] == av[atom_j]
+        same_b = bv[atom_i] == bv[atom_j]
+        idx = np.flatnonzero(same_a != same_b)
+        return idx.astype(int).tolist()
+
+    new_pairs = []
+    iterations = 0
+    unresolved_records = []
+    last_support_named = None
+    stats = {
+        "master_calls": 0,
+        "master_unknown": 0,
+        "oracle_calls": 0,
+        "oracle_unknown": 0,
+        "fast_candidates": 0,
+        "max_master_sec": 0.0,
+        "max_oracle_sec": 0.0,
+    }
+    if args.checkpoint.exists():
+        with gzip.open(args.checkpoint, "rt", encoding="utf-8") as f:
+            ck = json.load(f)
+        if ck.get("upstream_sha") != UPSTREAM_SHA:
+            raise RuntimeError("checkpoint upstream SHA mismatch")
+        if ck.get("verts") != verts:
+            raise RuntimeError("checkpoint vertex order mismatch")
+        iterations = int(ck.get("iterations", 0))
+        new_pairs = ck.get("new_pairs", [])
+        unresolved_records = ck.get("unresolved_supports", [])
+        last_support_named = ck.get("last_support")
+        old_stats = ck.get("stats", {})
+        for key in stats:
+            if key in old_stats:
+                stats[key] = old_stats[key]
+        log(
+            f"resume iterations={iterations}, new_pairs={len(new_pairs)}, "
+            f"unresolved={len(unresolved_records)}"
+        )
+
+    if iterations != len(new_pairs):
+        raise RuntimeError(
+            f"checkpoint invariant failed: iterations={iterations}, "
+            f"new_pairs={len(new_pairs)}"
+        )
+
+    seed_pairs = load_seed_pairs(args.data_dir, verts, all_e, c88, vidx)
+    log(f"validated seed fooling pairs={len(seed_pairs)}")
+
     def Y(a):
         return a + 1
 
     z_of = {v_idx: na + rank + 1 for rank, v_idx in enumerate(nonports)}
     master = Cadical195()
-
-    # y_ij <-> (z_i & z_j)
     for a, (i, j) in enumerate(atoms):
         y = Y(a)
         zi, zj = z_of[i], z_of[j]
@@ -230,8 +299,6 @@ def main():
         master.add_clause([-y, zj])
         master.add_clause([-zi, -zj, y])
 
-    # Exactly four support vertices. Searching exactly four is complete for
-    # support<=4 because separation is monotone under adding support vertices.
     z_lits = [z_of[i] for i in nonports]
     card = CardEnc.equals(
         lits=z_lits,
@@ -242,7 +309,6 @@ def main():
     for cl in card.clauses:
         master.add_clause(cl)
 
-    # Oracle base: A copy and B copy.
     BA, BB = 0, n * K
     oracle_base = coloring_cnf(verts, all_e, c88, vidx, BA)
     oracle_base += coloring_cnf(verts, all_e, [], vidx, BB)
@@ -252,8 +318,55 @@ def main():
         )
     AUX0 = 2 * n * K
 
-    def oracle_for_support(support):
-        # Complete equality pattern on the 4-set = all six atoms.
+    def named_support(support):
+        return [int(verts[i]) for i in sorted(support)]
+
+    def support_key_from_named(support):
+        return tuple(sorted(int(v) for v in support))
+
+    unresolved = {}
+    for rec in unresolved_records:
+        key = support_key_from_named(rec["support"])
+        unresolved[key] = {
+            "support": list(key),
+            "attempts": int(rec.get("attempts", 1)),
+            "last_source": rec.get("last_source", "unknown"),
+            "last_elapsed_sec": float(rec.get("last_elapsed_sec", 0.0)),
+        }
+
+    def record_timing(kind, status, elapsed):
+        if kind == "master":
+            stats["master_calls"] += 1
+            stats["max_master_sec"] = max(float(stats["max_master_sec"]), elapsed)
+            if status == "UNKNOWN":
+                stats["master_unknown"] += 1
+        elif kind == "oracle":
+            stats["oracle_calls"] += 1
+            stats["max_oracle_sec"] = max(float(stats["max_oracle_sec"]), elapsed)
+            if status == "UNKNOWN":
+                stats["oracle_unknown"] += 1
+
+    def mark_unresolved(support, source, elapsed):
+        ns = named_support(support)
+        key = tuple(ns)
+        rec = unresolved.get(key)
+        if rec is None:
+            rec = {
+                "support": ns,
+                "attempts": 0,
+                "last_source": source,
+                "last_elapsed_sec": elapsed,
+            }
+            unresolved[key] = rec
+        rec["attempts"] += 1
+        rec["last_source"] = source
+        rec["last_elapsed_sec"] = round(float(elapsed), 3)
+        return rec
+
+    def clear_unresolved(support):
+        unresolved.pop(tuple(named_support(support)), None)
+
+    def oracle_for_support(support, timeout_sec):
         selected = []
         for a_pos in range(4):
             for b_pos in range(a_pos + 1, 4):
@@ -283,41 +396,34 @@ def main():
             cls.append([ea, -eb])
 
         with Cadical195(bootstrap_with=cls) as s:
-            if not s.solve():
-                return None
+            raw, elapsed = timed_limited_solve(s, timeout_sec)
+            if raw is None:
+                status = "UNKNOWN"
+                record_timing("oracle", status, elapsed)
+                return status, None, elapsed
+            if raw is False:
+                status = "UNSAT"
+                record_timing("oracle", status, elapsed)
+                return status, None, elapsed
             pos = {lit for lit in s.get_model() if lit > 0}
+            status = "SAT"
+            record_timing("oracle", status, elapsed)
             return (
-                decode_copy(pos, verts, vidx, BA),
-                decode_copy(pos, verts, vidx, BB),
+                status,
+                (
+                    decode_copy(pos, verts, vidx, BA),
+                    decode_copy(pos, verts, vidx, BB),
+                ),
+                elapsed,
             )
 
-    def cut_for_pair(av, bv):
-        same_a = av[atom_i] == av[atom_j]
-        same_b = bv[atom_i] == bv[atom_j]
-        idx = np.flatnonzero(same_a != same_b)
-        return idx.astype(int).tolist()
-
-    # Resume newly discovered pair library.
-    new_pairs = []
-    iterations = 0
-    if args.checkpoint.exists():
-        with gzip.open(args.checkpoint, "rt", encoding="utf-8") as f:
-            ck = json.load(f)
-        if ck.get("upstream_sha") != UPSTREAM_SHA:
-            raise RuntimeError("checkpoint upstream SHA mismatch")
-        if ck.get("verts") != verts:
-            raise RuntimeError("checkpoint vertex order mismatch")
-        iterations = int(ck.get("iterations", 0))
-        new_pairs = ck.get("new_pairs", [])
-        log(f"resume iterations={iterations}, new_pairs={len(new_pairs)}")
-
-    seed_pairs = load_seed_pairs(args.data_dir, verts, all_e, c88, vidx)
-    log(f"validated seed fooling pairs={len(seed_pairs)}")
-
+    known_cut_count = len(seed_pairs) + len(new_pairs)
+    blocks = max(1, (known_cut_count + 63) // 64)
+    packed_cover = np.zeros((na, blocks), dtype=np.uint64)
     empty_cut_witness = None
     replayed = 0
 
-    def replay_pair(av, bv, source):
+    def replay_pair(av, bv, source, cut_index):
         nonlocal empty_cut_witness, replayed
         cut = cut_for_pair(av, bv)
         if not cut:
@@ -328,12 +434,18 @@ def main():
             }
             return False
         master.add_clause([Y(a) for a in cut])
+        block = cut_index >> 6
+        bit = np.uint64(1) << np.uint64(cut_index & 63)
+        idx = np.asarray(cut, dtype=np.int32)
+        packed_cover[idx, block] |= bit
         replayed += 1
         return True
 
+    cut_index = 0
     for av, bv, source in seed_pairs:
-        if not replay_pair(av, bv, source):
+        if not replay_pair(av, bv, source, cut_index):
             break
+        cut_index += 1
 
     if empty_cut_witness is None:
         for rec in new_pairs:
@@ -345,19 +457,42 @@ def main():
                 bv, verts, all_e, vidx, require_port_diff=True
             ):
                 raise ValueError("checkpoint beta is not a B model")
-            if not replay_pair(av, bv, "checkpoint"):
+            if not replay_pair(av, bv, "checkpoint", cut_index):
                 break
+            cut_index += 1
+
+    if cut_index != known_cut_count and empty_cut_witness is None:
+        raise RuntimeError(
+            f"cut replay mismatch: replayed={cut_index}, expected={known_cut_count}"
+        )
+
+    coverage = [
+        int.from_bytes(packed_cover[a].tobytes(), "little")
+        for a in range(na)
+    ]
+    del packed_cover
+
+    edge_cov = [[0] * n for _ in range(n)]
+    for a, (i, j) in enumerate(atoms):
+        val = coverage[a]
+        edge_cov[i][j] = val
+        edge_cov[j][i] = val
 
     def save_checkpoint(status="RUNNING"):
         atomic_gzip_json(
             args.checkpoint,
             {
-                "version": 2,
+                "version": 3,
                 "status": status,
                 "upstream_sha": UPSTREAM_SHA,
                 "verts": verts,
                 "iterations": iterations,
                 "new_pairs": new_pairs,
+                "unresolved_supports": sorted(
+                    unresolved.values(), key=lambda r: tuple(r["support"])
+                ),
+                "last_support": last_support_named,
+                "stats": stats,
                 "elapsed_sec_this_run": round(time.monotonic() - t0, 3),
             },
         )
@@ -378,74 +513,247 @@ def main():
         log("strong terminal result: global port-free fooling pair found")
         return 0
 
-    log(f"replayed sound cuts={replayed}")
+    log(
+        f"replayed sound cuts={replayed}; fast bitsets ready; "
+        f"unresolved={len(unresolved)}"
+    )
+
+    def support_mask(support):
+        a, b, c, d = support
+        return (
+            edge_cov[a][b]
+            | edge_cov[a][c]
+            | edge_cov[a][d]
+            | edge_cov[b][c]
+            | edge_cov[b][d]
+            | edge_cov[c][d]
+        )
+
+    def uncovered_count(support):
+        return known_cut_count - support_mask(support).bit_count()
+
+    def idx_support_from_named(named):
+        if not named:
+            return None
+        try:
+            out = sorted(vidx[int(v)] for v in named)
+        except (KeyError, TypeError, ValueError):
+            return None
+        if len(out) != 4 or len(set(out)) != 4 or any(v not in nonports for v in out):
+            return None
+        return out
+
+    last_support = idx_support_from_named(last_support_named)
+
+    def fast_candidate(time_budget_sec):
+        nonlocal last_support
+        if time_budget_sec <= 0:
+            return None, None, 0.0
+        start = time.monotonic()
+        deadline = start + time_budget_sec
+        rng = random.Random(
+            (known_cut_count + 1) * 1000003 + (iterations + 1) * 9176
+        )
+        deferred = set(unresolved)
+        best_seen = None
+        best_score = known_cut_count + 1
+
+        starts = []
+        if last_support is not None:
+            starts.append(list(last_support))
+        while len(starts) < args.fast_restarts:
+            starts.append(sorted(rng.sample(nonports, 4)))
+
+        for support in starts:
+            if time.monotonic() >= deadline:
+                break
+            support = sorted(support)
+            score = uncovered_count(support)
+            if score < best_score:
+                best_score, best_seen = score, list(support)
+
+            for _step in range(10):
+                if time.monotonic() >= deadline:
+                    break
+                key = tuple(named_support(support))
+                if score == 0 and key not in deferred:
+                    return support, score, time.monotonic() - start
+                if score == 0:
+                    pos = rng.randrange(4)
+                    used = set(support)
+                    choices = [v for v in nonports if v not in used]
+                    support[pos] = rng.choice(choices)
+                    support.sort()
+                    score = uncovered_count(support)
+                    continue
+
+                move = None
+                move_score = score
+                positions = [0, 1, 2, 3]
+                rng.shuffle(positions)
+                for pos in positions:
+                    base = [support[k] for k in range(4) if k != pos]
+                    used = set(base)
+                    for v in nonports:
+                        if v in used:
+                            continue
+                        cand = sorted(base + [v])
+                        cand_score = uncovered_count(cand)
+                        if cand_score < move_score:
+                            move_score = cand_score
+                            move = cand
+                            if cand_score == 0:
+                                break
+                    if move_score == 0:
+                        break
+                    if time.monotonic() >= deadline:
+                        break
+
+                if move is None:
+                    break
+                support = move
+                score = move_score
+                if score < best_score:
+                    best_score, best_seen = score, list(support)
+
+        return None, best_score if best_seen is not None else None, time.monotonic() - start
+
+    def add_new_cut(cut):
+        nonlocal known_cut_count
+        bit = 1 << known_cut_count
+        for a in cut:
+            val = coverage[a] | bit
+            coverage[a] = val
+            i, j = atoms[a]
+            edge_cov[i][j] = val
+            edge_cov[j][i] = val
+        known_cut_count += 1
+
+    def remaining_time():
+        return args.time_limit_sec - (time.monotonic() - t0)
 
     while True:
-        elapsed = time.monotonic() - t0
-        if elapsed >= args.time_limit_sec:
+        if remaining_time() <= 5:
             save_checkpoint("TIME-SLICE-COMPLETE")
             log(
                 f"time slice complete: iterations={iterations}, "
-                f"new_pairs={len(new_pairs)}"
+                f"new_pairs={len(new_pairs)}, unresolved={len(unresolved)}"
             )
             return 75
 
-        iterations += 1
-        if not master.solve():
-            result = {
-                "status": "NO-PORT-FREE-SEMANTIC-INTERFACE(support<=4)",
-                "proof_scope": (
-                    "all equality-atom interfaces supported on at most four "
-                    "vertices, excluding ports 217 and 490"
-                ),
-                "method": (
-                    "exact 4-set CEGIS; any <=3 separating support extends "
-                    "monotonically to a separating 4-set"
-                ),
-                "upstream_sha": UPSTREAM_SHA,
-                "verts": verts,
-                "iterations": iterations,
-                "seed_pair_count": len(seed_pairs),
-                "new_pair_count": len(new_pairs),
-            }
-            final_path.write_text(
-                json.dumps(result, indent=2), encoding="utf-8"
+        fast_budget = min(args.fast_search_sec, max(0.0, remaining_time() - 5.0))
+        support, best_miss, fast_elapsed = fast_candidate(fast_budget)
+        source = "fast"
+        if support is not None:
+            stats["fast_candidates"] += 1
+            log(
+                f"fast candidate support={named_support(support)} "
+                f"search_sec={fast_elapsed:.3f}"
             )
-            save_checkpoint("FINAL-NO-INTERFACE")
-            log("MASTER UNSAT: complete port-free support<=4 negative")
-            return 0
+        else:
+            log(
+                f"fast search found no candidate in {fast_elapsed:.3f}s "
+                f"best_uncovered={best_miss}; invoking exact master"
+            )
+            timeout = min(args.query_timeout_sec, max(0.0, remaining_time() - 5.0))
+            raw, master_elapsed = timed_limited_solve(master, timeout)
+            master_status = "UNKNOWN" if raw is None else ("SAT" if raw else "UNSAT")
+            record_timing("master", master_status, master_elapsed)
+            log(
+                f"master status={master_status} elapsed={master_elapsed:.3f}s "
+                f"cuts={known_cut_count}"
+            )
+            if raw is None:
+                save_checkpoint("MASTER-UNKNOWN")
+                return 75
+            if raw is False:
+                result = {
+                    "status": "NO-PORT-FREE-SEMANTIC-INTERFACE(support<=4)",
+                    "proof_scope": (
+                        "all equality-atom interfaces supported on at most four "
+                        "vertices, excluding ports 217 and 490"
+                    ),
+                    "method": (
+                        "hybrid exact 4-set CEGIS; terminal claim comes only "
+                        "from the unmodified exact SAT master returning UNSAT"
+                    ),
+                    "upstream_sha": UPSTREAM_SHA,
+                    "verts": verts,
+                    "iterations": iterations,
+                    "seed_pair_count": len(seed_pairs),
+                    "new_pair_count": len(new_pairs),
+                    "unresolved_support_count": len(unresolved),
+                    "stats": stats,
+                }
+                final_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
+                save_checkpoint("FINAL-NO-INTERFACE")
+                log("MASTER UNSAT: complete port-free support<=4 negative")
+                return 0
 
-        pos = {lit for lit in master.get_model() if lit > 0}
-        support = [i for i in nonports if z_of[i] in pos]
-        if len(support) != 4:
-            raise RuntimeError(f"master returned support size {len(support)}")
+            pos = {lit for lit in master.get_model() if lit > 0}
+            support = sorted(i for i in nonports if z_of[i] in pos)
+            if len(support) != 4:
+                raise RuntimeError(f"master returned support size {len(support)}")
+            source = "master"
 
-        r = oracle_for_support(support)
-        if r is None:
-            named_support = [int(verts[i]) for i in support]
+        last_support = list(support)
+        last_support_named = named_support(support)
+
+        key = tuple(last_support_named)
+        previous_unknowns = unresolved.get(key, {}).get("attempts", 0)
+        requested_timeout = min(
+            args.max_query_timeout_sec,
+            args.query_timeout_sec * (2 ** min(previous_unknowns, 2)),
+        )
+        timeout = min(requested_timeout, max(0.0, remaining_time() - 5.0))
+        if timeout <= 0:
+            save_checkpoint("TIME-SLICE-COMPLETE")
+            return 75
+
+        oracle_status, payload, oracle_elapsed = oracle_for_support(support, timeout)
+        log(
+            f"oracle source={source} support={last_support_named} "
+            f"status={oracle_status} elapsed={oracle_elapsed:.3f}s "
+            f"timeout={timeout:.1f}s"
+        )
+
+        if oracle_status == "UNKNOWN":
+            rec = mark_unresolved(support, source, oracle_elapsed)
+            save_checkpoint("ORACLE-UNKNOWN")
+            log(
+                f"deferred support={rec['support']} attempts={rec['attempts']} "
+                f"(no blocking clause added)"
+            )
+            if source == "master":
+                return 75
+            continue
+
+        clear_unresolved(support)
+
+        if oracle_status == "UNSAT":
             named_atoms = []
             for a_pos in range(4):
                 for b_pos in range(a_pos + 1, 4):
                     named_atoms.append(
-                        [named_support[a_pos], named_support[b_pos]]
+                        [last_support_named[a_pos], last_support_named[b_pos]]
                     )
             result = {
                 "status": "PORT-FREE-SUPPORT4-SEMANTIC-INTERFACE-FOUND",
                 "upstream_sha": UPSTREAM_SHA,
-                "support": named_support,
+                "support": last_support_named,
                 "atoms_complete_graph": named_atoms,
                 "iterations": iterations,
                 "seed_pair_count": len(seed_pairs),
                 "new_pair_count": len(new_pairs),
+                "oracle_elapsed_sec": round(oracle_elapsed, 3),
+                "stats": stats,
             }
-            interface_path.write_text(
-                json.dumps(result, indent=2), encoding="utf-8"
-            )
+            interface_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
             save_checkpoint("FINAL-INTERFACE")
-            log(f"INTERFACE FOUND: support={named_support}")
+            log(f"INTERFACE FOUND: support={last_support_named}")
             return 0
 
-        alpha, beta = r
+        alpha, beta = payload
         av = np.asarray([alpha[v] for v in verts], dtype=np.int8)
         bv = np.asarray([beta[v] for v in verts], dtype=np.int8)
         cut = cut_for_pair(av, bv)
@@ -453,7 +761,6 @@ def main():
             "alpha": av.astype(int).tolist(),
             "beta": bv.astype(int).tolist(),
         }
-        new_pairs.append(rec)
 
         if not cut:
             result = {
@@ -466,23 +773,25 @@ def main():
                 "verts": verts,
                 "iterations": iterations,
                 "witness": rec,
+                "stats": stats,
             }
-            final_path.write_text(
-                json.dumps(result, indent=2), encoding="utf-8"
-            )
+            final_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
             save_checkpoint("FINAL-GLOBAL-FOOLING-PAIR")
             log("strong terminal result: global port-free fooling pair")
             return 0
 
+        new_pairs.append(rec)
+        iterations += 1
         master.add_clause([Y(a) for a in cut])
+        add_new_cut(cut)
 
         if iterations % args.checkpoint_every == 0:
             save_checkpoint()
-            log(
-                f"iter={iterations} support="
-                f"{[int(verts[i]) for i in support]} "
-                f"cut={len(cut)} new_pairs={len(new_pairs)}"
-            )
+        log(
+            f"iter={iterations} source={source} support={last_support_named} "
+            f"cut={len(cut)} total_cuts={known_cut_count} "
+            f"unresolved={len(unresolved)}"
+        )
 
 
 if __name__ == "__main__":
