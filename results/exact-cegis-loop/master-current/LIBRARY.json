@@ -1,0 +1,29 @@
+{
+  "atom_count": 76245,
+  "checkpoint_iterations": 6133,
+  "checkpoint_status": "RUNNING-AFTER-EXACT-MASTER-CUT",
+  "cut_library_sha256": "1feb41a40c13026b22ed196c470106d45d623d414bc48804531896856e6c10c9",
+  "cut_size_max": 25171,
+  "cut_size_mean": 24607.357040845473,
+  "cut_size_median": 24653.0,
+  "cut_size_min": 23440,
+  "duplicate_cut_count": 3,
+  "first_pivot_edge_positions": [
+    18,
+    284
+  ],
+  "first_pivot_edge_vertices": [
+    26,
+    316
+  ],
+  "full_pair_count": 7005,
+  "lab_pair_count": 6133,
+  "nonport_vertex_count": 391,
+  "pivot_cut_index": 6060,
+  "pivot_cut_size": 23440,
+  "pivot_cut_source": "checkpoint:5191",
+  "pivot_root_edge_count": 23440,
+  "seed_pair_count": 872,
+  "unique_cut_count": 7002,
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8"
+}
