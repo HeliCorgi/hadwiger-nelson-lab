@@ -4,6 +4,18 @@ Computational research workspace for the Hadwiger–Nelson problem, currently fo
 
 > This repository does **not** claim a solution of the Hadwiger–Nelson problem. Results here are computational intermediate statements with explicitly stated scope.
 
+## Result-recording policy
+
+Whenever a search produces a lemma-like or theorem-like mathematical statement, record it in the relevant research-branch README together with:
+
+- the exact statement and scope;
+- why it follows mathematically from the computed object;
+- the generating code and compact result/certificate path;
+- solver/checker identity and whether an independent implementation rechecked it;
+- an explicit warning when the statement is conditional or does not imply a new Hadwiger–Nelson bound.
+
+Large reproducible SAT proof traces should normally remain GitHub Actions artifacts rather than Git blobs. The repository should retain regeneration code, compact metadata, hashes/artifact IDs, and the human-readable mathematical claim.
+
 ## Current lane
 
 We are testing whether the P2 forcing system has a **port-free semantic interface supported on at most four vertices**.
