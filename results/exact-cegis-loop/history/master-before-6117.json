@@ -1,0 +1,58 @@
+{
+  "atom_count": 76245,
+  "checkpoint_iterations": 6117,
+  "checkpoint_status": "RUNNING-AFTER-EXACT-MASTER-CUT",
+  "covers_all_unique_cuts": true,
+  "cut_library_sha256": "b5e2c1d6b43ae4ad13795bbb611af644b8e7d14ac6d6da7d72b518f10c419e77",
+  "cut_size_max": 25171,
+  "cut_size_mean": 24607.2610936158,
+  "cut_size_median": 24652.0,
+  "cut_size_min": 23440,
+  "duplicate_cut_count": 3,
+  "first_pivot_edge_positions": [
+    18,
+    284
+  ],
+  "first_pivot_edge_vertices": [
+    26,
+    316
+  ],
+  "full_pair_count": 6989,
+  "lab_pair_count": 6117,
+  "next_step": "Send this support to the exact A/B semantic oracle. Oracle SAT adds another sound fooling-pair cut; oracle UNSAT yields a support-4 interface candidate.",
+  "nonport_vertex_count": 391,
+  "pivot_cut_index": 6060,
+  "pivot_cut_size": 23440,
+  "pivot_cut_source": "checkpoint:5191",
+  "pivot_root_edge_count": 23440,
+  "root_edge_positions": [
+    96,
+    359
+  ],
+  "root_rank": 473,
+  "search_stats": {
+    "canonical_prunes": 793087,
+    "pair_states": 474,
+    "quad_leaves": 17911928,
+    "root_edges_completed_this_process": 473,
+    "triple_branch_vertices": 7628586,
+    "triple_incident_prunes": 0,
+    "triple_states": 54555
+  },
+  "seed_pair_count": 872,
+  "status": "FOURSET-CANDIDATE",
+  "support_positions": [
+    47,
+    96,
+    332,
+    359
+  ],
+  "support_vertices": [
+    55,
+    108,
+    390,
+    436
+  ],
+  "unique_cut_count": 6986,
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8"
+}
