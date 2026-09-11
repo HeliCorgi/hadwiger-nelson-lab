@@ -1,0 +1,127 @@
+name: semantic-portfree-s4
+
+on:
+  push:
+    branches:
+      - research/semantic-interface
+    paths:
+      - '.github/workflows/semantic-portfree-s4.yml'
+      - 'tools/semantic_cegis_portfree.py'
+      - 'requirements.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: semantic-portfree-s4
+  cancel-in-progress: false
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  CHECKPOINT: checkpoints/semantic_portfree_s4.json.gz
+  RESULT_DIR: results/semantic-portfree-s4
+
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+
+    steps:
+      - name: Checkout lab branch
+        uses: actions/checkout@v7
+        with:
+          ref: research/semantic-interface
+          fetch-depth: 0
+
+      - name: Checkout pinned upstream handoff
+        uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+
+      - name: Verify upstream pin
+        run: test "$(git -C upstream rev-parse HEAD)" = "$UPSTREAM_SHA"
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install solver dependencies
+        run: pip install -r requirements.txt
+
+      - name: Compile search code
+        run: python -m py_compile tools/semantic_cegis_portfree.py
+
+      - name: Run guarded resumable slices
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p checkpoints "$RESULT_DIR"
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          # Six short slices keep the total useful compute similar to a long run,
+          # while leaving a large margin before the 330-minute job timeout.
+          # The Python process should normally stop itself at 45 minutes. GNU
+          # timeout is a second guard if one SAT call runs past the internal clock.
+          for slice in 1 2 3 4 5 6; do
+            if [[ -f "$RESULT_DIR/FINAL.json" || -f "$RESULT_DIR/INTERFACE.json" ]]; then
+              echo "terminal result already present before slice $slice"
+              break
+            fi
+
+            echo "=== search slice $slice / 6 ==="
+            set +e
+            timeout --signal=TERM --kill-after=60s 3000s \
+              python tools/semantic_cegis_portfree.py \
+                --data-dir upstream/handoff/data \
+                --checkpoint "$CHECKPOINT" \
+                --result-dir "$RESULT_DIR" \
+                --time-limit-sec 2700 \
+                --checkpoint-every 1
+            rc=$?
+            set -e
+
+            # 0: terminal result; 75: normal time-slice completion;
+            # 124/137/143: outer timeout/termination. None of these timeout
+            # codes is interpreted as a mathematical SAT/UNSAT result.
+            case "$rc" in
+              0|75|124|137|143) ;;
+              *) echo "unexpected search exit code: $rc"; exit "$rc" ;;
+            esac
+
+            if [[ -f "$CHECKPOINT" ]]; then
+              gzip -t "$CHECKPOINT"
+            fi
+
+            # Persist after every slice. Checkpoint writes are atomic in Python,
+            # so a killed process leaves the previous complete gzip intact.
+            git add checkpoints results
+            if ! git diff --cached --quiet; then
+              git commit -m "Checkpoint support-4 semantic search slice $slice [skip ci]"
+              git pull --rebase origin research/semantic-interface
+              git push origin HEAD:research/semantic-interface
+            fi
+
+            if [[ -f "$RESULT_DIR/FINAL.json" || -f "$RESULT_DIR/INTERFACE.json" ]]; then
+              echo "terminal result produced in slice $slice"
+              break
+            fi
+          done
+
+      - name: Upload latest search state
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: semantic-portfree-s4-${{ github.run_id }}
+          path: |
+            checkpoints/semantic_portfree_s4.json.gz
+            results/semantic-portfree-s4
+          if-no-files-found: error
+          retention-days: 30
