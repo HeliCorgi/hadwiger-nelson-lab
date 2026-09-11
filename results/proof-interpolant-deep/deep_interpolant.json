@@ -1,0 +1,3054 @@
+{
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8",
+  "solver": "Glucose4 DRUP -> exact Cadical195 partition projection",
+  "proof_lines": 664019,
+  "solver_stats": {
+    "restarts": 709,
+    "conflicts": 352289,
+    "decisions": 529606,
+    "propagations": 46447575
+  },
+  "support_range": [
+    4,
+    6
+  ],
+  "per_size_target": 180,
+  "unique_mined_supports_by_size": {
+    "4": 1879,
+    "5": 3975,
+    "6": 6236
+  },
+  "evaluated_count": 540,
+  "separator_count": 0,
+  "separators": [],
+  "by_size": {
+    "4": {
+      "evaluated": 180,
+      "min_overlap": 1,
+      "zero_overlap": 0,
+      "best": [
+        {
+          "rank": 0,
+          "support_indices": [
+            19,
+            63,
+            85,
+            245
+          ],
+          "support_vertices": [
+            27,
+            74,
+            96,
+            272
+          ],
+          "size": 4,
+          "proof_occurrences": 91,
+          "late_occurrences": 20,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 2,
+          "overlap_count": 1,
+          "overlap_states": [
+            "0123"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 1
+        },
+        {
+          "rank": 4,
+          "support_indices": [
+            0,
+            73,
+            88,
+            112
+          ],
+          "support_vertices": [
+            0,
+            84,
+            99,
+            124
+          ],
+          "size": 4,
+          "proof_occurrences": 7,
+          "late_occurrences": 7,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 15,
+          "overlap_count": 1,
+          "overlap_states": [
+            "0123"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 14
+        },
+        {
+          "rank": 5,
+          "support_indices": [
+            65,
+            90,
+            161,
+            239
+          ],
+          "support_vertices": [
+            76,
+            101,
+            181,
+            266
+          ],
+          "size": 4,
+          "proof_occurrences": 35,
+          "late_occurrences": 6,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 5,
+          "overlap_count": 1,
+          "overlap_states": [
+            "0123"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 4
+        },
+        {
+          "rank": 10,
+          "support_indices": [
+            0,
+            6,
+            88,
+            290
+          ],
+          "support_vertices": [
+            0,
+            6,
+            99,
+            323
+          ],
+          "size": 4,
+          "proof_occurrences": 16,
+          "late_occurrences": 5,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 10,
+          "overlap_count": 1,
+          "overlap_states": [
+            "0112"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 9
+        },
+        {
+          "rank": 13,
+          "support_indices": [
+            0,
+            6,
+            17,
+            290
+          ],
+          "support_vertices": [
+            0,
+            6,
+            25,
+            323
+          ],
+          "size": 4,
+          "proof_occurrences": 25,
+          "late_occurrences": 4,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 7,
+          "overlap_count": 1,
+          "overlap_states": [
+            "0123"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 6
+        },
+        {
+          "rank": 17,
+          "support_indices": [
+            0,
+            6,
+            17,
+            23
+          ],
+          "support_vertices": [
+            0,
+            6,
+            25,
+            31
+          ],
+          "size": 4,
+          "proof_occurrences": 6,
+          "late_occurrences": 4,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 5,
+          "overlap_count": 1,
+          "overlap_states": [
+            "0123"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 4
+        },
+        {
+          "rank": 18,
+          "support_indices": [
+            0,
+            6,
+            17,
+            73
+          ],
+          "support_vertices": [
+            0,
+            6,
+            25,
+            84
+          ],
+          "size": 4,
+          "proof_occurrences": 5,
+          "late_occurrences": 4,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 7,
+          "overlap_count": 1,
+          "overlap_states": [
+            "0123"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 6
+        },
+        {
+          "rank": 19,
+          "support_indices": [
+            0,
+            6,
+            73,
+            112
+          ],
+          "support_vertices": [
+            0,
+            6,
+            84,
+            124
+          ],
+          "size": 4,
+          "proof_occurrences": 4,
+          "late_occurrences": 4,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 10,
+          "overlap_count": 1,
+          "overlap_states": [
+            "0123"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 9
+        },
+        {
+          "rank": 20,
+          "support_indices": [
+            0,
+            17,
+            73,
+            112
+          ],
+          "support_vertices": [
+            0,
+            25,
+            84,
+            124
+          ],
+          "size": 4,
+          "proof_occurrences": 4,
+          "late_occurrences": 4,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 10,
+          "overlap_count": 1,
+          "overlap_states": [
+            "0123"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 9
+        },
+        {
+          "rank": 21,
+          "support_indices": [
+            0,
+            63,
+            73,
+            112
+          ],
+          "support_vertices": [
+            0,
+            74,
+            84,
+            124
+          ],
+          "size": 4,
+          "proof_occurrences": 4,
+          "late_occurrences": 4,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 15,
+          "overlap_count": 1,
+          "overlap_states": [
+            "0121"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 14
+        }
+      ]
+    },
+    "5": {
+      "evaluated": 180,
+      "min_overlap": 1,
+      "zero_overlap": 0,
+      "best": [
+        {
+          "rank": 181,
+          "support_indices": [
+            0,
+            6,
+            17,
+            73,
+            112
+          ],
+          "support_vertices": [
+            0,
+            6,
+            25,
+            84,
+            124
+          ],
+          "size": 5,
+          "proof_occurrences": 10,
+          "late_occurrences": 9,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 27,
+          "overlap_count": 1,
+          "overlap_states": [
+            "01234"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 26
+        },
+        {
+          "rank": 185,
+          "support_indices": [
+            0,
+            6,
+            73,
+            88,
+            290
+          ],
+          "support_vertices": [
+            0,
+            6,
+            84,
+            99,
+            323
+          ],
+          "size": 5,
+          "proof_occurrences": 14,
+          "late_occurrences": 7,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 37,
+          "overlap_count": 1,
+          "overlap_states": [
+            "01212"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 36
+        },
+        {
+          "rank": 186,
+          "support_indices": [
+            0,
+            63,
+            73,
+            112,
+            290
+          ],
+          "support_vertices": [
+            0,
+            74,
+            84,
+            124,
+            323
+          ],
+          "size": 5,
+          "proof_occurrences": 7,
+          "late_occurrences": 7,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 52,
+          "overlap_count": 1,
+          "overlap_states": [
+            "01212"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 51
+        },
+        {
+          "rank": 188,
+          "support_indices": [
+            0,
+            17,
+            73,
+            88,
+            112
+          ],
+          "support_vertices": [
+            0,
+            25,
+            84,
+            99,
+            124
+          ],
+          "size": 5,
+          "proof_occurrences": 6,
+          "late_occurrences": 6,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 37,
+          "overlap_count": 1,
+          "overlap_states": [
+            "01234"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 36
+        },
+        {
+          "rank": 194,
+          "support_indices": [
+            0,
+            6,
+            17,
+            73,
+            88
+          ],
+          "support_vertices": [
+            0,
+            6,
+            25,
+            84,
+            99
+          ],
+          "size": 5,
+          "proof_occurrences": 5,
+          "late_occurrences": 5,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 27,
+          "overlap_count": 1,
+          "overlap_states": [
+            "01231"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 26
+        },
+        {
+          "rank": 199,
+          "support_indices": [
+            0,
+            2,
+            6,
+            17,
+            290
+          ],
+          "support_vertices": [
+            0,
+            2,
+            6,
+            25,
+            323
+          ],
+          "size": 5,
+          "proof_occurrences": 20,
+          "late_occurrences": 4,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 13,
+          "overlap_count": 1,
+          "overlap_states": [
+            "01213"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 12
+        },
+        {
+          "rank": 203,
+          "support_indices": [
+            0,
+            23,
+            73,
+            88,
+            112
+          ],
+          "support_vertices": [
+            0,
+            31,
+            84,
+            99,
+            124
+          ],
+          "size": 5,
+          "proof_occurrences": 7,
+          "late_occurrences": 4,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 27,
+          "overlap_count": 1,
+          "overlap_states": [
+            "01231"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 26
+        },
+        {
+          "rank": 204,
+          "support_indices": [
+            0,
+            6,
+            17,
+            112,
+            290
+          ],
+          "support_vertices": [
+            0,
+            6,
+            25,
+            124,
+            323
+          ],
+          "size": 5,
+          "proof_occurrences": 6,
+          "late_occurrences": 4,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 27,
+          "overlap_count": 1,
+          "overlap_states": [
+            "01234"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 26
+        },
+        {
+          "rank": 205,
+          "support_indices": [
+            0,
+            6,
+            63,
+            73,
+            112
+          ],
+          "support_vertices": [
+            0,
+            6,
+            74,
+            84,
+            124
+          ],
+          "size": 5,
+          "proof_occurrences": 5,
+          "late_occurrences": 4,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 37,
+          "overlap_count": 1,
+          "overlap_states": [
+            "01232"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 36
+        },
+        {
+          "rank": 206,
+          "support_indices": [
+            0,
+            6,
+            17,
+            28,
+            290
+          ],
+          "support_vertices": [
+            0,
+            6,
+            25,
+            36,
+            323
+          ],
+          "size": 5,
+          "proof_occurrences": 4,
+          "late_occurrences": 4,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 20,
+          "overlap_count": 1,
+          "overlap_states": [
+            "01233"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 19
+        }
+      ]
+    },
+    "6": {
+      "evaluated": 180,
+      "min_overlap": 1,
+      "zero_overlap": 0,
+      "best": [
+        {
+          "rank": 362,
+          "support_indices": [
+            0,
+            6,
+            63,
+            73,
+            112,
+            290
+          ],
+          "support_vertices": [
+            0,
+            6,
+            74,
+            84,
+            124,
+            323
+          ],
+          "size": 6,
+          "proof_occurrences": 10,
+          "late_occurrences": 9,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 150,
+          "overlap_count": 1,
+          "overlap_states": [
+            "012323"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 149
+        },
+        {
+          "rank": 363,
+          "support_indices": [
+            0,
+            6,
+            73,
+            88,
+            112,
+            290
+          ],
+          "support_vertices": [
+            0,
+            6,
+            84,
+            99,
+            124,
+            323
+          ],
+          "size": 6,
+          "proof_occurrences": 9,
+          "late_occurrences": 8,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 150,
+          "overlap_count": 1,
+          "overlap_states": [
+            "012132"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 149
+        },
+        {
+          "rank": 368,
+          "support_indices": [
+            0,
+            6,
+            17,
+            73,
+            88,
+            290
+          ],
+          "support_vertices": [
+            0,
+            6,
+            25,
+            84,
+            99,
+            323
+          ],
+          "size": 6,
+          "proof_occurrences": 23,
+          "late_occurrences": 6,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 113,
+          "overlap_count": 1,
+          "overlap_states": [
+            "012313"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 112
+        },
+        {
+          "rank": 373,
+          "support_indices": [
+            0,
+            6,
+            73,
+            249,
+            260,
+            290
+          ],
+          "support_vertices": [
+            0,
+            6,
+            84,
+            276,
+            290,
+            323
+          ],
+          "size": 6,
+          "proof_occurrences": 6,
+          "late_occurrences": 6,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 59,
+          "overlap_count": 1,
+          "overlap_states": [
+            "012032"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 58
+        },
+        {
+          "rank": 375,
+          "support_indices": [
+            2,
+            73,
+            76,
+            240,
+            263,
+            277
+          ],
+          "support_vertices": [
+            2,
+            84,
+            87,
+            267,
+            293,
+            307
+          ],
+          "size": 6,
+          "proof_occurrences": 45,
+          "late_occurrences": 5,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 21,
+          "overlap_count": 1,
+          "overlap_states": [
+            "010213"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 20
+        },
+        {
+          "rank": 380,
+          "support_indices": [
+            2,
+            112,
+            167,
+            260,
+            263,
+            306
+          ],
+          "support_vertices": [
+            2,
+            124,
+            187,
+            290,
+            293,
+            348
+          ],
+          "size": 6,
+          "proof_occurrences": 12,
+          "late_occurrences": 4,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 26,
+          "overlap_count": 1,
+          "overlap_states": [
+            "012134"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 25
+        },
+        {
+          "rank": 389,
+          "support_indices": [
+            0,
+            2,
+            17,
+            28,
+            63,
+            73
+          ],
+          "support_vertices": [
+            0,
+            2,
+            25,
+            36,
+            74,
+            84
+          ],
+          "size": 6,
+          "proof_occurrences": 4,
+          "late_occurrences": 4,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 86,
+          "overlap_count": 1,
+          "overlap_states": [
+            "011232"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 85
+        },
+        {
+          "rank": 390,
+          "support_indices": [
+            0,
+            4,
+            6,
+            28,
+            73,
+            112
+          ],
+          "support_vertices": [
+            0,
+            4,
+            6,
+            36,
+            84,
+            124
+          ],
+          "size": 6,
+          "proof_occurrences": 4,
+          "late_occurrences": 4,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 86,
+          "overlap_count": 1,
+          "overlap_states": [
+            "012113"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 85
+        },
+        {
+          "rank": 391,
+          "support_indices": [
+            0,
+            6,
+            17,
+            28,
+            73,
+            112
+          ],
+          "support_vertices": [
+            0,
+            6,
+            25,
+            36,
+            84,
+            124
+          ],
+          "size": 6,
+          "proof_occurrences": 4,
+          "late_occurrences": 4,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 86,
+          "overlap_count": 1,
+          "overlap_states": [
+            "012334"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 85
+        },
+        {
+          "rank": 392,
+          "support_indices": [
+            0,
+            6,
+            17,
+            73,
+            88,
+            112
+          ],
+          "support_vertices": [
+            0,
+            6,
+            25,
+            84,
+            99,
+            124
+          ],
+          "size": 6,
+          "proof_occurrences": 4,
+          "late_occurrences": 4,
+          "port_free": true,
+          "one_port": false,
+          "A_state_count": 1,
+          "B_state_count": 113,
+          "overlap_count": 1,
+          "overlap_states": [
+            "012314"
+          ],
+          "A_only_count": 0,
+          "B_only_count": 112
+        }
+      ]
+    }
+  },
+  "best_overall": [
+    {
+      "rank": 0,
+      "support_indices": [
+        19,
+        63,
+        85,
+        245
+      ],
+      "support_vertices": [
+        27,
+        74,
+        96,
+        272
+      ],
+      "size": 4,
+      "proof_occurrences": 91,
+      "late_occurrences": 20,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 2,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 1
+    },
+    {
+      "rank": 4,
+      "support_indices": [
+        0,
+        73,
+        88,
+        112
+      ],
+      "support_vertices": [
+        0,
+        84,
+        99,
+        124
+      ],
+      "size": 4,
+      "proof_occurrences": 7,
+      "late_occurrences": 7,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 15,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 14
+    },
+    {
+      "rank": 5,
+      "support_indices": [
+        65,
+        90,
+        161,
+        239
+      ],
+      "support_vertices": [
+        76,
+        101,
+        181,
+        266
+      ],
+      "size": 4,
+      "proof_occurrences": 35,
+      "late_occurrences": 6,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 5,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 4
+    },
+    {
+      "rank": 10,
+      "support_indices": [
+        0,
+        6,
+        88,
+        290
+      ],
+      "support_vertices": [
+        0,
+        6,
+        99,
+        323
+      ],
+      "size": 4,
+      "proof_occurrences": 16,
+      "late_occurrences": 5,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 10,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0112"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 9
+    },
+    {
+      "rank": 13,
+      "support_indices": [
+        0,
+        6,
+        17,
+        290
+      ],
+      "support_vertices": [
+        0,
+        6,
+        25,
+        323
+      ],
+      "size": 4,
+      "proof_occurrences": 25,
+      "late_occurrences": 4,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 7,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 6
+    },
+    {
+      "rank": 17,
+      "support_indices": [
+        0,
+        6,
+        17,
+        23
+      ],
+      "support_vertices": [
+        0,
+        6,
+        25,
+        31
+      ],
+      "size": 4,
+      "proof_occurrences": 6,
+      "late_occurrences": 4,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 5,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 4
+    },
+    {
+      "rank": 18,
+      "support_indices": [
+        0,
+        6,
+        17,
+        73
+      ],
+      "support_vertices": [
+        0,
+        6,
+        25,
+        84
+      ],
+      "size": 4,
+      "proof_occurrences": 5,
+      "late_occurrences": 4,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 7,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 6
+    },
+    {
+      "rank": 19,
+      "support_indices": [
+        0,
+        6,
+        73,
+        112
+      ],
+      "support_vertices": [
+        0,
+        6,
+        84,
+        124
+      ],
+      "size": 4,
+      "proof_occurrences": 4,
+      "late_occurrences": 4,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 10,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 9
+    },
+    {
+      "rank": 20,
+      "support_indices": [
+        0,
+        17,
+        73,
+        112
+      ],
+      "support_vertices": [
+        0,
+        25,
+        84,
+        124
+      ],
+      "size": 4,
+      "proof_occurrences": 4,
+      "late_occurrences": 4,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 10,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 9
+    },
+    {
+      "rank": 21,
+      "support_indices": [
+        0,
+        63,
+        73,
+        112
+      ],
+      "support_vertices": [
+        0,
+        74,
+        84,
+        124
+      ],
+      "size": 4,
+      "proof_occurrences": 4,
+      "late_occurrences": 4,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 15,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0121"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 14
+    },
+    {
+      "rank": 22,
+      "support_indices": [
+        0,
+        63,
+        73,
+        245
+      ],
+      "support_vertices": [
+        0,
+        74,
+        84,
+        272
+      ],
+      "size": 4,
+      "proof_occurrences": 4,
+      "late_occurrences": 4,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 15,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0122"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 14
+    },
+    {
+      "rank": 24,
+      "support_indices": [
+        55,
+        59,
+        97,
+        190
+      ],
+      "support_vertices": [
+        65,
+        69,
+        109,
+        210
+      ],
+      "size": 4,
+      "proof_occurrences": 33,
+      "late_occurrences": 3,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 3,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 2
+    },
+    {
+      "rank": 25,
+      "support_indices": [
+        64,
+        86,
+        125,
+        162
+      ],
+      "support_vertices": [
+        75,
+        97,
+        137,
+        182
+      ],
+      "size": 4,
+      "proof_occurrences": 32,
+      "late_occurrences": 3,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 3,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 2
+    },
+    {
+      "rank": 26,
+      "support_indices": [
+        160,
+        168,
+        278,
+        279
+      ],
+      "support_vertices": [
+        180,
+        188,
+        309,
+        310
+      ],
+      "size": 4,
+      "proof_occurrences": 22,
+      "late_occurrences": 3,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 3,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 2
+    },
+    {
+      "rank": 28,
+      "support_indices": [
+        0,
+        2,
+        4,
+        6
+      ],
+      "support_vertices": [
+        0,
+        2,
+        4,
+        6
+      ],
+      "size": 4,
+      "proof_occurrences": 18,
+      "late_occurrences": 3,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 2,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 1
+    },
+    {
+      "rank": 30,
+      "support_indices": [
+        18,
+        47,
+        88,
+        110
+      ],
+      "support_vertices": [
+        26,
+        55,
+        99,
+        122
+      ],
+      "size": 4,
+      "proof_occurrences": 16,
+      "late_occurrences": 3,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 3,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0102"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 2
+    },
+    {
+      "rank": 31,
+      "support_indices": [
+        2,
+        112,
+        263,
+        306
+      ],
+      "support_vertices": [
+        2,
+        124,
+        293,
+        348
+      ],
+      "size": 4,
+      "proof_occurrences": 14,
+      "late_occurrences": 3,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 2,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 1
+    },
+    {
+      "rank": 33,
+      "support_indices": [
+        0,
+        6,
+        112,
+        290
+      ],
+      "support_vertices": [
+        0,
+        6,
+        124,
+        323
+      ],
+      "size": 4,
+      "proof_occurrences": 11,
+      "late_occurrences": 3,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 10,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 9
+    },
+    {
+      "rank": 36,
+      "support_indices": [
+        63,
+        167,
+        186,
+        315
+      ],
+      "support_vertices": [
+        74,
+        187,
+        206,
+        361
+      ],
+      "size": 4,
+      "proof_occurrences": 7,
+      "late_occurrences": 3,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 4,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0102"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 3
+    },
+    {
+      "rank": 37,
+      "support_indices": [
+        0,
+        6,
+        63,
+        290
+      ],
+      "support_vertices": [
+        0,
+        6,
+        74,
+        323
+      ],
+      "size": 4,
+      "proof_occurrences": 5,
+      "late_occurrences": 3,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 10,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 9
+    },
+    {
+      "rank": 38,
+      "support_indices": [
+        24,
+        63,
+        88,
+        249
+      ],
+      "support_vertices": [
+        32,
+        74,
+        99,
+        276
+      ],
+      "size": 4,
+      "proof_occurrences": 5,
+      "late_occurrences": 3,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 2,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 1
+    },
+    {
+      "rank": 41,
+      "support_indices": [
+        0,
+        6,
+        28,
+        88
+      ],
+      "support_vertices": [
+        0,
+        6,
+        36,
+        99
+      ],
+      "size": 4,
+      "proof_occurrences": 3,
+      "late_occurrences": 3,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 7,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0121"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 6
+    },
+    {
+      "rank": 42,
+      "support_indices": [
+        0,
+        63,
+        88,
+        290
+      ],
+      "support_vertices": [
+        0,
+        74,
+        99,
+        323
+      ],
+      "size": 4,
+      "proof_occurrences": 3,
+      "late_occurrences": 3,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 10,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 9
+    },
+    {
+      "rank": 43,
+      "support_indices": [
+        0,
+        73,
+        88,
+        245
+      ],
+      "support_vertices": [
+        0,
+        84,
+        99,
+        272
+      ],
+      "size": 4,
+      "proof_occurrences": 3,
+      "late_occurrences": 3,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 15,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0121"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 14
+    },
+    {
+      "rank": 45,
+      "support_indices": [
+        6,
+        17,
+        73,
+        88
+      ],
+      "support_vertices": [
+        6,
+        25,
+        84,
+        99
+      ],
+      "size": 4,
+      "proof_occurrences": 3,
+      "late_occurrences": 3,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 15,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0120"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 14
+    },
+    {
+      "rank": 46,
+      "support_indices": [
+        63,
+        73,
+        79,
+        88
+      ],
+      "support_vertices": [
+        74,
+        84,
+        90,
+        99
+      ],
+      "size": 4,
+      "proof_occurrences": 3,
+      "late_occurrences": 3,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 7,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0102"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 6
+    },
+    {
+      "rank": 47,
+      "support_indices": [
+        47,
+        66,
+        88,
+        110
+      ],
+      "support_vertices": [
+        55,
+        77,
+        99,
+        122
+      ],
+      "size": 4,
+      "proof_occurrences": 67,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 3,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 2
+    },
+    {
+      "rank": 49,
+      "support_indices": [
+        55,
+        59,
+        97,
+        182
+      ],
+      "support_vertices": [
+        65,
+        69,
+        109,
+        202
+      ],
+      "size": 4,
+      "proof_occurrences": 32,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 3,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 2
+    },
+    {
+      "rank": 51,
+      "support_indices": [
+        62,
+        106,
+        179,
+        278
+      ],
+      "support_vertices": [
+        73,
+        118,
+        199,
+        309
+      ],
+      "size": 4,
+      "proof_occurrences": 26,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 4,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 3
+    },
+    {
+      "rank": 54,
+      "support_indices": [
+        0,
+        6,
+        28,
+        290
+      ],
+      "support_vertices": [
+        0,
+        6,
+        36,
+        323
+      ],
+      "size": 4,
+      "proof_occurrences": 20,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 7,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0122"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 6
+    },
+    {
+      "rank": 55,
+      "support_indices": [
+        63,
+        167,
+        306,
+        315
+      ],
+      "support_vertices": [
+        74,
+        187,
+        348,
+        361
+      ],
+      "size": 4,
+      "proof_occurrences": 19,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 2,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 1
+    },
+    {
+      "rank": 61,
+      "support_indices": [
+        19,
+        63,
+        85,
+        95
+      ],
+      "support_vertices": [
+        27,
+        74,
+        96,
+        107
+      ],
+      "size": 4,
+      "proof_occurrences": 15,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 3,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 2
+    },
+    {
+      "rank": 64,
+      "support_indices": [
+        56,
+        74,
+        106,
+        152
+      ],
+      "support_vertices": [
+        66,
+        85,
+        118,
+        172
+      ],
+      "size": 4,
+      "proof_occurrences": 14,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 3,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 2
+    },
+    {
+      "rank": 65,
+      "support_indices": [
+        0,
+        2,
+        6,
+        290
+      ],
+      "support_vertices": [
+        0,
+        2,
+        6,
+        323
+      ],
+      "size": 4,
+      "proof_occurrences": 13,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 4,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 3
+    },
+    {
+      "rank": 69,
+      "support_indices": [
+        48,
+        71,
+        82,
+        111
+      ],
+      "support_vertices": [
+        56,
+        82,
+        93,
+        123
+      ],
+      "size": 4,
+      "proof_occurrences": 11,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 3,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 2
+    },
+    {
+      "rank": 74,
+      "support_indices": [
+        46,
+        96,
+        138,
+        249
+      ],
+      "support_vertices": [
+        54,
+        108,
+        157,
+        276
+      ],
+      "size": 4,
+      "proof_occurrences": 8,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 2,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 1
+    },
+    {
+      "rank": 79,
+      "support_indices": [
+        74,
+        80,
+        86,
+        200
+      ],
+      "support_vertices": [
+        85,
+        91,
+        97,
+        221
+      ],
+      "size": 4,
+      "proof_occurrences": 6,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 2,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 1
+    },
+    {
+      "rank": 80,
+      "support_indices": [
+        0,
+        9,
+        17,
+        290
+      ],
+      "support_vertices": [
+        0,
+        9,
+        25,
+        323
+      ],
+      "size": 4,
+      "proof_occurrences": 5,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 7,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0112"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 6
+    },
+    {
+      "rank": 82,
+      "support_indices": [
+        0,
+        6,
+        28,
+        112
+      ],
+      "support_vertices": [
+        0,
+        6,
+        36,
+        124
+      ],
+      "size": 4,
+      "proof_occurrences": 4,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 7,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 6
+    },
+    {
+      "rank": 83,
+      "support_indices": [
+        0,
+        6,
+        88,
+        112
+      ],
+      "support_vertices": [
+        0,
+        6,
+        99,
+        124
+      ],
+      "size": 4,
+      "proof_occurrences": 4,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 10,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0112"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 9
+    },
+    {
+      "rank": 84,
+      "support_indices": [
+        0,
+        23,
+        73,
+        88
+      ],
+      "support_vertices": [
+        0,
+        31,
+        84,
+        99
+      ],
+      "size": 4,
+      "proof_occurrences": 4,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 7,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 6
+    },
+    {
+      "rank": 87,
+      "support_indices": [
+        0,
+        6,
+        23,
+        28
+      ],
+      "support_vertices": [
+        0,
+        6,
+        31,
+        36
+      ],
+      "size": 4,
+      "proof_occurrences": 3,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 3,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 2
+    },
+    {
+      "rank": 88,
+      "support_indices": [
+        0,
+        6,
+        23,
+        88
+      ],
+      "support_vertices": [
+        0,
+        6,
+        31,
+        99
+      ],
+      "size": 4,
+      "proof_occurrences": 3,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 7,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0121"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 6
+    },
+    {
+      "rank": 89,
+      "support_indices": [
+        0,
+        6,
+        63,
+        73
+      ],
+      "support_vertices": [
+        0,
+        6,
+        74,
+        84
+      ],
+      "size": 4,
+      "proof_occurrences": 3,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 10,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 9
+    },
+    {
+      "rank": 90,
+      "support_indices": [
+        0,
+        6,
+        73,
+        260
+      ],
+      "support_vertices": [
+        0,
+        6,
+        84,
+        290
+      ],
+      "size": 4,
+      "proof_occurrences": 3,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 7,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 6
+    },
+    {
+      "rank": 94,
+      "support_indices": [
+        0,
+        2,
+        6,
+        82
+      ],
+      "support_vertices": [
+        0,
+        2,
+        6,
+        93
+      ],
+      "size": 4,
+      "proof_occurrences": 2,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 4,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 3
+    },
+    {
+      "rank": 96,
+      "support_indices": [
+        0,
+        2,
+        17,
+        290
+      ],
+      "support_vertices": [
+        0,
+        2,
+        25,
+        323
+      ],
+      "size": 4,
+      "proof_occurrences": 2,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 7,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0112"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 6
+    },
+    {
+      "rank": 97,
+      "support_indices": [
+        0,
+        4,
+        6,
+        88
+      ],
+      "support_vertices": [
+        0,
+        4,
+        6,
+        99
+      ],
+      "size": 4,
+      "proof_occurrences": 2,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 7,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0122"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 6
+    },
+    {
+      "rank": 98,
+      "support_indices": [
+        0,
+        4,
+        6,
+        112
+      ],
+      "support_vertices": [
+        0,
+        4,
+        6,
+        124
+      ],
+      "size": 4,
+      "proof_occurrences": 2,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 7,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0123"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 6
+    },
+    {
+      "rank": 99,
+      "support_indices": [
+        0,
+        6,
+        17,
+        76
+      ],
+      "support_vertices": [
+        0,
+        6,
+        25,
+        87
+      ],
+      "size": 4,
+      "proof_occurrences": 2,
+      "late_occurrences": 2,
+      "port_free": true,
+      "one_port": false,
+      "A_state_count": 1,
+      "B_state_count": 7,
+      "overlap_count": 1,
+      "overlap_states": [
+        "0122"
+      ],
+      "A_only_count": 0,
+      "B_only_count": 6
+    }
+  ],
+  "top_proof_vertices": [
+    {
+      "vertex": 0,
+      "index": 0,
+      "count": 149766
+    },
+    {
+      "vertex": 6,
+      "index": 6,
+      "count": 149373
+    },
+    {
+      "vertex": 99,
+      "index": 88,
+      "count": 148942
+    },
+    {
+      "vertex": 84,
+      "index": 73,
+      "count": 148195
+    },
+    {
+      "vertex": 124,
+      "index": 112,
+      "count": 127764
+    },
+    {
+      "vertex": 74,
+      "index": 63,
+      "count": 124116
+    },
+    {
+      "vertex": 96,
+      "index": 85,
+      "count": 116214
+    },
+    {
+      "vertex": 87,
+      "index": 76,
+      "count": 114971
+    },
+    {
+      "vertex": 323,
+      "index": 290,
+      "count": 110793
+    },
+    {
+      "vertex": 2,
+      "index": 2,
+      "count": 110369
+    },
+    {
+      "vertex": 91,
+      "index": 80,
+      "count": 105487
+    },
+    {
+      "vertex": 25,
+      "index": 17,
+      "count": 102502
+    },
+    {
+      "vertex": 187,
+      "index": 167,
+      "count": 102295
+    },
+    {
+      "vertex": 93,
+      "index": 82,
+      "count": 95537
+    },
+    {
+      "vertex": 73,
+      "index": 62,
+      "count": 95386
+    },
+    {
+      "vertex": 272,
+      "index": 245,
+      "count": 94748
+    },
+    {
+      "vertex": 97,
+      "index": 86,
+      "count": 94733
+    },
+    {
+      "vertex": 127,
+      "index": 115,
+      "count": 93023
+    },
+    {
+      "vertex": 69,
+      "index": 59,
+      "count": 91663
+    },
+    {
+      "vertex": 4,
+      "index": 4,
+      "count": 89036
+    },
+    {
+      "vertex": 78,
+      "index": 67,
+      "count": 88932
+    },
+    {
+      "vertex": 268,
+      "index": 241,
+      "count": 86580
+    },
+    {
+      "vertex": 210,
+      "index": 190,
+      "count": 86347
+    },
+    {
+      "vertex": 95,
+      "index": 84,
+      "count": 83767
+    },
+    {
+      "vertex": 118,
+      "index": 106,
+      "count": 83767
+    },
+    {
+      "vertex": 61,
+      "index": 51,
+      "count": 83727
+    },
+    {
+      "vertex": 90,
+      "index": 79,
+      "count": 82452
+    },
+    {
+      "vertex": 199,
+      "index": 179,
+      "count": 80626
+    },
+    {
+      "vertex": 267,
+      "index": 240,
+      "count": 80389
+    },
+    {
+      "vertex": 33,
+      "index": 25,
+      "count": 80349
+    }
+  ],
+  "top_proof_pairs": [
+    {
+      "vertices": [
+        0,
+        6
+      ],
+      "indices": [
+        0,
+        6
+      ],
+      "count": 26119
+    },
+    {
+      "vertices": [
+        0,
+        323
+      ],
+      "indices": [
+        0,
+        290
+      ],
+      "count": 20614
+    },
+    {
+      "vertices": [
+        6,
+        323
+      ],
+      "indices": [
+        6,
+        290
+      ],
+      "count": 19472
+    },
+    {
+      "vertices": [
+        0,
+        25
+      ],
+      "indices": [
+        0,
+        17
+      ],
+      "count": 12629
+    },
+    {
+      "vertices": [
+        0,
+        84
+      ],
+      "indices": [
+        0,
+        73
+      ],
+      "count": 11660
+    },
+    {
+      "vertices": [
+        6,
+        25
+      ],
+      "indices": [
+        6,
+        17
+      ],
+      "count": 11648
+    },
+    {
+      "vertices": [
+        6,
+        84
+      ],
+      "indices": [
+        6,
+        73
+      ],
+      "count": 10931
+    },
+    {
+      "vertices": [
+        0,
+        124
+      ],
+      "indices": [
+        0,
+        112
+      ],
+      "count": 10627
+    },
+    {
+      "vertices": [
+        6,
+        124
+      ],
+      "indices": [
+        6,
+        112
+      ],
+      "count": 9660
+    },
+    {
+      "vertices": [
+        25,
+        323
+      ],
+      "indices": [
+        17,
+        290
+      ],
+      "count": 9301
+    },
+    {
+      "vertices": [
+        0,
+        99
+      ],
+      "indices": [
+        0,
+        88
+      ],
+      "count": 9087
+    },
+    {
+      "vertices": [
+        0,
+        2
+      ],
+      "indices": [
+        0,
+        2
+      ],
+      "count": 8750
+    },
+    {
+      "vertices": [
+        6,
+        99
+      ],
+      "indices": [
+        6,
+        88
+      ],
+      "count": 8615
+    },
+    {
+      "vertices": [
+        84,
+        124
+      ],
+      "indices": [
+        73,
+        112
+      ],
+      "count": 8549
+    },
+    {
+      "vertices": [
+        2,
+        6
+      ],
+      "indices": [
+        2,
+        6
+      ],
+      "count": 8200
+    },
+    {
+      "vertices": [
+        84,
+        323
+      ],
+      "indices": [
+        73,
+        290
+      ],
+      "count": 8029
+    },
+    {
+      "vertices": [
+        0,
+        31
+      ],
+      "indices": [
+        0,
+        23
+      ],
+      "count": 7117
+    },
+    {
+      "vertices": [
+        4,
+        6
+      ],
+      "indices": [
+        4,
+        6
+      ],
+      "count": 7002
+    },
+    {
+      "vertices": [
+        124,
+        323
+      ],
+      "indices": [
+        112,
+        290
+      ],
+      "count": 6940
+    },
+    {
+      "vertices": [
+        0,
+        4
+      ],
+      "indices": [
+        0,
+        4
+      ],
+      "count": 6835
+    },
+    {
+      "vertices": [
+        0,
+        36
+      ],
+      "indices": [
+        0,
+        28
+      ],
+      "count": 6683
+    },
+    {
+      "vertices": [
+        6,
+        31
+      ],
+      "indices": [
+        6,
+        23
+      ],
+      "count": 6514
+    },
+    {
+      "vertices": [
+        99,
+        323
+      ],
+      "indices": [
+        88,
+        290
+      ],
+      "count": 6440
+    },
+    {
+      "vertices": [
+        84,
+        99
+      ],
+      "indices": [
+        73,
+        88
+      ],
+      "count": 6438
+    },
+    {
+      "vertices": [
+        25,
+        84
+      ],
+      "indices": [
+        17,
+        73
+      ],
+      "count": 6284
+    },
+    {
+      "vertices": [
+        0,
+        26
+      ],
+      "indices": [
+        0,
+        18
+      ],
+      "count": 6227
+    },
+    {
+      "vertices": [
+        6,
+        36
+      ],
+      "indices": [
+        6,
+        28
+      ],
+      "count": 6068
+    },
+    {
+      "vertices": [
+        0,
+        87
+      ],
+      "indices": [
+        0,
+        76
+      ],
+      "count": 6051
+    },
+    {
+      "vertices": [
+        2,
+        323
+      ],
+      "indices": [
+        2,
+        290
+      ],
+      "count": 5852
+    },
+    {
+      "vertices": [
+        0,
+        74
+      ],
+      "indices": [
+        0,
+        63
+      ],
+      "count": 5832
+    },
+    {
+      "vertices": [
+        6,
+        87
+      ],
+      "indices": [
+        6,
+        76
+      ],
+      "count": 5722
+    },
+    {
+      "vertices": [
+        74,
+        99
+      ],
+      "indices": [
+        63,
+        88
+      ],
+      "count": 5670
+    },
+    {
+      "vertices": [
+        6,
+        26
+      ],
+      "indices": [
+        6,
+        18
+      ],
+      "count": 5505
+    },
+    {
+      "vertices": [
+        6,
+        74
+      ],
+      "indices": [
+        6,
+        63
+      ],
+      "count": 5479
+    },
+    {
+      "vertices": [
+        25,
+        124
+      ],
+      "indices": [
+        17,
+        112
+      ],
+      "count": 5472
+    },
+    {
+      "vertices": [
+        2,
+        4
+      ],
+      "indices": [
+        2,
+        4
+      ],
+      "count": 5437
+    },
+    {
+      "vertices": [
+        31,
+        323
+      ],
+      "indices": [
+        23,
+        290
+      ],
+      "count": 5301
+    },
+    {
+      "vertices": [
+        87,
+        99
+      ],
+      "indices": [
+        76,
+        88
+      ],
+      "count": 5048
+    },
+    {
+      "vertices": [
+        2,
+        124
+      ],
+      "indices": [
+        2,
+        112
+      ],
+      "count": 5007
+    },
+    {
+      "vertices": [
+        26,
+        323
+      ],
+      "indices": [
+        18,
+        290
+      ],
+      "count": 4922
+    },
+    {
+      "vertices": [
+        74,
+        84
+      ],
+      "indices": [
+        63,
+        73
+      ],
+      "count": 4906
+    },
+    {
+      "vertices": [
+        99,
+        124
+      ],
+      "indices": [
+        88,
+        112
+      ],
+      "count": 4775
+    },
+    {
+      "vertices": [
+        74,
+        96
+      ],
+      "indices": [
+        63,
+        85
+      ],
+      "count": 4693
+    },
+    {
+      "vertices": [
+        25,
+        99
+      ],
+      "indices": [
+        17,
+        88
+      ],
+      "count": 4690
+    },
+    {
+      "vertices": [
+        36,
+        323
+      ],
+      "indices": [
+        28,
+        290
+      ],
+      "count": 4625
+    },
+    {
+      "vertices": [
+        0,
+        28
+      ],
+      "indices": [
+        0,
+        20
+      ],
+      "count": 4498
+    },
+    {
+      "vertices": [
+        87,
+        323
+      ],
+      "indices": [
+        76,
+        290
+      ],
+      "count": 4473
+    },
+    {
+      "vertices": [
+        25,
+        26
+      ],
+      "indices": [
+        17,
+        18
+      ],
+      "count": 4421
+    },
+    {
+      "vertices": [
+        84,
+        87
+      ],
+      "indices": [
+        73,
+        76
+      ],
+      "count": 4336
+    },
+    {
+      "vertices": [
+        91,
+        97
+      ],
+      "indices": [
+        80,
+        86
+      ],
+      "count": 4332
+    }
+  ],
+  "interpretation": "A/B state sets use canonical restricted-growth strings, so the test is invariant under permutation of the five color names. Zero overlap is an exact color-symmetric semantic interpolant on that support."
+}
