@@ -1,0 +1,149 @@
+{
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8",
+  "forced_equal_class_size": 20,
+  "local_witness_edges": 1,
+  "local_witness_graph_components": [
+    [
+      3
+    ],
+    [
+      5,
+      22
+    ],
+    [
+      6
+    ],
+    [
+      33
+    ],
+    [
+      54
+    ],
+    [
+      63
+    ],
+    [
+      65
+    ],
+    [
+      86
+    ],
+    [
+      189
+    ],
+    [
+      210
+    ],
+    [
+      222
+    ],
+    [
+      252
+    ],
+    [
+      267
+    ],
+    [
+      270
+    ],
+    [
+      274
+    ],
+    [
+      284
+    ],
+    [
+      287
+    ],
+    [
+      290
+    ],
+    [
+      299
+    ]
+  ],
+  "p_qnodes": [
+    5,
+    270
+  ],
+  "p_q_connected_by_local_rule": false,
+  "shortest_local_rule_chain_qnodes": [],
+  "shortest_local_rule_chain_components": [],
+  "chain_witnesses": [],
+  "all_witnesses": [
+    {
+      "pair": [
+        5,
+        22
+      ],
+      "common_size": 4,
+      "common_edges": 6,
+      "core_qnodes": [
+        0,
+        4,
+        8,
+        21
+      ],
+      "core_size": 4,
+      "core_edges": 6,
+      "core_components": [
+        [
+          0,
+          324,
+          376
+        ],
+        [
+          6,
+          102,
+          163,
+          221,
+          298,
+          316
+        ],
+        [
+          10,
+          12,
+          54
+        ],
+        [
+          35,
+          120,
+          321
+        ]
+      ],
+      "contains_K4": true,
+      "K4_qnodes": [
+        0,
+        4,
+        8,
+        21
+      ],
+      "K4_components": [
+        [
+          0,
+          324,
+          376
+        ],
+        [
+          6,
+          102,
+          163,
+          221,
+          298,
+          316
+        ],
+        [
+          10,
+          12,
+          54
+        ],
+        [
+          35,
+          120,
+          321
+        ]
+      ]
+    }
+  ],
+  "rule": "If u,v had different colors in a 5-coloring, every common neighbor avoids both colors and has only 3 colors available. Therefore a non-3-colorable common-neighborhood subgraph forces c(u)=c(v)."
+}
