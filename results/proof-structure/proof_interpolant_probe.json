@@ -1,0 +1,1935 @@
+{
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8",
+  "solver": "Glucose4(with_proof=True)",
+  "proof_lines": 664019,
+  "proof_additions": 352288,
+  "proof_deletions": 311731,
+  "solver_stats": {
+    "restarts": 709,
+    "conflicts": 352289,
+    "decisions": 529606,
+    "propagations": 46447575
+  },
+  "top_vertices": [
+    {
+      "vertex": 0,
+      "index": 0,
+      "count": 149766
+    },
+    {
+      "vertex": 6,
+      "index": 6,
+      "count": 149373
+    },
+    {
+      "vertex": 99,
+      "index": 88,
+      "count": 148942
+    },
+    {
+      "vertex": 84,
+      "index": 73,
+      "count": 148195
+    },
+    {
+      "vertex": 124,
+      "index": 112,
+      "count": 127764
+    },
+    {
+      "vertex": 74,
+      "index": 63,
+      "count": 124116
+    },
+    {
+      "vertex": 96,
+      "index": 85,
+      "count": 116214
+    },
+    {
+      "vertex": 87,
+      "index": 76,
+      "count": 114971
+    },
+    {
+      "vertex": 323,
+      "index": 290,
+      "count": 110793
+    },
+    {
+      "vertex": 2,
+      "index": 2,
+      "count": 110369
+    },
+    {
+      "vertex": 91,
+      "index": 80,
+      "count": 105487
+    },
+    {
+      "vertex": 25,
+      "index": 17,
+      "count": 102502
+    },
+    {
+      "vertex": 187,
+      "index": 167,
+      "count": 102295
+    },
+    {
+      "vertex": 93,
+      "index": 82,
+      "count": 95537
+    },
+    {
+      "vertex": 73,
+      "index": 62,
+      "count": 95386
+    },
+    {
+      "vertex": 272,
+      "index": 245,
+      "count": 94748
+    },
+    {
+      "vertex": 97,
+      "index": 86,
+      "count": 94733
+    },
+    {
+      "vertex": 127,
+      "index": 115,
+      "count": 93023
+    },
+    {
+      "vertex": 69,
+      "index": 59,
+      "count": 91663
+    },
+    {
+      "vertex": 4,
+      "index": 4,
+      "count": 89036
+    },
+    {
+      "vertex": 78,
+      "index": 67,
+      "count": 88932
+    },
+    {
+      "vertex": 268,
+      "index": 241,
+      "count": 86580
+    },
+    {
+      "vertex": 210,
+      "index": 190,
+      "count": 86347
+    },
+    {
+      "vertex": 95,
+      "index": 84,
+      "count": 83767
+    },
+    {
+      "vertex": 118,
+      "index": 106,
+      "count": 83767
+    },
+    {
+      "vertex": 61,
+      "index": 51,
+      "count": 83727
+    },
+    {
+      "vertex": 90,
+      "index": 79,
+      "count": 82452
+    },
+    {
+      "vertex": 199,
+      "index": 179,
+      "count": 80626
+    },
+    {
+      "vertex": 267,
+      "index": 240,
+      "count": 80389
+    },
+    {
+      "vertex": 33,
+      "index": 25,
+      "count": 80349
+    }
+  ],
+  "top_pairs": [
+    {
+      "vertices": [
+        0,
+        6
+      ],
+      "indices": [
+        0,
+        6
+      ],
+      "count": 125316
+    },
+    {
+      "vertices": [
+        0,
+        323
+      ],
+      "indices": [
+        0,
+        290
+      ],
+      "count": 100319
+    },
+    {
+      "vertices": [
+        84,
+        99
+      ],
+      "indices": [
+        73,
+        88
+      ],
+      "count": 96016
+    },
+    {
+      "vertices": [
+        6,
+        323
+      ],
+      "indices": [
+        6,
+        290
+      ],
+      "count": 95509
+    },
+    {
+      "vertices": [
+        0,
+        84
+      ],
+      "indices": [
+        0,
+        73
+      ],
+      "count": 94598
+    },
+    {
+      "vertices": [
+        84,
+        124
+      ],
+      "indices": [
+        73,
+        112
+      ],
+      "count": 93896
+    },
+    {
+      "vertices": [
+        6,
+        84
+      ],
+      "indices": [
+        6,
+        73
+      ],
+      "count": 92308
+    },
+    {
+      "vertices": [
+        0,
+        99
+      ],
+      "indices": [
+        0,
+        88
+      ],
+      "count": 89290
+    },
+    {
+      "vertices": [
+        6,
+        99
+      ],
+      "indices": [
+        6,
+        88
+      ],
+      "count": 87403
+    },
+    {
+      "vertices": [
+        74,
+        99
+      ],
+      "indices": [
+        63,
+        88
+      ],
+      "count": 87153
+    },
+    {
+      "vertices": [
+        0,
+        124
+      ],
+      "indices": [
+        0,
+        112
+      ],
+      "count": 84657
+    },
+    {
+      "vertices": [
+        87,
+        99
+      ],
+      "indices": [
+        76,
+        88
+      ],
+      "count": 84324
+    },
+    {
+      "vertices": [
+        0,
+        25
+      ],
+      "indices": [
+        0,
+        17
+      ],
+      "count": 82132
+    },
+    {
+      "vertices": [
+        99,
+        124
+      ],
+      "indices": [
+        88,
+        112
+      ],
+      "count": 81902
+    },
+    {
+      "vertices": [
+        6,
+        124
+      ],
+      "indices": [
+        6,
+        112
+      ],
+      "count": 81810
+    },
+    {
+      "vertices": [
+        74,
+        84
+      ],
+      "indices": [
+        63,
+        73
+      ],
+      "count": 81714
+    },
+    {
+      "vertices": [
+        84,
+        87
+      ],
+      "indices": [
+        73,
+        76
+      ],
+      "count": 80319
+    },
+    {
+      "vertices": [
+        91,
+        97
+      ],
+      "indices": [
+        80,
+        86
+      ],
+      "count": 78004
+    },
+    {
+      "vertices": [
+        6,
+        25
+      ],
+      "indices": [
+        6,
+        17
+      ],
+      "count": 77368
+    },
+    {
+      "vertices": [
+        96,
+        99
+      ],
+      "indices": [
+        85,
+        88
+      ],
+      "count": 76110
+    },
+    {
+      "vertices": [
+        74,
+        96
+      ],
+      "indices": [
+        63,
+        85
+      ],
+      "count": 75673
+    },
+    {
+      "vertices": [
+        0,
+        2
+      ],
+      "indices": [
+        0,
+        2
+      ],
+      "count": 75594
+    },
+    {
+      "vertices": [
+        0,
+        87
+      ],
+      "indices": [
+        0,
+        76
+      ],
+      "count": 75398
+    },
+    {
+      "vertices": [
+        2,
+        6
+      ],
+      "indices": [
+        2,
+        6
+      ],
+      "count": 74565
+    },
+    {
+      "vertices": [
+        84,
+        96
+      ],
+      "indices": [
+        73,
+        85
+      ],
+      "count": 73021
+    },
+    {
+      "vertices": [
+        6,
+        87
+      ],
+      "indices": [
+        6,
+        76
+      ],
+      "count": 72695
+    },
+    {
+      "vertices": [
+        25,
+        84
+      ],
+      "indices": [
+        17,
+        73
+      ],
+      "count": 71665
+    },
+    {
+      "vertices": [
+        74,
+        272
+      ],
+      "indices": [
+        63,
+        245
+      ],
+      "count": 71594
+    },
+    {
+      "vertices": [
+        2,
+        84
+      ],
+      "indices": [
+        2,
+        73
+      ],
+      "count": 71047
+    },
+    {
+      "vertices": [
+        84,
+        323
+      ],
+      "indices": [
+        73,
+        290
+      ],
+      "count": 70965
+    },
+    {
+      "vertices": [
+        78,
+        84
+      ],
+      "indices": [
+        67,
+        73
+      ],
+      "count": 70742
+    },
+    {
+      "vertices": [
+        93,
+        99
+      ],
+      "indices": [
+        82,
+        88
+      ],
+      "count": 70496
+    },
+    {
+      "vertices": [
+        74,
+        187
+      ],
+      "indices": [
+        63,
+        167
+      ],
+      "count": 70055
+    },
+    {
+      "vertices": [
+        0,
+        74
+      ],
+      "indices": [
+        0,
+        63
+      ],
+      "count": 69991
+    },
+    {
+      "vertices": [
+        2,
+        99
+      ],
+      "indices": [
+        2,
+        88
+      ],
+      "count": 69884
+    },
+    {
+      "vertices": [
+        2,
+        124
+      ],
+      "indices": [
+        2,
+        112
+      ],
+      "count": 69408
+    },
+    {
+      "vertices": [
+        74,
+        124
+      ],
+      "indices": [
+        63,
+        112
+      ],
+      "count": 68360
+    },
+    {
+      "vertices": [
+        6,
+        74
+      ],
+      "indices": [
+        6,
+        63
+      ],
+      "count": 67760
+    },
+    {
+      "vertices": [
+        99,
+        272
+      ],
+      "indices": [
+        88,
+        245
+      ],
+      "count": 66948
+    },
+    {
+      "vertices": [
+        87,
+        124
+      ],
+      "indices": [
+        76,
+        112
+      ],
+      "count": 66926
+    },
+    {
+      "vertices": [
+        99,
+        323
+      ],
+      "indices": [
+        88,
+        290
+      ],
+      "count": 66911
+    },
+    {
+      "vertices": [
+        99,
+        187
+      ],
+      "indices": [
+        88,
+        167
+      ],
+      "count": 65798
+    },
+    {
+      "vertices": [
+        25,
+        99
+      ],
+      "indices": [
+        17,
+        88
+      ],
+      "count": 65624
+    },
+    {
+      "vertices": [
+        99,
+        122
+      ],
+      "indices": [
+        88,
+        110
+      ],
+      "count": 65138
+    },
+    {
+      "vertices": [
+        99,
+        127
+      ],
+      "indices": [
+        88,
+        115
+      ],
+      "count": 65084
+    },
+    {
+      "vertices": [
+        84,
+        272
+      ],
+      "indices": [
+        73,
+        245
+      ],
+      "count": 64981
+    },
+    {
+      "vertices": [
+        91,
+        269
+      ],
+      "indices": [
+        80,
+        242
+      ],
+      "count": 64866
+    },
+    {
+      "vertices": [
+        4,
+        6
+      ],
+      "indices": [
+        4,
+        6
+      ],
+      "count": 64565
+    },
+    {
+      "vertices": [
+        84,
+        187
+      ],
+      "indices": [
+        73,
+        167
+      ],
+      "count": 64531
+    },
+    {
+      "vertices": [
+        84,
+        127
+      ],
+      "indices": [
+        73,
+        115
+      ],
+      "count": 64300
+    }
+  ],
+  "candidate_policy": "proof-clause supports <=6 plus top-vertex combinations; supports containing both 217 and 490 excluded",
+  "evaluated_count": 300,
+  "separator_count": 0,
+  "separators": [],
+  "best_candidates": [
+    {
+      "support_indices": [
+        0,
+        6
+      ],
+      "support_vertices": [
+        0,
+        6
+      ],
+      "size": 2,
+      "proof_occurrences": 8,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        0,
+        290
+      ],
+      "support_vertices": [
+        0,
+        323
+      ],
+      "size": 2,
+      "proof_occurrences": 6,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        0,
+        73
+      ],
+      "support_vertices": [
+        0,
+        84
+      ],
+      "size": 2,
+      "proof_occurrences": 3,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        0,
+        214
+      ],
+      "support_vertices": [
+        0,
+        237
+      ],
+      "size": 2,
+      "proof_occurrences": 3,
+      "A_states": [
+        "00"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "00"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        6,
+        17
+      ],
+      "support_vertices": [
+        6,
+        25
+      ],
+      "size": 2,
+      "proof_occurrences": 3,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        17,
+        73
+      ],
+      "support_vertices": [
+        25,
+        84
+      ],
+      "size": 2,
+      "proof_occurrences": 3,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        0,
+        76
+      ],
+      "support_vertices": [
+        0,
+        87
+      ],
+      "size": 2,
+      "proof_occurrences": 2,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        6,
+        18
+      ],
+      "support_vertices": [
+        6,
+        26
+      ],
+      "size": 2,
+      "proof_occurrences": 2,
+      "A_states": [
+        "00"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "00"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        73,
+        260
+      ],
+      "support_vertices": [
+        84,
+        290
+      ],
+      "size": 2,
+      "proof_occurrences": 2,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        0,
+        1
+      ],
+      "support_vertices": [
+        0,
+        1
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        0,
+        4
+      ],
+      "support_vertices": [
+        0,
+        4
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        0,
+        17
+      ],
+      "support_vertices": [
+        0,
+        25
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        0,
+        23
+      ],
+      "support_vertices": [
+        0,
+        31
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        0,
+        24
+      ],
+      "support_vertices": [
+        0,
+        32
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        0,
+        70
+      ],
+      "support_vertices": [
+        0,
+        81
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "00"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "00"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        0,
+        71
+      ],
+      "support_vertices": [
+        0,
+        82
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        0,
+        88
+      ],
+      "support_vertices": [
+        0,
+        99
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        4,
+        6
+      ],
+      "support_vertices": [
+        4,
+        6
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        4,
+        88
+      ],
+      "support_vertices": [
+        4,
+        99
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        4,
+        112
+      ],
+      "support_vertices": [
+        4,
+        124
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        6,
+        20
+      ],
+      "support_vertices": [
+        6,
+        28
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        6,
+        23
+      ],
+      "support_vertices": [
+        6,
+        31
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        6,
+        28
+      ],
+      "support_vertices": [
+        6,
+        36
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        6,
+        63
+      ],
+      "support_vertices": [
+        6,
+        74
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        6,
+        112
+      ],
+      "support_vertices": [
+        6,
+        124
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        6,
+        245
+      ],
+      "support_vertices": [
+        6,
+        272
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        6,
+        260
+      ],
+      "support_vertices": [
+        6,
+        290
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        17,
+        112
+      ],
+      "support_vertices": [
+        25,
+        124
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        23,
+        76
+      ],
+      "support_vertices": [
+        31,
+        87
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        28,
+        290
+      ],
+      "support_vertices": [
+        36,
+        323
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "00"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "00"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        62,
+        179
+      ],
+      "support_vertices": [
+        73,
+        199
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        63,
+        79
+      ],
+      "support_vertices": [
+        74,
+        90
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "00"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "00"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        70,
+        290
+      ],
+      "support_vertices": [
+        81,
+        323
+      ],
+      "size": 2,
+      "proof_occurrences": 1,
+      "A_states": [
+        "01"
+      ],
+      "B_states": [
+        "00",
+        "01"
+      ],
+      "overlap": [
+        "01"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        85,
+        115,
+        219
+      ],
+      "support_vertices": [
+        96,
+        127,
+        242
+      ],
+      "size": 3,
+      "proof_occurrences": 43,
+      "A_states": [
+        "012"
+      ],
+      "B_states": [
+        "012"
+      ],
+      "overlap": [
+        "012"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        63,
+        88,
+        117
+      ],
+      "support_vertices": [
+        74,
+        99,
+        129
+      ],
+      "size": 3,
+      "proof_occurrences": 42,
+      "A_states": [
+        "012"
+      ],
+      "B_states": [
+        "012"
+      ],
+      "overlap": [
+        "012"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        60,
+        187,
+        314
+      ],
+      "support_vertices": [
+        70,
+        207,
+        360
+      ],
+      "size": 3,
+      "proof_occurrences": 39,
+      "A_states": [
+        "012"
+      ],
+      "B_states": [
+        "012"
+      ],
+      "overlap": [
+        "012"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        0,
+        6,
+        290
+      ],
+      "support_vertices": [
+        0,
+        6,
+        323
+      ],
+      "size": 3,
+      "proof_occurrences": 33,
+      "A_states": [
+        "012"
+      ],
+      "B_states": [
+        "010",
+        "011",
+        "012"
+      ],
+      "overlap": [
+        "012"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        13,
+        24,
+        287
+      ],
+      "support_vertices": [
+        18,
+        32,
+        318
+      ],
+      "size": 3,
+      "proof_occurrences": 33,
+      "A_states": [
+        "012"
+      ],
+      "B_states": [
+        "012"
+      ],
+      "overlap": [
+        "012"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        73,
+        240,
+        277
+      ],
+      "support_vertices": [
+        84,
+        267,
+        307
+      ],
+      "size": 3,
+      "proof_occurrences": 32,
+      "A_states": [
+        "012"
+      ],
+      "B_states": [
+        "012"
+      ],
+      "overlap": [
+        "012"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        76,
+        240,
+        263
+      ],
+      "support_vertices": [
+        87,
+        267,
+        293
+      ],
+      "size": 3,
+      "proof_occurrences": 31,
+      "A_states": [
+        "012"
+      ],
+      "B_states": [
+        "012"
+      ],
+      "overlap": [
+        "012"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        29,
+        157,
+        177
+      ],
+      "support_vertices": [
+        37,
+        177,
+        197
+      ],
+      "size": 3,
+      "proof_occurrences": 30,
+      "A_states": [
+        "012"
+      ],
+      "B_states": [
+        "012"
+      ],
+      "overlap": [
+        "012"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        54,
+        89,
+        150
+      ],
+      "support_vertices": [
+        64,
+        100,
+        170
+      ],
+      "size": 3,
+      "proof_occurrences": 30,
+      "A_states": [
+        "012"
+      ],
+      "B_states": [
+        "012"
+      ],
+      "overlap": [
+        "012"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        57,
+        99,
+        184
+      ],
+      "support_vertices": [
+        67,
+        111,
+        204
+      ],
+      "size": 3,
+      "proof_occurrences": 30,
+      "A_states": [
+        "012"
+      ],
+      "B_states": [
+        "012"
+      ],
+      "overlap": [
+        "012"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        66,
+        88,
+        110
+      ],
+      "support_vertices": [
+        77,
+        99,
+        122
+      ],
+      "size": 3,
+      "proof_occurrences": 29,
+      "A_states": [
+        "012"
+      ],
+      "B_states": [
+        "012"
+      ],
+      "overlap": [
+        "012"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        88,
+        248,
+        275
+      ],
+      "support_vertices": [
+        99,
+        275,
+        305
+      ],
+      "size": 3,
+      "proof_occurrences": 29,
+      "A_states": [
+        "012"
+      ],
+      "B_states": [
+        "012"
+      ],
+      "overlap": [
+        "012"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        205,
+        226,
+        310
+      ],
+      "support_vertices": [
+        226,
+        249,
+        353
+      ],
+      "size": 3,
+      "proof_occurrences": 29,
+      "A_states": [
+        "012"
+      ],
+      "B_states": [
+        "012"
+      ],
+      "overlap": [
+        "012"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        29,
+        190,
+        193
+      ],
+      "support_vertices": [
+        37,
+        210,
+        213
+      ],
+      "size": 3,
+      "proof_occurrences": 28,
+      "A_states": [
+        "012"
+      ],
+      "B_states": [
+        "012"
+      ],
+      "overlap": [
+        "012"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        36,
+        166,
+        187
+      ],
+      "support_vertices": [
+        44,
+        186,
+        207
+      ],
+      "size": 3,
+      "proof_occurrences": 28,
+      "A_states": [
+        "012"
+      ],
+      "B_states": [
+        "012"
+      ],
+      "overlap": [
+        "012"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        52,
+        183,
+        229
+      ],
+      "support_vertices": [
+        62,
+        203,
+        252
+      ],
+      "size": 3,
+      "proof_occurrences": 28,
+      "A_states": [
+        "012"
+      ],
+      "B_states": [
+        "012"
+      ],
+      "overlap": [
+        "012"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    },
+    {
+      "support_indices": [
+        71,
+        82,
+        111
+      ],
+      "support_vertices": [
+        82,
+        93,
+        123
+      ],
+      "size": 3,
+      "proof_occurrences": 28,
+      "A_states": [
+        "012"
+      ],
+      "B_states": [
+        "012"
+      ],
+      "overlap": [
+        "012"
+      ],
+      "overlap_count": 1,
+      "port_free": true
+    }
+  ]
+}
