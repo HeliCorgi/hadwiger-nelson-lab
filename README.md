@@ -21,22 +21,48 @@ For a set `S` of non-port vertices, the observable is the equality partition ind
 
 Searching exactly four vertices is complete for support `<= 4`: a separating equality interface on fewer vertices remains separating after adding arbitrary non-port vertices.
 
-## Run 1 — 2026-09-10
+## Current checkpoint
 
-GitHub Actions run [`34436888946`](https://github.com/HeliCorgi/hadwiger-nelson-lab/actions/runs/34436888946) completed all three original time slices successfully.
-
-Status after the final checkpoint:
+After Actions runs #1 and #2:
 
 - system: 393 vertices, 1599 `H*` edges, 88 forcing conditions;
 - non-port universe: 391 vertices / 76,245 equality atoms;
 - validated upstream seed fooling pairs: 872;
-- newly generated fooling pairs: **2525**;
-- total sound CEGIS cuts represented after the run: **3397**;
-- terminal result: **none** — neither a separating support-4 interface nor master UNSAT was reached;
-- latest checkpoint commit: `5283a5f` on `research/semantic-interface`;
-- stage-3 artifact digest: `sha256:a90421e0ec8351a896b039bc7bb9ae94cc9374b41097ac0c714448f8f270b172`.
+- newly generated fooling pairs: **3205**;
+- total represented sound cuts: **4077**;
+- terminal result: **none** — no separating support-4 interface, no master-UNSAT exhaustion, and no global empty-difference fooling pair has been produced;
+- latest durable checkpoint commit: `a10e0f9` on `research/semantic-interface`.
 
-This is progress in search-space elimination, not a new chromatic-number bound.
+This is search-space elimination, not a new chromatic-number bound.
+
+## Run 1 — 2026-09-10
+
+GitHub Actions run [`34436888946`](https://github.com/HeliCorgi/hadwiger-nelson-lab/actions/runs/34436888946) completed all three original long time slices.
+
+It advanced the lab-specific fooling-pair library to 2525 new pairs, for 3397 total sound cuts. No terminal result was produced.
+
+Latest checkpoint commit after Run 1: `5283a5f`.
+
+Stage-3 artifact digest: `sha256:a90421e0ec8351a896b039bc7bb9ae94cc9374b41097ac0c714448f8f270b172`.
+
+## Run 2 — 2026-09-10
+
+GitHub Actions run [`34493404794`](https://github.com/HeliCorgi/hadwiger-nelson-lab/actions/runs/34493404794) used the hardened Node-24 / guarded-slice workflow and completed successfully at the workflow level.
+
+It resumed at iteration 2525 and reached **iteration 3205**, adding **680** new fooling pairs during the run. The cumulative library is therefore 872 validated upstream seeds plus 3205 lab-generated pairs = **4077 sound cuts**.
+
+No `FINAL.json` or `INTERFACE.json` was produced. In particular, Run 2 did **not** establish either existence or nonexistence of a port-free support-4 semantic interface.
+
+The sixth slice reached iteration 3205 at `2026-09-10T19:44:25Z`; the outer 3000-second guard terminated the still-active solver process at about `19:51:18Z`. Because the search was running with `--checkpoint-every 1` and atomic gzip writes, iteration 3205 was already durable and was committed immediately afterward. The timeout is treated only as `UNKNOWN / continue later`, never as SAT or UNSAT evidence.
+
+Latest checkpoint commit after Run 2: `a10e0f9`.
+
+Run-2 artifact:
+
+- artifact id: `10170346817`
+- digest: `sha256:44021dfa60c29f76f61df23e69c24f6469fc5a4c571f8bf1975bde129e8c95c3`
+
+The run also confirms that the Node.js 20 deprecation warning from Run 1 is gone: Run 2 used `actions/checkout@v7`, `actions/setup-python@v7`, and `actions/upload-artifact@v7`.
 
 ## Search method
 
@@ -50,6 +76,6 @@ The oracle asks for an `A` coloring and a `B` coloring with the same complete eq
 
 The workflow uses a pinned upstream commit, validates every seed coloring, writes checkpoints atomically, and treats timeout/UNKNOWN states as **non-results**. A timeout is never converted into SAT or UNSAT evidence.
 
-After Run 1, the workflow was revised to avoid the Node.js 20 deprecation path and to reduce timeout risk: current Node-24 action majors are used, search is executed in shorter guarded slices, the checkpoint is written every completed CEGIS iteration, and each slice is committed before the next one starts.
+Run 2 showed why the guard is necessary: one solver call remained active for several minutes after the last completed CEGIS iteration. The outer timeout safely stopped it without losing the previous checkpoint. Before another large continuation run, the preferred engineering improvement is a sound per-query interruption/UNKNOWN path or a specialized fast four-set candidate generator, while retaining exact SAT for certificate-producing decisions.
 
 See [`RESEARCH.md`](RESEARCH.md) for the mathematical setup and [`HANDOFF.md`](HANDOFF.md) for continuation details and certificate policy.
