@@ -52,6 +52,16 @@ jobs:
               assert s.get_proof() is not None
           print('Glucose4 DRUP logging: OK')
           PY
+      - name: Normalize pinned verts file for analyzer
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('upstream/handoff/data/verts.json')
+          d = json.loads(p.read_text())
+          if isinstance(d, dict):
+              p.write_text(json.dumps(d['verts']))
+          PY
       - name: Run quotient and proof analyses
         run: |
           mkdir -p "$RESULT_DIR"
