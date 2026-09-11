@@ -1,0 +1,42 @@
+{
+  "atom_count": 76245,
+  "checkpoint_iterations": 6094,
+  "checkpoint_status": "RUNNING-AFTER-EXACT-MASTER-CUT",
+  "cut_library_sha256": "ad96cbfd0ee4098e87f0c30ce4e87a2edcea31e46fc447aeee373b463fbcacca",
+  "cut_size_max": 25171,
+  "cut_size_mean": 24607.352147063048,
+  "cut_size_median": 24652,
+  "cut_size_min": 23440,
+  "duplicate_cut_count": 3,
+  "first_pivot_edge_positions": [
+    18,
+    284
+  ],
+  "first_pivot_edge_vertices": [
+    26,
+    316
+  ],
+  "full_pair_count": 6966,
+  "lab_pair_count": 6094,
+  "last_process_stats": {
+    "canonical_prunes": 98498,
+    "pair_states": 150,
+    "quad_leaves": 5796873,
+    "root_edges_completed_this_process": 150,
+    "triple_branch_vertices": 2380422,
+    "triple_incident_prunes": 0,
+    "triple_states": 17254
+  },
+  "method": "exact edge-branching four-set master",
+  "next_root_rank": 150,
+  "nonport_vertex_count": 391,
+  "pivot_cut_index": 6060,
+  "pivot_cut_size": 23440,
+  "pivot_cut_source": "checkpoint:5191",
+  "pivot_root_edge_count": 23440,
+  "seed_pair_count": 872,
+  "status": "RUNNING",
+  "unique_cut_count": 6963,
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8",
+  "version": 1
+}

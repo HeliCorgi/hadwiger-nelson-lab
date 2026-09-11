@@ -1,0 +1,18 @@
+{
+  "cut_library_sha256": "ad96cbfd0ee4098e87f0c30ce4e87a2edcea31e46fc447aeee373b463fbcacca",
+  "exact_master_next_root_rank": 150,
+  "exact_master_status": "RUNNING",
+  "master_history_count": 183,
+  "note": "Full per-iteration history remains in Actions artifact 10263882716; only compact recovery metadata and resumable master state are committed.",
+  "oracle_history_count": 183,
+  "oracle_status_counts": {
+    "SAT-FOOLING-PAIR": 183
+  },
+  "reason": "Run 1 hit the workflow job timeout of 220 minutes before the final git persistence step.",
+  "recovered_iterations": 6094,
+  "recovered_total_cuts": 6966,
+  "repository_iterations_before_recovery": 5910,
+  "source_artifact_digest": "sha256:b0f36dc8fc648915fccc34fd2a121a2877d2934b3a94a934cb82557a876284aa",
+  "source_artifact_id": 10263882716,
+  "source_run": 34581550567
+}
