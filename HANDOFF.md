@@ -1,264 +1,304 @@
-# Handoff — port-free support-4 semantic search
+# Handoff — P2 forcing / port-free semantic search
 
 Last updated: 2026-09-11
 
 ## Scope
 
-This handoff concerns only the current computational lane inherited from `HeliCorgi/five-color-forcing-anatomy`.
+This repository continues the finite five-color forcing program inherited from `HeliCorgi/five-color-forcing-anatomy`.
 
 Pinned upstream commit:
 
 `d1e80998bda337d9fa721f2e96d203ae54e97fc8`
 
-The target question is whether the P2 forcing system admits an equality-based semantic interface supported on at most four vertices that does not use ports 217 or 490.
+The active support-4 lane asks whether the P2 forcing system admits an equality-based semantic interface supported on at most four **non-port** vertices.
 
 Define:
 
 - `A = H* ∧ C88`;
 - `B = H* ∧ (c(217) != c(490))`.
 
-`H*` is the first core from `B5_MULTICORE.json`; `C88` is `C_min` from `B5_P2_LEMMA.json`.
+`H*` is the first minimal core from `B5_MULTICORE.json`; `C88` is `C_min` from `B5_P2_LEMMA.json`.
+
+No result in this handoff is an unconditional finite unit-distance 6-chromatic graph. Nothing here changes the known Hadwiger–Nelson lower bound.
+
+## Verified structural results now merged to `main`
+
+Before continuing the support-4 search, preserve the following proof-level finite statements. They are useful context and must not be lost during branch conflict resolution.
+
+### Quotient criticality
+
+Contract the C88 equality components to obtain `Q = H*/C88`.
+
+- `Q` has 305 vertices and 1599 edges;
+- `Q` is 5-colorable;
+- adding the edge between the quotient classes containing 217 and 490 makes the graph non-5-colorable;
+- deleting any one vertex from that added-edge graph restores 5-colorability;
+- there is no articulation point and no 2-vertex cut;
+- `p`-to-`q` vertex connectivity in `Q` is 6.
+
+Evidence: `results/quotient-critical/analysis.json` and `tools/quotient_critical.py`.
+
+### Six-vertex color-symmetric separator proof
+
+A minimum `p`-`q` separator in quotient-node numbering is
+
+`S = {0, 6, 8, 9, 10, 266}`.
+
+Deleting it leaves a 261-vertex `p` side and a 38-vertex `q` side. Of all 202 canonical equality partitions of the six boundary vertices using at most five colors:
+
+- 2 extend to the `p` side;
+- 81 extend to the `q` side;
+- exactly one extends to both: `012203`.
+
+For this unique common boundary state, both side computations force their port to the same singleton boundary color. Therefore every proper 5-coloring of `Q` satisfies
+
+`c(217) = c(490)`.
+
+Discovery used CaDiCaL. An independent implementation using Glucose4 enumerated all 202 states on both sides and verified the unique intersection and same singleton port color.
+
+Evidence:
+
+- `results/separator-interface/analysis.json`;
+- `results/separator-verify/analysis.json`;
+- `tools/separator_interface.py` and the independent verification workflow.
+
+This is a conditional six-vertex color-symmetric interface proof, not an unconditional geometric gadget.
+
+### Independently checked SAT-level contradiction
+
+For the normalized CNF
+
+`COMMON ∧ A-only ∧ B-only`,
+
+there are 1965 Boolean variables and 13,203 clauses: 12,318 common clauses, 880 C88-side clauses, and 5 `c(217) != c(490)` clauses.
+
+Glucose4 generated an UNSAT DRUP proof. Pinned `drat-trim` commit `2e3b2dc0ecf938addbd779d42877b6ed69d9a985` converted/trimmed it to LRAT, and independent `lrat-check` accepted the LRAT proof.
+
+The dependency cone still contains 11,018 initial clauses and 215,041 learned clauses, all 880 A-only clauses, all 5 B-only clauses, and support from all 393 graph vertices. Therefore proof trimming alone does not expose a small local explanation.
+
+Compact evidence:
+
+- `results/proof-lrat/PARTITION.json`;
+- `results/proof-lrat/LRAT_CONE.json`;
+- `tools/lrat_export.py`.
+
+Full proof artifact: Actions artifact `10185491584` from run `34564305431`, ZIP SHA-256 `fc062d366b78700baf008ef18b8d424a30400717691c8be42f2ff153371c423f`.
 
 ## Why exact four-sets suffice
 
-For a support `S`, the semantic state is the equality partition of colors on `S`. If the projected A-state and B-state sets are disjoint on a support of size at most three, adding arbitrary non-port vertices cannot make two previously different restrictions equal. Therefore any separator with support `<= 3` extends to one on exactly four vertices.
+For a support `S`, the semantic state is the equality partition of colors on `S`. If the projected A-state and B-state sets are disjoint on a support of size at most three, adding arbitrary non-port vertices cannot make two previously different restrictions equal.
 
-Consequently, exhaustion of all non-port four-sets is complete for the support-`<=4` equality-interface question.
+Therefore any separator of support `<=3` extends to a separator on exactly four vertices, and exhaustion of all non-port four-sets is complete for the support-`<=4` equality-interface question.
 
-## CEGIS formulation
+## CEGIS / difference-graph formulation
 
-There are 391 non-port vertices and 76,245 unordered non-port pairs.
+There are 391 non-port vertices and 76,245 unordered non-port pair-atoms.
 
-For each A/B fooling pair `(alpha,beta)`, form its difference graph `D(alpha,beta)`: an edge `{u,v}` is present exactly when
+For each A/B fooling pair `(alpha,beta)`, form its difference graph `D(alpha,beta)` with edge `{u,v}` exactly when
 
 `[alpha(u)=alpha(v)] != [beta(u)=beta(v)]`.
 
-A proposed four-set survives that fooling pair iff its induced `K4` contains at least one edge of `D(alpha,beta)`. Thus the master seeks four vertices whose six internal pairs hit every accumulated difference graph.
+A four-set survives a fooling pair iff one of its six internal pairs belongs to that difference graph. Hence the master problem is a constrained hitting problem: choose four vertices so that their six pair-atoms hit every accumulated difference graph.
 
-The oracle fixes those six equality observables and asks whether an A-model and B-model can agree on all of them.
+The semantic oracle fixes the six equality observables of a proposed four-set and asks whether A and B can agree on them.
 
-- Oracle SAT: save the A/B model pair and add its difference graph as a sound cut.
-- Oracle UNSAT: save the four-set as `INTERFACE.json`; it is a semantic-interface candidate requiring independent verification and geometric translation.
-- Master UNSAT: save `FINAL.json`; this excludes all port-free equality interfaces of support `<=4` for the pinned system.
-- An A/B fooling pair whose difference graph is empty on all 391 non-port vertices would be stronger: it excludes port-free equality interfaces of any support.
+- Oracle SAT: preserve the A/B models and add their difference graph as another sound cut.
+- Oracle UNSAT: write `INTERFACE.json`; this is a semantic-interface candidate and must be independently reconstructed and checked.
+- Exact master UNSAT: write `FINAL.json`; this excludes all port-free equality interfaces of support `<=4` for the pinned system.
+- Empty difference graph on all 391 non-port vertices: stronger terminal fooling pair, excluding port-free equality interfaces of any support.
+- Timeout / decision-budget exhaustion / solver interruption: **UNKNOWN only**.
 
-No timeout, decision-budget exhaustion, or interrupted solver call is evidence for any of the terminal outcomes above.
+## Latest durable state — Run 4 complete
 
-## Latest durable mathematical state
-
-Branch:
+Search branch:
 
 `research/semantic-interface`
 
-Checkpoint path:
+Checkpoint:
 
 `checkpoints/semantic_portfree_s4.json.gz`
 
-Baseline durable checkpoint commit before the hybrid continuation:
+Latest durable checkpoint commit:
 
-`a10e0f9`
+`43915f71caff21b316ba1ebcc901a758d0218ea7`
 
-Counts after Run 2:
+Workflow run:
 
-- 872 validated upstream seed fooling pairs;
-- 3205 new fooling pairs generated in this lab;
-- 4077 represented sound cuts total;
+`34562068005`
+
+Run 4 completed successfully at the workflow level on 2026-09-11.
+
+Final durable counts:
+
+- validated upstream seed fooling pairs: **872**;
+- lab-generated fooling pairs: **5910**;
+- total represented sound cuts: **6782**;
+- Run 4 additions relative to Run 2: **2705** lab fooling pairs;
+- fast candidates sent to the exact oracle in Run 4: **2705**;
+- exact oracle calls in Run 4: **2705**;
+- oracle UNKNOWNs: **0**;
+- unresolved supports at the final checkpoint: **0**;
 - no empty-difference global fooling pair;
-- no oracle-UNSAT four-set;
-- no master-UNSAT exhaustion result.
+- no oracle-UNSAT four-set / `INTERFACE.json`;
+- no exact master-UNSAT / `FINAL.json`;
+- final continuation state: **`MASTER-UNKNOWN`**.
 
-These counts remain the conservative durable mathematical state until a later hybrid-search checkpoint commit is produced. Do not count a running or failed preflight as mathematical progress.
+Run-4 artifact:
 
-## Run 1 — baseline long-slice run
+- id: `10187878072`;
+- digest: `sha256:f32e432c7f4cc8b30ce9ddbc449e9e8b23d863ad0d83772c745ed73cb1be8bcd`.
 
-Workflow run: `34436888946`
+This is the checkpoint to resume from. Do **not** fall back to Run-2 commit `a10e0f9` unless the Run-4 checkpoint itself fails validation.
 
-Run 1 used the original three long solver stages and reached iteration 2525.
+## Run history
 
-Final observed state after Run 1:
+### Run 1
 
-- 872 validated seed fooling pairs;
-- 2525 new fooling pairs;
-- 3397 total sound cuts;
+Workflow `34436888946`.
+
+- 2525 lab fooling pairs;
+- 3397 total cuts;
+- checkpoint `5283a5f`;
 - no terminal result.
 
-Latest checkpoint commit after Run 1:
+### Run 2
 
-`5283a5f`
+Workflow `34493404794`.
 
-Stage-3 artifact:
+Slice endpoints:
 
-- artifact id: `10157101775`
-- digest: `sha256:a90421e0ec8351a896b039bc7bb9ae94cc9374b41097ac0c714448f8f270b172`
+- 2525 -> 2669;
+- 2669 -> 2778;
+- 2778 -> 2922;
+- 2922 -> 3008;
+- 3008 -> 3131;
+- 3131 -> 3205.
 
-The Node.js 20 message in this run was a deprecation warning rather than a failed step.
+Final Run-2 state: 3205 lab pairs + 872 seeds = 4077 cuts. The sixth slice was stopped by the outer guard after iteration 3205 was already atomically checkpointed. No timeout was interpreted as logical evidence.
 
-## Run 2 — hardened guarded-slice run
+### Run 3
 
-Workflow run: `34493404794`
+Workflow `34561883743`.
 
-Run 2 used the revised workflow with Node-24 action majors, six guarded solver slices, atomic checkpoints, and `--checkpoint-every 1`.
+The first hybrid implementation attempted PySAT/CaDiCaL interrupt clearing. `clear_interrupt()` is unsupported in the pinned wrapper. The smoke test failed before production search; the real checkpoint remained untouched. Run 3 contributes zero mathematical progress.
 
-Slice endpoints were:
+### Run 4
 
-- slice 1: 2525 -> 2669;
-- slice 2: 2669 -> 2778;
-- slice 3: 2778 -> 2922;
-- slice 4: 2922 -> 3008;
-- slice 5: 3008 -> 3131;
-- slice 6: 3131 -> 3205.
+Workflow `34562068005`, based on corrected commit `b163d55`.
 
-Thus Run 2 added 680 sound fooling pairs and moved the total from 3397 to 4077 cuts.
+The corrected implementation uses CaDiCaL decision budgets:
 
-No `FINAL.json` or `INTERFACE.json` was produced. The result is therefore **nonterminal**.
+- `dec_budget(N)`;
+- `solve_limited()`;
+- `True` = SAT;
+- `False` = UNSAT;
+- `None` = UNKNOWN / budget exhausted;
+- reset budget afterward.
 
-Run-2 artifact:
+The hybrid candidate path is
 
-- artifact id: `10170346817`
-- digest: `sha256:44021dfa60c29f76f61df23e69c24f6469fc5a4c571f8bf1975bde129e8c95c3`
+`fast pair-coverage bitsets + local search -> exact semantic oracle -> sound cut`.
 
-### Important timeout observation
+Across Run 4, the fast layer generated 2705 usable candidates and the exact oracle resolved all 2705 as SAT, with no oracle UNKNOWNs. The run therefore added 2705 new sound cuts.
 
-The sixth slice started at approximately `19:01:18Z`. Iteration 3205 completed at `19:44:25Z`. No later iteration completed before the outer 3000-second guard fired at approximately `19:51:18Z`.
+At the end, the heuristic candidate layer ceased finding a four-set that hits all current cuts within its search budget. The fallback exact SAT master then exhausted its decision budget and returned `MASTER-UNKNOWN`.
 
-Therefore one solver operation after iteration 3205 consumed at least several minutes without returning a completed CEGIS step. The logs do not distinguish whether that time was spent in the master solve or the oracle solve, so do not attribute the stall to either component without instrumentation.
+### Performance conclusion from Run 4
 
-The timeout protection behaved correctly:
+The bottleneck is now sharply localized:
 
-- iteration 3205 had already been atomically checkpointed;
-- the outer guard terminated only the active process;
-- the checkpoint gzip passed the workflow integrity path and was committed as `a10e0f9`;
-- the timeout was not interpreted as SAT or UNSAT.
+> the current expensive question is whether **any four vertices have six internal pair-atoms whose coverage bitsets jointly hit all 6782 known cuts**.
 
-This validates the checkpoint design, but it also shows that wall-clock slice guards alone are not enough for efficient continuation.
+The semantic oracle is not presently the bottleneck: every Run-4 oracle query completed SAT within budget.
 
-## Hybrid continuation implemented on 2026-09-11
+## Immediate continuation — specialized exact master
 
-The branch was first fast-forwarded to the merged `main` state at merge commit `8fac245` so that the Run-2 checkpoint, documentation, and workflow all had one common base.
+Do **not** spend the next large compute budget merely repeating the same hybrid CEGIS loop from iteration 5910. First replace or supplement the generic SAT master with a specialized exact solver for the current 6782-cut combinatorial problem.
 
-The continuation architecture requested by the Run-2 handoff has now been implemented:
+For each unordered vertex pair `{u,v}`, let
 
-`fast bitset/local-search candidate generator -> exact oracle -> sound cut -> repeat`
+`C[u,v] = bitset of known cuts hit by that pair`.
 
-with the original exact SAT master retained as the completeness backstop.
+For a four-set `{a,b,c,d}`, define
 
-### Fast candidate layer
+`C4 = C[a,b] | C[a,c] | C[a,d] | C[b,c] | C[b,d] | C[c,d]`.
 
-For every one of the 76,245 non-port pair-atoms, the code stores a bitset of accumulated fooling-pair cuts hit by that atom. A four-set can therefore be scored by OR-ing the six bitsets of its `K4` edges and counting uncovered cuts.
+The current exact master question is simply whether some four-set has all 6782 bits set.
 
-A restart/local-improvement search changes one support vertex at a time and looks for a four-set whose six edges hit all currently known cuts. This layer is only a candidate generator:
+Recommended exact-search requirements:
 
-- finding a zero-uncovered four-set is useful, but it is still sent to the exact semantic oracle;
-- failing to find one has no mathematical meaning;
-- heuristic failure can never be promoted to master UNSAT.
+1. **Reuse the packed coverage representation.** Avoid rebuilding the original large SAT master merely to rediscover pair coverage.
+2. **Apply only sound reductions.** Safe examples include pair-coverage dominance and exact upper-bound pruning. Every reduction must preserve the existence/nonexistence of a four-set.
+3. **Use exact branch-and-bound / meet-in-the-middle as the primary candidate.** Precompute pair or triple coverage summaries and prune only when the maximum possible remaining coverage cannot reach all cuts.
+4. **Keep the semantic oracle boundary unchanged.** If the exact combinatorial master finds a four-set, send it to the existing A/B oracle. A master candidate is not itself an interface.
+5. **Treat inability to finish as UNKNOWN.** A wall-clock timeout or resource cap must not be reported as exhaustion.
+6. **If the specialized master proves no four-set exists, retain an independently checkable exhaustion certificate or deterministic reconstruction/checker.** Only then promote the result to support-`<=4` exclusion.
 
-Only the unchanged exact SAT master returning `UNSAT` may certify exhaustion of all support-`<=4` equality interfaces.
+A useful implementation sequence is:
 
-### Instrumentation and UNKNOWN handling
+- add a standalone tool, e.g. `tools/exact_fourset_master.py`, that reads the Run-4 checkpoint and constructs exactly the same 6782 cut-coverage bitsets;
+- verify on random four-sets that its coverage score exactly matches the existing hybrid code;
+- implement deterministic exact search with progress counters/checkpointing;
+- test it first against prefixes of the cut library where surviving four-sets are known to exist;
+- run it on all 6782 cuts;
+- if SAT, feed the resulting support immediately to the semantic oracle and continue CEGIS from 5910;
+- if exact UNSAT, stop normal search and independently certify exhaustion.
 
-The v3 checkpoint format adds:
+## Secondary structural lane
 
-- `unresolved_supports`;
-- `last_support`;
-- counts of master/oracle calls and UNKNOWNs;
-- maximum observed wall time for master and oracle calls;
-- the existing complete list of newly generated fooling pairs.
+The six-vertex separator result is currently the cleanest finite explanation of the conditional P2 same-color relation. It should be preserved independently of the support-4 search outcome.
 
-A support whose oracle solve is UNKNOWN is stored for retry and is **not** blocked by a clause. The fast layer avoids immediately cycling back to unresolved supports, while an exact-master proposal for an unresolved support is retried with a larger budget. This preserves completeness.
+If the support-4 master is eventually proved UNSAT, that result would say only that this particular **port-free equality-interface language** needs support at least five; it would not invalidate the six-vertex quotient separator proof and would not rule out other semantic observables or geometric gadget constructions.
 
-### Run 3 — failed preflight, no mathematical progress
+The eventual Hadwiger–Nelson objective remains geometric: obtain an unconditional forced-mono pair at Euclidean distance at least `1/2`, or an equivalent finite 6-chromatic unit-distance construction. Conditional quotient/SAT statements are intermediate machinery only.
 
-Workflow run: `34561883743`
+## Checkpoint and UNKNOWN policy
 
-Initial hybrid commit: `bcc82a0`.
+The v3 checkpoint contains the complete generated fooling-pair library plus instrumentation fields including `unresolved_supports`, `last_support`, master/oracle call counts, UNKNOWN counts, and maximum observed solve times.
 
-The first implementation attempted wall-clock interruption through PySAT's CaDiCaL wrapper. The smoke test failed before preflight/search with:
+Keep these invariants:
 
-`NotImplementedError: Limited solve is currently unsupported by CaDiCaL.`
-
-The exception arose at `clear_interrupt()` for `python-sat==1.9.dev7`. No search slice started and the real checkpoint was not modified. Run 3 therefore contributes **zero** new fooling pairs and no mathematical result.
-
-Run-3 artifact id: `10184599980`; it contains the pre-existing checkpoint state and is not a newer mathematical checkpoint.
-
-### Corrected decision-budget implementation
-
-Correction commit:
-
-`b163d55edea3ceddd333b48fa3ddb4f5d92ef414`
-
-Rather than relying on the unsupported interrupt-clear path, the solver now uses CaDiCaL decision budgets:
-
-- set `dec_budget(N)`;
-- call `solve_limited()`;
-- `True` = SAT, `False` = UNSAT, `None` = UNKNOWN/budget exhausted;
-- reset the budget after the call.
-
-The production starting budget is 2,000,000 decisions and unresolved supports may be retried up to a 16,000,000-decision cap. Wall-clock time is still measured for diagnostics. The outer GNU timeout remains an independent hard safety guard.
-
-This distinction is important: budget exhaustion is recorded as UNKNOWN and is never interpreted as UNSAT.
-
-### Run 4 — current continuation
-
-Workflow run: `34562068005`
-
-Run 4 is based on correction commit `b163d55`.
-
-Verified before the production search step:
-
-- Node-24 action setup succeeded;
-- dependency installation succeeded;
-- CaDiCaL decision-budget smoke test succeeded;
-- a copied Run-2 checkpoint passed the v2 -> v3 compatibility preflight;
-- the real production checkpoint was not modified by the preflight;
-- the guarded hybrid production step started from iteration 3205 / 4077 cuts.
-
-At the time of this handoff update, Run 4 is in progress. Until a hybrid slice commits a newer checkpoint or writes `FINAL.json` / `INTERFACE.json`, the conservative durable mathematical state remains the Run-2 counts above.
-
-## Performance interpretation
-
-The exact CEGIS search remained productive through Run 2, but individual solve times became highly variable and the accumulated master constraints became expensive.
-
-The hybrid layer is intended to move most routine candidate generation out of the large exact SAT master. The exact master is still periodically/fallback invoked, specifically so the completeness claim remains anchored to an exact solver result rather than to the heuristic search.
-
-The decision budget is a computational control, not a logical assumption. If it is exhausted, the query remains unresolved.
-
-## Timeout policy
-
-The current workflow uses:
-
-1. Node-24 GitHub Action majors (`checkout@v7`, `setup-python@v7`, `upload-artifact@v7`);
-2. six guarded internal solver slices;
-3. an outer GNU `timeout` guard per slice;
-4. `--checkpoint-every 1`;
-5. atomic gzip checkpoint writes (`temp -> os.replace`);
-6. gzip integrity validation before persistence;
-7. commit/push after every completed slice;
-8. decision-budget exhaustion and timeout exit codes treated as continuation states only;
-9. a preflight on a copied checkpoint before production search.
-
-The production checkpoint is therefore not used as a test scratch file.
+- `iterations == len(new_pairs)` for the lab-generated portion;
+- every seed and generated A/B coloring pair must validate against its defining formula;
+- oracle UNKNOWN never generates a blocking clause;
+- heuristic failure never modifies the exact master proof space;
+- writes remain atomic (`temp -> os.replace`) and gzip integrity is checked before persistence;
+- checkpoints are committed after completed guarded slices.
 
 ## Certificate policy
 
 Any terminal result must be independently checked before being promoted to a mathematical claim.
 
-For an interface candidate, preserve the exact four vertex IDs, all six equality atoms, pinned upstream SHA, and an independently reconstructed UNSAT query. Prefer a second SAT solver and then a small standalone certificate/checker.
+For `INTERFACE.json`:
 
-For master UNSAT, preserve the complete fooling-pair library or an independently checkable reduced covering certificate. The gzip checkpoint is sufficient to resume computation but should not by itself be treated as a publication-grade UNSAT certificate.
+- preserve the exact four vertex IDs;
+- preserve all six equality observables;
+- preserve the pinned upstream SHA;
+- independently reconstruct the oracle query;
+- check UNSAT with a second solver and preferably a standalone certificate/checker;
+- only after that begin geometric interpretation.
 
-Lean should be used only after the finite combinatorial statement and its certificate format have stabilized. Formalizing a moving SAT search state would add little value.
+For exact master UNSAT / `FINAL.json`:
 
-## Immediate continuation
+- preserve the full fooling-pair/cut library or a reduced exact covering certificate;
+- provide a deterministic standalone checker for the claimed exhaustion;
+- independently rerun/reconstruct the exhaustion before documenting it as a finite theorem.
 
-If Run 4 has produced a committed checkpoint after this document was written, use that newer checkpoint rather than `a10e0f9`.
+For a global empty-difference fooling pair:
 
-Otherwise resume from `a10e0f9` / `checkpoints/semantic_portfree_s4.json.gz` with the corrected hybrid code at or after `b163d55`.
+- independently validate both A and B colorings;
+- verify identical equality pattern on all 391 non-port vertices.
 
-Do not regenerate the 3205 lab fooling pairs unless checkpoint validation fails. Do not permanently block any support solely because of UNKNOWN, decision-budget exhaustion, or wall-clock timeout.
+Lean is appropriate only after the finite statement and certificate format stabilize. Do not formalize a moving heuristic search state.
 
-On a terminal result:
+## Resume checklist
 
-1. stop ordinary search;
-2. independently rebuild and verify the decisive SAT/UNSAT query;
-3. preserve the exact finite certificate data;
-4. only then update the public mathematical claim or begin Lean formalization.
+When continuing from this handoff:
+
+1. use checkpoint commit `43915f71caff21b316ba1ebcc901a758d0218ea7`;
+2. confirm `5910` lab pairs + `872` seeds = `6782` cuts;
+3. confirm no `FINAL.json` / `INTERFACE.json` is present;
+4. validate the checkpoint gzip and historical invariant;
+5. implement/test the specialized exact four-set master before launching another long generic CEGIS run;
+6. on a found four-set, return to the exact semantic oracle;
+7. on any terminal result, stop and independently verify before making a stronger mathematical claim.
