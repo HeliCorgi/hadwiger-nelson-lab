@@ -1,0 +1,30 @@
+{
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8",
+  "nv": 1965,
+  "common_clause_count": 12318,
+  "A_only_clause_count": 880,
+  "B_only_clause_count": 5,
+  "total_clause_count": 13203,
+  "clause_id_ranges": {
+    "common": [
+      1,
+      12318
+    ],
+    "A_only": [
+      12319,
+      13198
+    ],
+    "B_only": [
+      13199,
+      13203
+    ]
+  },
+  "glucose_stats": {
+    "restarts": 682,
+    "conflicts": 335562,
+    "decisions": 509691,
+    "propagations": 43916942
+  },
+  "drup_lines": 607967,
+  "cadical_unsat_recheck": true
+}
