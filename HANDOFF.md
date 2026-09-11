@@ -42,9 +42,9 @@ The oracle fixes those six equality observables and asks whether an A-model and 
 - Master UNSAT: save `FINAL.json`; this excludes all port-free equality interfaces of support `<=4` for the pinned system.
 - An A/B fooling pair whose difference graph is empty on all 391 non-port vertices would be stronger: it excludes port-free equality interfaces of any support.
 
-No timeout or interrupted solver call is evidence for any of the terminal outcomes above.
+No timeout, decision-budget exhaustion, or interrupted solver call is evidence for any of the terminal outcomes above.
 
-## Latest durable state
+## Latest durable mathematical state
 
 Branch:
 
@@ -54,11 +54,11 @@ Checkpoint path:
 
 `checkpoints/semantic_portfree_s4.json.gz`
 
-Latest durable checkpoint commit:
+Baseline durable checkpoint commit before the hybrid continuation:
 
 `a10e0f9`
 
-Current counts after Run 2:
+Counts after Run 2:
 
 - 872 validated upstream seed fooling pairs;
 - 3205 new fooling pairs generated in this lab;
@@ -67,7 +67,7 @@ Current counts after Run 2:
 - no oracle-UNSAT four-set;
 - no master-UNSAT exhaustion result.
 
-This is the state from which the next continuation must resume.
+These counts remain the conservative durable mathematical state until a later hybrid-search checkpoint commit is produced. Do not count a running or failed preflight as mathematical progress.
 
 ## Run 1 — baseline long-slice run
 
@@ -132,46 +132,111 @@ The timeout protection behaved correctly:
 
 This validates the checkpoint design, but it also shows that wall-clock slice guards alone are not enough for efficient continuation.
 
+## Hybrid continuation implemented on 2026-09-11
+
+The branch was first fast-forwarded to the merged `main` state at merge commit `8fac245` so that the Run-2 checkpoint, documentation, and workflow all had one common base.
+
+The continuation architecture requested by the Run-2 handoff has now been implemented:
+
+`fast bitset/local-search candidate generator -> exact oracle -> sound cut -> repeat`
+
+with the original exact SAT master retained as the completeness backstop.
+
+### Fast candidate layer
+
+For every one of the 76,245 non-port pair-atoms, the code stores a bitset of accumulated fooling-pair cuts hit by that atom. A four-set can therefore be scored by OR-ing the six bitsets of its `K4` edges and counting uncovered cuts.
+
+A restart/local-improvement search changes one support vertex at a time and looks for a four-set whose six edges hit all currently known cuts. This layer is only a candidate generator:
+
+- finding a zero-uncovered four-set is useful, but it is still sent to the exact semantic oracle;
+- failing to find one has no mathematical meaning;
+- heuristic failure can never be promoted to master UNSAT.
+
+Only the unchanged exact SAT master returning `UNSAT` may certify exhaustion of all support-`<=4` equality interfaces.
+
+### Instrumentation and UNKNOWN handling
+
+The v3 checkpoint format adds:
+
+- `unresolved_supports`;
+- `last_support`;
+- counts of master/oracle calls and UNKNOWNs;
+- maximum observed wall time for master and oracle calls;
+- the existing complete list of newly generated fooling pairs.
+
+A support whose oracle solve is UNKNOWN is stored for retry and is **not** blocked by a clause. The fast layer avoids immediately cycling back to unresolved supports, while an exact-master proposal for an unresolved support is retried with a larger budget. This preserves completeness.
+
+### Run 3 — failed preflight, no mathematical progress
+
+Workflow run: `34561883743`
+
+Initial hybrid commit: `bcc82a0`.
+
+The first implementation attempted wall-clock interruption through PySAT's CaDiCaL wrapper. The smoke test failed before preflight/search with:
+
+`NotImplementedError: Limited solve is currently unsupported by CaDiCaL.`
+
+The exception arose at `clear_interrupt()` for `python-sat==1.9.dev7`. No search slice started and the real checkpoint was not modified. Run 3 therefore contributes **zero** new fooling pairs and no mathematical result.
+
+Run-3 artifact id: `10184599980`; it contains the pre-existing checkpoint state and is not a newer mathematical checkpoint.
+
+### Corrected decision-budget implementation
+
+Correction commit:
+
+`b163d55edea3ceddd333b48fa3ddb4f5d92ef414`
+
+Rather than relying on the unsupported interrupt-clear path, the solver now uses CaDiCaL decision budgets:
+
+- set `dec_budget(N)`;
+- call `solve_limited()`;
+- `True` = SAT, `False` = UNSAT, `None` = UNKNOWN/budget exhausted;
+- reset the budget after the call.
+
+The production starting budget is 2,000,000 decisions and unresolved supports may be retried up to a 16,000,000-decision cap. Wall-clock time is still measured for diagnostics. The outer GNU timeout remains an independent hard safety guard.
+
+This distinction is important: budget exhaustion is recorded as UNKNOWN and is never interpreted as UNSAT.
+
+### Run 4 — current continuation
+
+Workflow run: `34562068005`
+
+Run 4 is based on correction commit `b163d55`.
+
+Verified before the production search step:
+
+- Node-24 action setup succeeded;
+- dependency installation succeeded;
+- CaDiCaL decision-budget smoke test succeeded;
+- a copied Run-2 checkpoint passed the v2 -> v3 compatibility preflight;
+- the real production checkpoint was not modified by the preflight;
+- the guarded hybrid production step started from iteration 3205 / 4077 cuts.
+
+At the time of this handoff update, Run 4 is in progress. Until a hybrid slice commits a newer checkpoint or writes `FINAL.json` / `INTERFACE.json`, the conservative durable mathematical state remains the Run-2 counts above.
+
 ## Performance interpretation
 
-The exact CEGIS search remains productive, but individual solve times are highly variable and the accumulated master constraints are becoming expensive.
+The exact CEGIS search remained productive through Run 2, but individual solve times became highly variable and the accumulated master constraints became expensive.
 
-Run 2 generated 680 new cuts in roughly six 45-minute internal windows. The last slice generated only 74 completed new cuts and ended while another solver operation was still active. Re-running the exact same workflow is sound, but it is increasingly compute-inefficient.
+The hybrid layer is intended to move most routine candidate generation out of the large exact SAT master. The exact master is still periodically/fallback invoked, specifically so the completeness claim remains anchored to an exact solver result rather than to the heuristic search.
 
-The combinatorial master can be restated cleanly: find a 4-set `S` such that for every accumulated difference graph `D_t`, at least one of the six pairs in `K4[S]` lies in `D_t`. This suggests separating candidate generation from certificate production.
-
-## Recommended next implementation
-
-Before another large continuation run, prefer the following order.
-
-1. Add timing/instrumentation around `master.solve()` and `oracle_for_support()` so future stalls are attributable.
-2. Add a sound per-query interruption path. A timed-out query must return `UNKNOWN` and be recorded for retry; it must never be converted into SAT, UNSAT, or a permanent blocking clause.
-3. Implement a specialized bitset/local-search four-set candidate generator over the 4077 accumulated difference graphs. This may be heuristic for finding candidates quickly.
-4. Retain exact SAT as the completeness backstop. Only exact master UNSAT may support the claim that support `<=4` has been exhausted.
-5. If a small set of supports repeatedly time out in the oracle, place them in a separate unresolved queue and solve them independently with longer budgets / a second solver rather than silently skipping them.
-
-A useful architecture is therefore:
-
-`fast candidate generator -> exact oracle -> sound cut -> repeat`,
-
-with the current exact SAT master periodically invoked as the exhaustion checker.
-
-Do **not** permanently discard a four-set merely because one solver invocation timed out; doing so would destroy completeness.
+The decision budget is a computational control, not a logical assumption. If it is exhausted, the query remains unresolved.
 
 ## Timeout policy
 
 The current workflow uses:
 
 1. Node-24 GitHub Action majors (`checkout@v7`, `setup-python@v7`, `upload-artifact@v7`);
-2. six short internal solver slices;
+2. six guarded internal solver slices;
 3. an outer GNU `timeout` guard per slice;
 4. `--checkpoint-every 1`;
 5. atomic gzip checkpoint writes (`temp -> os.replace`);
 6. gzip integrity validation before persistence;
 7. commit/push after every completed slice;
-8. timeout exit codes treated as continuation states only.
+8. decision-budget exhaustion and timeout exit codes treated as continuation states only;
+9. a preflight on a copied checkpoint before production search.
 
-Run 2 demonstrated that this is safe against loss of completed work. The next engineering improvement should be per-query interruption rather than simply making the outer timeout longer.
+The production checkpoint is therefore not used as a test scratch file.
 
 ## Certificate policy
 
@@ -179,14 +244,21 @@ Any terminal result must be independently checked before being promoted to a mat
 
 For an interface candidate, preserve the exact four vertex IDs, all six equality atoms, pinned upstream SHA, and an independently reconstructed UNSAT query. Prefer a second SAT solver and then a small standalone certificate/checker.
 
-For master UNSAT, preserve the complete fooling-pair library or an independently checkable reduced covering certificate. The current gzip checkpoint is sufficient to resume computation but should not by itself be treated as a publication-grade UNSAT certificate.
+For master UNSAT, preserve the complete fooling-pair library or an independently checkable reduced covering certificate. The gzip checkpoint is sufficient to resume computation but should not by itself be treated as a publication-grade UNSAT certificate.
 
 Lean should be used only after the finite combinatorial statement and its certificate format have stabilized. Formalizing a moving SAT search state would add little value.
 
 ## Immediate continuation
 
-Resume from commit `a10e0f9` / `checkpoints/semantic_portfree_s4.json.gz`.
+If Run 4 has produced a committed checkpoint after this document was written, use that newer checkpoint rather than `a10e0f9`.
 
-Do not restart from Run-1 artifacts or regenerate the 3205 lab fooling pairs unless checkpoint validation fails.
+Otherwise resume from `a10e0f9` / `checkpoints/semantic_portfree_s4.json.gz` with the corrected hybrid code at or after `b163d55`.
 
-Preferred next step is **instrumentation + per-query UNKNOWN handling + faster four-set candidate generation**, followed by another guarded Actions run. If no code changes are made, the existing workflow can still be rerun soundly from iteration 3205, but expect diminishing throughput and possible repeated long single-query stalls.
+Do not regenerate the 3205 lab fooling pairs unless checkpoint validation fails. Do not permanently block any support solely because of UNKNOWN, decision-budget exhaustion, or wall-clock timeout.
+
+On a terminal result:
+
+1. stop ordinary search;
+2. independently rebuild and verify the decisive SAT/UNSAT query;
+3. preserve the exact finite certificate data;
+4. only then update the public mathematical claim or begin Lean formalization.
