@@ -19,16 +19,16 @@
   "full_pair_count": 7008,
   "lab_pair_count": 6136,
   "last_process_stats": {
-    "canonical_prunes": 13029915,
-    "pair_states": 1142,
-    "quad_leaves": 45247293,
-    "root_edges_completed_this_process": 1141,
-    "triple_branch_vertices": 31672225,
+    "canonical_prunes": 15306111,
+    "pair_states": 1138,
+    "quad_leaves": 43107539,
+    "root_edges_completed_this_process": 1137,
+    "triple_branch_vertices": 31911061,
     "triple_incident_prunes": 0,
-    "triple_states": 179009
+    "triple_states": 180343
   },
   "method": "exact edge-branching four-set master",
-  "next_root_rank": 3640,
+  "next_root_rank": 4777,
   "nonport_vertex_count": 391,
   "pivot_cut_index": 6060,
   "pivot_cut_size": 23440,
