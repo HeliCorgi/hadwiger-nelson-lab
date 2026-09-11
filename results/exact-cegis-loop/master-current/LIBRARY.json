@@ -1,11 +1,11 @@
 {
   "atom_count": 76245,
-  "checkpoint_iterations": 6135,
+  "checkpoint_iterations": 6136,
   "checkpoint_status": "RUNNING-AFTER-EXACT-MASTER-CUT",
-  "cut_library_sha256": "6c4b00a7d071bf0151fe64db800520d7efae20eb20da09209df316f2f6491573",
+  "cut_library_sha256": "16785133608746bcf8b72ba3d864fcc88e4aa4948704c31e5fdfa69b6c53f9dd",
   "cut_size_max": 25171,
-  "cut_size_mean": 24607.361364934324,
-  "cut_size_median": 24653.0,
+  "cut_size_mean": 24607.362455389008,
+  "cut_size_median": 24653,
   "cut_size_min": 23440,
   "duplicate_cut_count": 3,
   "first_pivot_edge_positions": [
@@ -16,14 +16,14 @@
     26,
     316
   ],
-  "full_pair_count": 7007,
-  "lab_pair_count": 6135,
+  "full_pair_count": 7008,
+  "lab_pair_count": 6136,
   "nonport_vertex_count": 391,
   "pivot_cut_index": 6060,
   "pivot_cut_size": 23440,
   "pivot_cut_source": "checkpoint:5191",
   "pivot_root_edge_count": 23440,
   "seed_pair_count": 872,
-  "unique_cut_count": 7004,
+  "unique_cut_count": 7005,
   "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8"
 }
