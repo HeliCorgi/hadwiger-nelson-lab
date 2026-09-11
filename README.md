@@ -16,6 +16,8 @@ Whenever a search produces a lemma-like or theorem-like mathematical statement, 
 
 Large reproducible SAT proof traces should normally remain GitHub Actions artifacts rather than Git blobs. The repository retains regeneration code, compact metadata, hashes/artifact IDs, and the human-readable mathematical claim.
 
+Potentially interesting structure should also be preserved even when it is not yet a theorem or a new lower bound. See [`STRUCTURAL_NOTES.md`](STRUCTURAL_NOTES.md) for human-readable notes separating verified finite statements, exact computational observations, empirical patterns, and conjectural interpretations. The working rule is to prefer an explanation a human can inspect over an isolated solver verdict whenever such a compression can be found.
+
 ## Verified mathematical/computational result log
 
 All statements below use upstream commit
