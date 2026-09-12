@@ -1,0 +1,76 @@
+name: separator-left-equality-class-cut-routes
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/separator-left-equality-class-cut-routes.yml'
+      - 'tools/separator_left_equality_class_cut_routes.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m py_compile tools/separator_left_equality_class_cut_routes.py
+      - name: Scan equality-class separator routes
+        run: |
+          mkdir -p results/separator-left-equality-class-cut-routes
+          python tools/separator_left_equality_class_cut_routes.py \
+            --data-dir upstream/handoff/data \
+            --out results/separator-left-equality-class-cut-routes/analysis.json
+      - name: Write summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('results/separator-left-equality-class-cut-routes/analysis.json').read_text())
+          lines=['# Equality-class separator routes','']
+          for k,v in d['results'].items():
+              lines += [f"## {k}",
+                        f"- class size: **{len(v['equality_class'])}**; pair cuts min/median/max = {v['min_cut_min']}/{v['min_cut_median']}/{v['min_cut_max']}",
+                        f"- pairs with min cut <=8: **{len(v['pairs_with_cut_le_8'])}**",
+                        f"- best minimax route score (known local K4 edges cost 0): **{v['best_minimax_route_score']}**",
+                        f"- route: `{v['best_minimax_route']}`",
+                        f"- route edges: `{[(e['pair'],e['min_cut'],e['is_known_local_k4_equality']) for e in v['best_minimax_route_edges']]}`",'']
+          Path('results/separator-left-equality-class-cut-routes/SUMMARY.md').write_text('\n'.join(lines)+'\n')
+          PY
+      - name: Commit result
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add results/separator-left-equality-class-cut-routes
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record equality-class cut routes [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: separator-left-equality-class-cut-routes-${{ github.run_id }}
+          path: results/separator-left-equality-class-cut-routes
+          if-no-files-found: error
+          retention-days: 30
