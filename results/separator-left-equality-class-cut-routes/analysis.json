@@ -1,0 +1,510 @@
+{
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8",
+  "left_bag_size": 267,
+  "results": {
+    "5-6": {
+      "equality_class": [
+        3,
+        5,
+        6,
+        22,
+        33,
+        54,
+        63,
+        65,
+        86,
+        189,
+        210,
+        222,
+        252
+      ],
+      "pair_count": 78,
+      "min_cut_min": 10,
+      "min_cut_median": 10,
+      "min_cut_max": 21,
+      "pairs_with_cut_le_8": [],
+      "known_local_k4_edges": [
+        [
+          5,
+          22
+        ]
+      ],
+      "best_minimax_route_score": 10,
+      "best_minimax_route": [
+        5,
+        22,
+        6
+      ],
+      "best_minimax_route_edges": [
+        {
+          "pair": [
+            5,
+            22
+          ],
+          "min_cut": 10,
+          "route_weight": 0,
+          "separator_qnodes": [
+            0,
+            4,
+            8,
+            17,
+            21,
+            30,
+            59,
+            68,
+            105,
+            223
+          ],
+          "u_component_size": 256,
+          "v_component_size": 1,
+          "other_component_sizes": [],
+          "is_known_local_k4_equality": true
+        },
+        {
+          "pair": [
+            6,
+            22
+          ],
+          "min_cut": 10,
+          "route_weight": 10,
+          "separator_qnodes": [
+            0,
+            4,
+            8,
+            17,
+            21,
+            30,
+            59,
+            68,
+            105,
+            223
+          ],
+          "u_component_size": 256,
+          "v_component_size": 1,
+          "other_component_sizes": [],
+          "is_known_local_k4_equality": false
+        }
+      ]
+    },
+    "8-9": {
+      "equality_class": [
+        1,
+        8,
+        9,
+        17,
+        19,
+        55,
+        61,
+        71,
+        72,
+        74,
+        82,
+        100,
+        104
+      ],
+      "pair_count": 78,
+      "min_cut_min": 7,
+      "min_cut_median": 14,
+      "min_cut_max": 26,
+      "pairs_with_cut_le_8": [
+        {
+          "pair": [
+            1,
+            104
+          ],
+          "min_cut": 7,
+          "separator_qnodes": [
+            4,
+            5,
+            33,
+            62,
+            68,
+            78,
+            226
+          ]
+        },
+        {
+          "pair": [
+            8,
+            104
+          ],
+          "min_cut": 7,
+          "separator_qnodes": [
+            4,
+            5,
+            33,
+            62,
+            68,
+            78,
+            226
+          ]
+        },
+        {
+          "pair": [
+            9,
+            104
+          ],
+          "min_cut": 7,
+          "separator_qnodes": [
+            4,
+            5,
+            33,
+            62,
+            68,
+            78,
+            226
+          ]
+        },
+        {
+          "pair": [
+            17,
+            104
+          ],
+          "min_cut": 7,
+          "separator_qnodes": [
+            4,
+            5,
+            33,
+            62,
+            68,
+            78,
+            226
+          ]
+        },
+        {
+          "pair": [
+            19,
+            104
+          ],
+          "min_cut": 7,
+          "separator_qnodes": [
+            4,
+            5,
+            33,
+            62,
+            68,
+            78,
+            226
+          ]
+        },
+        {
+          "pair": [
+            55,
+            104
+          ],
+          "min_cut": 7,
+          "separator_qnodes": [
+            4,
+            5,
+            33,
+            62,
+            68,
+            78,
+            226
+          ]
+        },
+        {
+          "pair": [
+            61,
+            104
+          ],
+          "min_cut": 7,
+          "separator_qnodes": [
+            4,
+            5,
+            33,
+            62,
+            68,
+            78,
+            226
+          ]
+        },
+        {
+          "pair": [
+            71,
+            104
+          ],
+          "min_cut": 7,
+          "separator_qnodes": [
+            4,
+            5,
+            33,
+            62,
+            68,
+            78,
+            226
+          ]
+        },
+        {
+          "pair": [
+            72,
+            104
+          ],
+          "min_cut": 7,
+          "separator_qnodes": [
+            4,
+            5,
+            33,
+            62,
+            68,
+            78,
+            226
+          ]
+        },
+        {
+          "pair": [
+            74,
+            104
+          ],
+          "min_cut": 7,
+          "separator_qnodes": [
+            4,
+            5,
+            33,
+            62,
+            68,
+            78,
+            226
+          ]
+        },
+        {
+          "pair": [
+            82,
+            104
+          ],
+          "min_cut": 7,
+          "separator_qnodes": [
+            4,
+            5,
+            33,
+            62,
+            68,
+            78,
+            226
+          ]
+        },
+        {
+          "pair": [
+            100,
+            104
+          ],
+          "min_cut": 7,
+          "separator_qnodes": [
+            4,
+            5,
+            33,
+            62,
+            68,
+            78,
+            226
+          ]
+        }
+      ],
+      "known_local_k4_edges": [
+        [
+          8,
+          17
+        ]
+      ],
+      "best_minimax_route_score": 7,
+      "best_minimax_route": [
+        8,
+        104,
+        9
+      ],
+      "best_minimax_route_edges": [
+        {
+          "pair": [
+            8,
+            104
+          ],
+          "min_cut": 7,
+          "route_weight": 7,
+          "separator_qnodes": [
+            4,
+            5,
+            33,
+            62,
+            68,
+            78,
+            226
+          ],
+          "u_component_size": 259,
+          "v_component_size": 1,
+          "other_component_sizes": [],
+          "is_known_local_k4_equality": false
+        },
+        {
+          "pair": [
+            9,
+            104
+          ],
+          "min_cut": 7,
+          "route_weight": 7,
+          "separator_qnodes": [
+            4,
+            5,
+            33,
+            62,
+            68,
+            78,
+            226
+          ],
+          "u_component_size": 259,
+          "v_component_size": 1,
+          "other_component_sizes": [],
+          "is_known_local_k4_equality": false
+        }
+      ]
+    },
+    "0-10": {
+      "equality_class": [
+        0,
+        10,
+        39,
+        62,
+        98,
+        105,
+        214,
+        251
+      ],
+      "pair_count": 28,
+      "min_cut_min": 5,
+      "min_cut_median": 10,
+      "min_cut_max": 21,
+      "pairs_with_cut_le_8": [
+        {
+          "pair": [
+            0,
+            10
+          ],
+          "min_cut": 5,
+          "separator_qnodes": [
+            14,
+            18,
+            54,
+            55,
+            256
+          ]
+        },
+        {
+          "pair": [
+            10,
+            39
+          ],
+          "min_cut": 5,
+          "separator_qnodes": [
+            14,
+            18,
+            54,
+            55,
+            256
+          ]
+        },
+        {
+          "pair": [
+            10,
+            62
+          ],
+          "min_cut": 5,
+          "separator_qnodes": [
+            14,
+            18,
+            54,
+            55,
+            256
+          ]
+        },
+        {
+          "pair": [
+            10,
+            98
+          ],
+          "min_cut": 5,
+          "separator_qnodes": [
+            14,
+            18,
+            54,
+            55,
+            256
+          ]
+        },
+        {
+          "pair": [
+            10,
+            105
+          ],
+          "min_cut": 5,
+          "separator_qnodes": [
+            14,
+            18,
+            54,
+            55,
+            256
+          ]
+        },
+        {
+          "pair": [
+            10,
+            214
+          ],
+          "min_cut": 5,
+          "separator_qnodes": [
+            14,
+            18,
+            54,
+            55,
+            256
+          ]
+        },
+        {
+          "pair": [
+            10,
+            251
+          ],
+          "min_cut": 5,
+          "separator_qnodes": [
+            14,
+            18,
+            54,
+            55,
+            256
+          ]
+        }
+      ],
+      "known_local_k4_edges": [
+        [
+          0,
+          62
+        ]
+      ],
+      "best_minimax_route_score": 5,
+      "best_minimax_route": [
+        0,
+        10
+      ],
+      "best_minimax_route_edges": [
+        {
+          "pair": [
+            0,
+            10
+          ],
+          "min_cut": 5,
+          "route_weight": 5,
+          "separator_qnodes": [
+            14,
+            18,
+            54,
+            55,
+            256
+          ],
+          "u_component_size": 261,
+          "v_component_size": 1,
+          "other_component_sizes": [],
+          "is_known_local_k4_equality": false
+        }
+      ]
+    }
+  },
+  "interpretation": "Every listed class consists of vertices already independently verified to be forced equal in all 5-colorings of the 267-qnode left bag. This scan asks whether the target equality can be factored through intermediate equal-class vertices so that each nonlocal step crosses a much smaller vertex separator. Known one-step K4 common-neighborhood equalities are assigned route weight zero; all other route edges are weighted by exact minimum vertex-cut size."
+}
