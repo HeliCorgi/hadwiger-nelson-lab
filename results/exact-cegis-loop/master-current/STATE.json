@@ -1,12 +1,11 @@
 {
   "atom_count": 76245,
-  "checkpoint_iterations": 6138,
+  "checkpoint_iterations": 6139,
   "checkpoint_status": "RUNNING-AFTER-EXACT-MASTER-CUT",
-  "covers_all_unique_cuts": true,
-  "cut_library_sha256": "1eed49867f86da07af17add1fd5acc59631961d669062b73b854765ae7831ef9",
+  "cut_library_sha256": "a58cb579f1fa725107ef10a776b290c089a8ff0cfc12dc4d75fa1fe82ba5ccfa",
   "cut_size_max": 25171,
-  "cut_size_mean": 24607.383188240332,
-  "cut_size_median": 24653,
+  "cut_size_mean": 24607.330764840182,
+  "cut_size_median": 24652.5,
   "cut_size_min": 23440,
   "duplicate_cut_count": 3,
   "first_pivot_edge_positions": [
@@ -17,56 +16,29 @@
     26,
     316
   ],
-  "full_pair_count": 7010,
-  "lab_pair_count": 6138,
+  "full_pair_count": 7011,
+  "lab_pair_count": 6139,
   "last_process_stats": {
-    "canonical_prunes": 16292689,
-    "pair_states": 505,
-    "quad_leaves": 4012465,
-    "root_edges_completed_this_process": 505,
-    "triple_branch_vertices": 8484050,
+    "canonical_prunes": 65018651,
+    "pair_states": 1998,
+    "quad_leaves": 13695186,
+    "root_edges_completed_this_process": 1997,
+    "triple_branch_vertices": 31974840,
     "triple_incident_prunes": 0,
-    "triple_states": 41641
+    "triple_states": 154013
   },
   "method": "exact edge-branching four-set master with monotone cut-extension resume",
-  "next_root_rank": 21442,
-  "next_step": "Send this support to the exact A/B semantic oracle. Oracle SAT adds another sound fooling-pair cut; oracle UNSAT yields a support-4 interface candidate.",
+  "next_root_rank": 23439,
   "nonport_vertex_count": 391,
   "pivot_cut_index": 6060,
   "pivot_cut_size": 23440,
   "pivot_cut_source": "checkpoint:5191",
   "pivot_root_edge_count": 23440,
-  "resume_mode": "resume-same-library-v2",
-  "root_edge_positions": [
-    270,
-    342
-  ],
+  "resume_mode": "resume-monotone-prefix-v2",
   "root_order_sha256": "f72cdbf49f6a06929ebae1efe58b795b466c1ef4bd5bfa2f923ee6b3029532a7",
-  "root_rank": 21442,
-  "search_stats": {
-    "canonical_prunes": 16293187,
-    "pair_states": 506,
-    "quad_leaves": 4012499,
-    "root_edges_completed_this_process": 505,
-    "triple_branch_vertices": 8484050,
-    "triple_incident_prunes": 0,
-    "triple_states": 41641
-  },
   "seed_pair_count": 872,
-  "status": "FOURSET-CANDIDATE",
-  "support_positions": [
-    4,
-    270,
-    342,
-    376
-  ],
-  "support_vertices": [
-    4,
-    301,
-    402,
-    464
-  ],
-  "unique_cut_count": 7007,
+  "status": "TIME-SLICE-COMPLETE",
+  "unique_cut_count": 7008,
   "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8",
   "version": 2
 }
