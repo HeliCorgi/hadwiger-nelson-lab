@@ -1,6 +1,6 @@
 # Handoff — P2 forcing / port-free semantic search
 
-Last updated: 2026-09-11
+Last updated: 2026-09-12
 
 ## Scope
 
@@ -10,7 +10,7 @@ Pinned upstream commit:
 
 `d1e80998bda337d9fa721f2e96d203ae54e97fc8`
 
-The active support-4 lane asks whether the P2 forcing system admits an equality-based semantic interface supported on at most four **non-port** vertices.
+The support-4 lane asks whether the P2 forcing system admits an equality-based semantic interface supported on at most four **non-port** vertices.
 
 Define:
 
@@ -37,12 +37,12 @@ Examples worth recording include:
 - local graph-theoretic lemmas such as common-neighborhood forcing;
 - geometric regularities in coordinates, distances, rotations, reflections, lattice structure, or repeated unit-distance motifs;
 - near-misses that are one state / one edge / one constraint away from becoming a separator or obstruction;
-- computational phase changes, such as a search suddenly collapsing from many possibilities to a tiny exact interface.
+- computational phase changes, including exact exhaustion of a previously heuristic search language.
 
 Every such note must be labeled by evidence level:
 
 1. **proved / independently verified finite statement** — exact exhaustive computation or proof certificate, preferably independently checked;
-2. **exact computational observation** — exact for the stated finite sample/system, but not independently rechecked;
+2. **exact computational observation** — exact for the stated finite system, but not independently rechecked;
 3. **empirical pattern** — observed in sampled colorings/search trajectories only;
 4. **conjectural interpretation** — a proposed explanation or possible geometric significance.
 
@@ -55,11 +55,11 @@ For each recorded item include, when available:
 - independent-verification status;
 - an explicit warning if it is conditional on `C88`, quotient contraction, sampled colorings, or another non-geometric assumption.
 
-Do **not** wait for the user to ask whether something is interesting. Preserve it first, with scope clearly stated. Conversely, do not promote an empirical pattern to a theorem merely because it looks striking.
+Do **not** wait for the user to ask whether something is interesting. Preserve it first, with scope clearly stated. Conversely, do not promote an empirical pattern or a single-implementation exact result to a theorem merely because it looks striking.
 
 For geometric observations, also record exact coordinates/distances when practical and state explicitly whether the object is already a genuine unit-distance construction or only an abstract/conditional graph pattern.
 
-## Verified structural results now merged to `main`
+## Verified structural results already merged to `main`
 
 ### Quotient criticality
 
@@ -124,13 +124,12 @@ Full proof artifact: Actions artifact `10185491584` from run `34564305431`, ZIP 
 
 These are summarized more fully in `STRUCTURAL_NOTES.md`.
 
-- The six-boundary state space collapses very asymmetrically: the 261-vertex `p` side permits only `012202` and `012203`, while the 38-vertex `q` side permits 81 states. Their intersection is the single state `012203`. This is an unusually sharp finite interface.
+- The six-boundary state space collapses very asymmetrically: the 261-vertex `p` side permits only `012202` and `012203`, while the 38-vertex `q` side permits 81 states. Their intersection is the single state `012203`.
 - Exact port-relation scanning found 20 quotient vertices forced to the same color as the port class containing 217.
 - Among those forced-equal classes, there is a clean local lemma: `p` and qnode 22 are forced equal because their common neighborhood is exactly a `K4`.
-- In 300 sampled 5-colorings of the quotient, the required two-color Kempe connectivity between the two ports repeatedly used the same four shortest path skeletons. This is currently an empirical structural pattern, not a theorem.
-- Proof-guided color-symmetric support searches at sizes 4, 5, and 6 repeatedly produced candidates whose A/B projection overlap was only one state. These are near-separators but not certified interfaces.
-
-Future work should add comparable observations automatically when they appear.
+- In 300 sampled 5-colorings of the quotient, the required two-color Kempe connectivity between the two ports repeatedly used the same four shortest path skeletons. This is empirical, not exhaustive.
+- Proof-guided color-symmetric support searches at sizes 4, 5, and 6 repeatedly produced candidates whose A/B projection overlap was only one state.
+- The specialized exact master has now exhausted the support-4 difference-graph language for the current validated cut library. This is an exact computational observation pending independent reconstruction, not yet a verified finite theorem.
 
 ## Why exact four-sets suffice
 
@@ -151,59 +150,103 @@ A four-set survives a fooling pair iff one of its six internal pairs belongs to 
 The semantic oracle fixes the six equality observables of a proposed four-set and asks whether A and B can agree on them.
 
 - Oracle SAT: preserve the A/B models and add their difference graph as another sound cut.
-- Oracle UNSAT: write `INTERFACE.json`; this is a semantic-interface candidate and must be independently reconstructed and checked.
-- Exact master UNSAT: write `FINAL.json`; this excludes all port-free equality interfaces of support `<=4` for the pinned system.
+- Oracle UNSAT: semantic-interface candidate; independently reconstruct and check it.
+- Exact master exhaustion: no four-set hits all current validated difference cuts; if the cut library is sound, that excludes a support-4 separator for this language, but the producing exhaustive implementation must still be independently checked before theorem promotion.
 - Empty difference graph on all 391 non-port vertices: stronger terminal fooling pair, excluding port-free equality interfaces of any support.
 - Timeout / decision-budget exhaustion / solver interruption: **UNKNOWN only**.
 
-## Latest durable state — Run 4 complete
-
-Search branch checkpoint commit:
-
-`43915f71caff21b316ba1ebcc901a758d0218ea7`
+## Current durable terminal state — exact CEGIS v2
 
 Workflow run:
 
-`34562068005`
+`34683854626`
+
+Actions artifact:
+
+- id: `10298170797`;
+- ZIP SHA-256: `33be9aa4456a8fb293811c39b5a4bf58574d9a34c9f8bbc812b5091a7fb96d29`;
+- size: 1,669,158 bytes.
+
+The uploaded artifact copy was checked against that SHA-256 and matched exactly.
 
 Final durable counts:
 
 - validated upstream seed fooling pairs: **872**;
-- lab-generated fooling pairs: **5910**;
-- total represented sound cuts: **6782**;
-- Run 4 additions relative to Run 2: **2705** lab fooling pairs;
-- fast candidates sent to the exact oracle in Run 4: **2705**;
-- exact oracle calls in Run 4: **2705**;
-- oracle UNKNOWNs: **0**;
-- unresolved supports at the final checkpoint: **0**;
-- no empty-difference global fooling pair;
-- no oracle-UNSAT four-set / `INTERFACE.json`;
-- no exact master-UNSAT / `FINAL.json`;
-- final continuation state: **`MASTER-UNKNOWN`**.
+- lab-generated fooling pairs: **6139**;
+- total validated fooling pairs before cut deduplication: **7011**;
+- unique difference-graph cuts: **7008**;
+- duplicate difference cuts: **3**;
+- non-port vertices: **391**;
+- pair-atoms: **76,245**;
+- fixed pivot cut source: `checkpoint:5191`;
+- fixed pivot root count: **23,440**;
+- completed pivot roots: **23,440 / 23,440**;
+- final exact-master state: `EXACT-MASTER-EXHAUSTED-REQUIRES-INDEPENDENT-VERIFY`.
+
+Hashes:
+
+- final cut library: `a58cb579f1fa725107ef10a776b290c089a8ff0cfc12dc4d75fa1fe82ba5ccfa`;
+- fixed root order: `f72cdbf49f6a06929ebae1efe58b795b466c1ef4bd5bfa2f923ee6b3029532a7`.
+
+Compact evidence:
+
+- `results/exact-cegis-loop/MASTER_FINAL.json`;
+- `results/exact-cegis-loop/STATUS.md`;
+- `results/exact-cegis-loop/master-current/STATE.json`;
+- `results/exact-cegis-loop/master-current/ROOT_ORDER.json`;
+- `checkpoints/semantic_portfree_s4.json.gz`.
+
+The final checkpoint still carries status `RUNNING-AFTER-EXACT-MASTER-CUT` because that field describes the semantic-pair CEGIS checkpoint format, not the separate exact-master terminal state. **Do not use the checkpoint status alone to decide whether the support-4 master is unfinished.** The authoritative master status is the `MASTER_FINAL.json` / `STATE.json` terminal value above.
+
+### New semantic witnesses found during the terminal run
+
+The v2 run found two additional four-set master candidates. Both were rejected as interfaces by two semantic SAT solvers and therefore generated new sound cuts:
+
+1. support `{318,394,399,444}` at root rank `10484`; CaDiCaL195 SAT and Glucose4 SAT; appended as lab pair 6138;
+2. support `{4,301,402,464}` at root rank `21442`; CaDiCaL195 SAT and Glucose4 SAT; appended as lab pair 6139.
+
+Evidence is retained under `results/exact-cegis-loop/history/`.
+
+### Monotone-resume behavior was exercised successfully
+
+The v2 master stores a fixed root order and verifies prefix compatibility of the ordered unique-cut library. If new cuts are appended, already completed roots remain impossible because the master constraints only strengthen. The root that produced the candidate is retried.
+
+The production run demonstrated this twice:
+
+- legacy state upgraded and resumed from root **4833**, not 0;
+- after the first new cut, `resume-monotone-prefix-v2` restarted at root **10484**, not 0;
+- after the second new cut, `resume-monotone-prefix-v2` restarted at root **21442**, not 0;
+- search then reached **23440 / 23440**.
+
+The preflight also passed the original 400 randomized exact-vs-brute-force tests and a monotone-resume extension self-test. These tests support implementation confidence but do not substitute for an independent full-size verifier.
+
+## Run-4 historical counter correction
+
+Run `34562068005` ended with 5910 lab pairs and 6782 total represented cuts. It added **2705** sound cuts relative to Run 2, and made **2705** exact oracle calls with zero oracle UNKNOWNs.
+
+However the checkpoint field `fast_candidates` is **2702**, not 2705. The three-count discrepancy means it is incorrect to state that all 2705 oracle calls came from the fast candidate layer without tracing the source path. Preserve the counters separately:
+
+- Run-4 sound cuts added: **2705**;
+- exact oracle calls: **2705**;
+- `fast_candidates`: **2702**.
+
+Earlier README/HANDOFF wording equating them was wrong and has been corrected.
 
 Run-4 artifact id `10187878072`, digest `sha256:f32e432c7f4cc8b30ce9ddbc449e9e8b23d863ad0d83772c745ed73cb1be8bcd`.
 
-## Specialized exact master
+## Interpretation of the support-4 exhaustion
 
-The bottleneck after Run 4 is whether any four vertices have six internal pair-atoms whose coverage bitsets jointly hit all 6782 known cuts.
+The producing exact master states:
 
-`tools/exact_fourset_master.py` implements a standalone exact combinatorial solver for this question. It branches only on logically necessary edges from uncovered difference graphs; heuristics affect branch order, not completeness. It self-tests against brute force on small random instances. A timeout remains UNKNOWN.
+> No four-set of the 391 non-port vertices hits every validated unique difference-graph cut in the final library.
 
-The exact-master workflow is `.github/workflows/exact-fourset-master.yml`.
+If independently verified, the logical consequence is:
 
-Interpret outcomes carefully:
+> For the pinned A/B system, no port-free equality semantic interface supported on at most four vertices exists.
 
-- found four-set -> candidate only; send it back to the exact semantic oracle;
-- exact exhaustion -> complete negative for this 6782-cut master, but independently recheck before promoting to a theorem-level README claim;
-- timeout / interrupted run -> UNKNOWN.
+This would mean only that this particular **port-free equality observable language** requires support at least five. It does not invalidate the six-vertex quotient separator proof, does not rule out support-5 equality interfaces, does not rule out other semantic observables, and does not provide an unconditional geometric forcing gadget.
 
-## Secondary structural lane
-
-The six-vertex separator result is currently the cleanest finite explanation of the conditional P2 same-color relation. It should be preserved independently of the support-4 search outcome.
-
-If the support-4 master is eventually proved UNSAT, that result would say only that this particular **port-free equality-interface language** needs support at least five; it would not invalidate the six-vertex quotient separator proof and would not rule out other semantic observables or geometric gadget constructions.
-
-The eventual Hadwiger–Nelson objective remains geometric: obtain an unconditional forced-mono pair at Euclidean distance at least `1/2`, or an equivalent finite 6-chromatic unit-distance construction. Conditional quotient/SAT statements are intermediate machinery only.
+The six-vertex separator result remains the cleanest verified finite explanation of the conditional P2 same-color relation.
 
 ## Checkpoint and UNKNOWN policy
 
@@ -211,41 +254,43 @@ Keep these invariants:
 
 - `iterations == len(new_pairs)` for the lab-generated portion;
 - every seed and generated A/B coloring pair must validate against its defining formula;
-- oracle UNKNOWN never generates a blocking clause;
+- oracle UNKNOWN never generates a blocking cut;
 - heuristic failure never modifies the exact master proof space;
 - writes remain atomic and gzip integrity is checked before persistence;
-- checkpoints are committed after completed guarded slices.
+- completed exact root branches are reusable after verified monotone cut extension, but only when root order and cut-prefix checks pass;
+- if any compatibility check fails, fall back to a fresh exact search rather than assuming resume safety.
 
-## Certificate policy
+## Certificate / independent-verification policy
 
 Any terminal result must be independently checked before being promoted to a mathematical claim.
 
-For `INTERFACE.json`:
+For an oracle-UNSAT semantic interface:
 
-- preserve the exact four vertex IDs and all six equality observables;
+- preserve the exact vertex IDs and equality observables;
 - preserve the pinned upstream SHA;
 - independently reconstruct the oracle query;
 - check UNSAT with a second solver and preferably a standalone certificate/checker.
 
-For exact master UNSAT / `FINAL.json`:
+For the current exact-master exhaustion:
 
-- preserve the full fooling-pair/cut library or a reduced exact covering certificate;
-- provide a deterministic standalone checker for the claimed exhaustion;
-- independently rerun/reconstruct the exhaustion before documenting it as a finite theorem.
+- reconstruct the complete final cut library independently from the validated seed and generated fooling pairs;
+- independently validate every A model against `A` and every B model against `B`;
+- verify the 7008 unique difference cuts and their digest/counts;
+- use a materially different exhaustive decomposition, preferably not the same root-edge recursion;
+- or generate a proof-tree/certificate whose leaves carry explicit blocking cuts and check that certificate with a small standalone verifier;
+- only after agreement promote support-`<=4` nonexistence into the verified result log.
 
-For a global empty-difference fooling pair:
-
-- independently validate both A and B colorings;
-- verify identical equality pattern on all 391 non-port vertices.
+A generic SAT encoding of the four-set hitting problem is acceptable as a secondary independent backstop, but a structurally different combinatorial checker is preferable.
 
 Lean is appropriate only after the finite statement and certificate format stabilize.
 
-## Resume checklist
+## Resume / next-work checklist
 
-1. Use the Run-4 checkpoint containing `5910` lab pairs + `872` seeds = `6782` cuts.
-2. Confirm no terminal `FINAL.json` / `INTERFACE.json` already supersedes it.
-3. Validate the checkpoint and coloring-pair invariants.
-4. Prefer the specialized exact four-set master over another generic long CEGIS run.
-5. If a four-set is found, return it to the exact semantic oracle.
-6. If exact exhaustion is claimed, independently verify before promoting it.
-7. Whenever interesting mathematical/geometric structure appears, record it proactively under the research-recording policy above.
+1. **Do not rerun the same support-4 exact master merely to continue it; it already reached 23440/23440.**
+2. Treat `results/exact-cegis-loop/MASTER_FINAL.json` as an exact computational observation pending independent verification.
+3. Build an independent final-cut reconstruction/checker from the 6139 generated pairs + 872 seeds.
+4. Validate the reconstructed library has 7011 pairs before dedup and 7008 unique difference cuts.
+5. Reprove no four-set hits all cuts using a materially different exhaustive decomposition or a standalone proof certificate.
+6. If independent verification succeeds, update README from “exact computational observation” to “independently verified finite statement.”
+7. Then choose the next mathematical lane: support-5/other semantic observables, human proof of the six-boundary quotient interface, or direct geometric forcing work.
+8. Whenever interesting mathematical/geometric structure appears, record it proactively under the research-recording policy above.
