@@ -1,0 +1,117 @@
+name: hn-cycle7-multiwitness
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-cycle7-multiwitness.yml'
+      - 'tools/hn_multiwitness_cegis.py'
+      - 'tools/hn_exact.py'
+      - 'tools/hn_unconditional_scan.py'
+      - 'results/unconditional-2026-09-13/cycle6/GRAPH.json.xz'
+      - 'results/unconditional-2026-09-13/cycle6/COLORINGS.txt.xz'
+      - 'results/unconditional-2026-09-13/cycle6/VERIFICATION.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hn-cycle7-multiwitness
+  cancel-in-progress: false
+
+env:
+  BASE_GRAPH_SHA256: fbc30ee08fc875fb5eed437160cce9b1d999d70cdaabe3df86d7005baa1697cc
+  BASE_COLORINGS_SHA256: 88e1fe8e20ef7e4c8f8400e9b46cd17f2e37af632b94cf3292d112051cda4dc3
+  OUT_DIR: results/unconditional-2026-09-13/cycle7-actions
+
+jobs:
+  multiwitness-cegis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install exact-search dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install scipy==1.14.1 sympy==1.13.3
+
+      - name: Compile Cycle 7 tools
+        run: |
+          python -m py_compile \
+            tools/hn_exact.py \
+            tools/hn_unconditional_scan.py \
+            tools/hn_multiwitness_cegis.py
+
+      - name: Restore pinned Cycle 6 inputs
+        run: |
+          mkdir -p "$OUT_DIR/input"
+          xz -dc results/unconditional-2026-09-13/cycle6/GRAPH.json.xz > "$OUT_DIR/input/GRAPH.json"
+          xz -dc results/unconditional-2026-09-13/cycle6/COLORINGS.txt.xz > "$OUT_DIR/input/COLORINGS.txt"
+          echo "$BASE_GRAPH_SHA256  $OUT_DIR/input/GRAPH.json" | sha256sum -c -
+          echo "$BASE_COLORINGS_SHA256  $OUT_DIR/input/COLORINGS.txt" | sha256sum -c -
+
+      - name: Run unconditional multi-witness CEGIS
+        run: |
+          python tools/hn_multiwitness_cegis.py \
+            --graph "$OUT_DIR/input/GRAPH.json" \
+            --colorings "$OUT_DIR/input/COLORINGS.txt" \
+            --out-dir "$OUT_DIR/run" \
+            --min-contacts 5 \
+            --cluster-scale 10000000 \
+            --max-rounds 8 \
+            --max-batch 16 \
+            --models-per-round 16 \
+            --conflicts 10000000 \
+            --seed 20260913 \
+            --expected-graph-sha256 "$BASE_GRAPH_SHA256" \
+            --expected-colorings-sha256 "$BASE_COLORINGS_SHA256"
+
+      - name: Write compact summary
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('results/unconditional-2026-09-13/cycle7-actions/run')
+          final=root/'FINAL.json'
+          if final.exists():
+              d=json.loads(final.read_text())
+              lines=[
+                  '# Cycle 7 multi-witness CEGIS','',
+                  f"- status: **{d.get('status')}**",
+                  f"- classification: **{d.get('classification')}**",
+                  f"- base vertices: {d.get('base_vertices')}",
+                  f"- final vertices: {d.get('final_vertices')}",
+                  f"- final edges: {d.get('final_edges')}",
+                  f"- selected new exact points: {d.get('selected_new_points')}",
+                  f"- rounds completed: {d.get('rounds_completed')}",
+                  f"- initial proper 5-coloring witnesses: {d.get('initial_witnesses')}",
+                  f"- all added edges exact unit distance: {d.get('all_added_edges_exact_unit_distance')}",
+                  '',
+                  'No C88, quotient, palette, or forced color relation is imposed.',
+                  '',
+                  'An A result is still labeled a candidate until a proof certificate / independent audit is stored.'
+              ]
+          else:
+              lines=['# Cycle 7 multi-witness CEGIS','','Run did not produce FINAL.json; inspect PROGRESS.json and job logs.']
+          out=Path('results/unconditional-2026-09-13/cycle7-actions/SUMMARY.md')
+          out.write_text('\n'.join(lines)+'\n')
+          print(out.read_text())
+          PY
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: hn-cycle7-multiwitness-${{ github.run_id }}
+          path: results/unconditional-2026-09-13/cycle7-actions
+          if-no-files-found: error
+          retention-days: 30

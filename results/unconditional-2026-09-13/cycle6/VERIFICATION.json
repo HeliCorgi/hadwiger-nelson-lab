@@ -1,0 +1,15 @@
+{
+  "status": "NO_FORCED_EQUAL_PAIR",
+  "classification": "D",
+  "vertices": 8915,
+  "edges": 78063,
+  "all_point_pairs": 39734155,
+  "exact_edge_source": "independent C++ exact K2 all-pairs scan",
+  "proper_5colorings": 705,
+  "all_colorings_verified_on_all_edges": true,
+  "distinct_vertex_color_signatures": 8915,
+  "all_distinct_pairs_separated": true,
+  "coloring_bytes_sha256": "d9c8f86158de6ef97ece01900e5aec0794454acd2187d470609cb3c5ec8c2281",
+  "construction": "Cycle 6 full >=3-contact third closure over 2512-point Cycle 4 graph",
+  "no_conditional_constraints": true
+}
