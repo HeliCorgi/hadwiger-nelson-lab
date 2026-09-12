@@ -1,0 +1,156 @@
+name: hn-cycle2-pair-probe
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-cycle2-pair-probe.yml'
+      - 'tools/hn_exact.py'
+      - 'tools/hn_unconditional_scan.py'
+      - 'tools/hn_frontier_forge.py'
+      - 'tools/hn_pair_probe.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hn-cycle2-pair-probe
+  cancel-in-progress: false
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  EXPECTED_STEP6_SHA: f469397c9660e9875c3ed7753fbb0e9b5d18dddae27954f7902738f6d5ddee58
+  OUT_DIR: results/unconditional-2026-09-13/cycle2-actions
+
+jobs:
+  regenerate-and-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install exact-search dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Compile unconditional tools
+        run: |
+          python -m py_compile \
+            tools/hn_exact.py \
+            tools/hn_unconditional_scan.py \
+            tools/hn_frontier_forge.py \
+            tools/hn_pair_probe.py
+
+      - name: Rebuild Cycle 2 six-step graph
+        run: |
+          mkdir -p "$OUT_DIR"
+          python tools/hn_frontier_forge.py \
+            --base upstream/handoff/data/g510_k2.json \
+            --out-dir "$OUT_DIR" \
+            --steps 6 \
+            --samples 16 \
+            --seconds 240 \
+            --seed 20260913
+
+      - name: Check reproduction hash
+        id: sha
+        shell: bash
+        run: |
+          actual=$(sha256sum "$OUT_DIR/step6_graph.json" | awk '{print $1}')
+          if [[ "$actual" == "$EXPECTED_STEP6_SHA" ]]; then
+            match=true
+          else
+            match=false
+          fi
+          printf '{\n  "expected": "%s",\n  "actual": "%s",\n  "match": %s\n}\n' \
+            "$EXPECTED_STEP6_SHA" "$actual" "$match" > "$OUT_DIR/REGENERATION.json"
+          echo "actual=$actual" >> "$GITHUB_OUTPUT"
+          echo "match=$match" >> "$GITHUB_OUTPUT"
+          cat "$OUT_DIR/REGENERATION.json"
+
+      - name: Probe pair 4,10 with CaDiCaL195
+        if: steps.sha.outputs.match == 'true'
+        run: |
+          python tools/hn_pair_probe.py \
+            --graph "$OUT_DIR/step6_graph.json" \
+            --out "$OUT_DIR/PAIR_4_10_CADICAL195.json" \
+            --pair 4 10 \
+            --solver cadical195 \
+            --conflicts 10000000 \
+            --ordinary-conflicts 1000000 \
+            --expected-sha256 "$EXPECTED_STEP6_SHA"
+
+      - name: Probe pair 4,10 with Glucose4
+        if: steps.sha.outputs.match == 'true'
+        run: |
+          python tools/hn_pair_probe.py \
+            --graph "$OUT_DIR/step6_graph.json" \
+            --out "$OUT_DIR/PAIR_4_10_GLUCOSE4.json" \
+            --pair 4 10 \
+            --solver glucose4 \
+            --conflicts 10000000 \
+            --ordinary-conflicts 1000000 \
+            --expected-sha256 "$EXPECTED_STEP6_SHA"
+
+      - name: Write compact verdict
+        if: always()
+        env:
+          HASH_MATCH: ${{ steps.sha.outputs.match }}
+          ACTUAL_SHA: ${{ steps.sha.outputs.actual }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          out=Path(os.environ['OUT_DIR'])
+          expected=os.environ['EXPECTED_STEP6_SHA']
+          actual=os.environ.get('ACTUAL_SHA','')
+          match=os.environ.get('HASH_MATCH') == 'true'
+          rows=[]
+          for name in ('PAIR_4_10_CADICAL195.json','PAIR_4_10_GLUCOSE4.json'):
+              p=out/name
+              if p.exists():
+                  d=json.loads(p.read_text())
+                  rows.append((d['solver'],d['status'],d['unequal_query'],d['ordinary_5color'],d['unequal_seconds']))
+          if not match:
+              verdict='REGENERATION_MISMATCH — pair IDs were not probed.'
+          elif any(r[2]=='SAT' for r in rows):
+              verdict='D for pair (4,10): an unconditional proper 5-coloring separates the pair.'
+          elif len(rows)==2 and all(r[2]=='UNSAT_UNCERTIFIED' for r in rows):
+              verdict='B candidate for pair (4,10), independently solver-crosschecked but still lacking a proof certificate.'
+          else:
+              verdict='INCONCLUSIVE — at least one solver returned UNKNOWN or did not finish.'
+          lines=[
+              '# Cycle 2 pair (4,10) Actions probe','',
+              f'- expected step6 SHA-256: `{expected}`',
+              f'- regenerated step6 SHA-256: `{actual}`',
+              f'- exact archive graph reproduced: **{match}**','',
+              f'## Verdict\n\n**{verdict}**','',
+              '| solver | status | unequal query | ordinary 5-color | seconds |',
+              '|---|---|---|---|---:|',
+          ]
+          lines += [f'| {s} | {st} | {uq} | {ord5} | {sec} |' for s,st,uq,ord5,sec in rows]
+          lines += ['', 'Scope: actual exact unit-edge constraints saved by the Cycle 2 forge only; no C88, quotient, palette, or color-equality assumptions.']
+          (out/'PAIR_4_10_SUMMARY.md').write_text('\n'.join(lines)+'\n')
+          print((out/'PAIR_4_10_SUMMARY.md').read_text())
+          PY
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: hn-cycle2-pair-probe-${{ github.run_id }}
+          path: ${{ env.OUT_DIR }}
+          if-no-files-found: error
+          retention-days: 30
