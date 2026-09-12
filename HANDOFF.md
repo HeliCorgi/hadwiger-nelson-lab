@@ -261,3 +261,44 @@ Preserve these rules in future computation:
 4. Prefer human-readable analysis of the six-separator or direct geometric work before mechanically moving to larger support.
 5. If a new semantic language or support-5 search is started, state beforehand what mathematical explanation or geometric bridge it is intended to expose.
 6. Continue proactively documenting interesting structures and near-misses with their evidence level and scope.
+
+## Active continuation — three equalities explain the p-side boundary table
+
+**Evidence level: exact computational observation; local graph-theoretic proofs still being sought.**
+
+Workflow run `34694157711` and `tools/separator_left_compression.py` refined the 261-qnode `p`-side boundary table. The two extendable states are still exactly
+
+`012202`, `012203`,
+
+but the port itself is forced to the `q6` boundary color in both states. On the seven tracked nodes
+
+`{p=q5, q0, q6, q8, q9, q10, q266}`
+
+the left bag forces exactly the key equalities
+
+- `p = q6`;
+- `q0 = q10`;
+- `q8 = q9`.
+
+After contracting those three equalities, ordinary graph edges on the tracked nodes give four classes
+
+`A={p,q6}`, `B={q0,q10}`, `C={q8,q9}`, `D={q266}`
+
+whose class graph is **`K4` minus exactly the edge `C-D`**. Hence there are only two color-symmetric possibilities: `C=D`, producing `012202`, or `D` takes a new fourth color, producing `012203`.
+
+This turns the human-proof problem from “explain a 202-row SAT boundary table” into the much smaller target:
+
+> explain the three forced equalities `p=q6`, `q0=q10`, and `q8=q9` inside the 267-qnode left bag.
+
+The simple common-neighborhood lemma does not prove any of these three equalities: their common-neighborhood sizes are 3, 2, and 1 respectively, and each common-neighborhood graph is 3-colorable. So the remaining mechanism is genuinely less local than the earlier `p=q22` K4 witness.
+
+A boundary-only minimum pairwise description has size 7; including the port exposes the cleaner three-equality plus ordinary-edge formulation above.
+
+Human-readable note and evidence:
+
+- `results/separator-left-compression/HUMAN_NOTE.md`;
+- `results/separator-left-compression/analysis.json`;
+- `results/separator-left-compression/SUMMARY.md`;
+- workflow run `34694157711`.
+
+Current computational follow-up: extract small induced forcing cores for the three equalities, both via direct greedy deletion and via CaDiCaL assumption cores, then independently recheck any resulting cores with Glucose4. These are compression tools, not new geometric claims.
