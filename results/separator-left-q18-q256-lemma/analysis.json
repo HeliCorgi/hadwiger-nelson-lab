@@ -1,0 +1,154 @@
+{
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8",
+  "q0_side_bag_size": 266,
+  "q0_side_edge_count": 1423,
+  "target_pair": [
+    18,
+    256
+  ],
+  "target_direct_edge": false,
+  "target_forced_different": {
+    "Cadical195": true,
+    "Glucose4": true
+  },
+  "degrees": {
+    "18": 15,
+    "256": 5
+  },
+  "neighborhood_tests": {
+    "common": {
+      "vertices": [
+        57
+      ],
+      "vertex_count": 1,
+      "4colorable_cadical195": true,
+      "4colorable_glucose4": true,
+      "k5_clique": null
+    },
+    "union": {
+      "vertices": [
+        0,
+        6,
+        17,
+        19,
+        23,
+        26,
+        35,
+        40,
+        55,
+        57,
+        80,
+        86,
+        99,
+        159,
+        161,
+        214,
+        238,
+        242,
+        243
+      ],
+      "vertex_count": 19,
+      "4colorable_cadical195": true,
+      "4colorable_glucose4": true,
+      "k5_clique": null
+    }
+  },
+  "recursive_interface": {
+    "min_vertex_cut_value": 5,
+    "separator_qnodes": [
+      23,
+      35,
+      57,
+      86,
+      159
+    ],
+    "u_component_size": 260,
+    "v_component_size": 1,
+    "other_component_sizes": [],
+    "enumerated": true,
+    "u_side_extendable_count": 8,
+    "v_side_extendable_count": 26,
+    "intersection_count": 7,
+    "all_intersection_states_force_different": true,
+    "intersection_rows": [
+      {
+        "state": "00121",
+        "u_colors": [
+          0
+        ],
+        "v_colors": [
+          3,
+          4
+        ],
+        "cross_disjoint": true
+      },
+      {
+        "state": "00123",
+        "u_colors": [
+          0,
+          3
+        ],
+        "v_colors": [
+          4
+        ],
+        "cross_disjoint": true
+      },
+      {
+        "state": "01121",
+        "u_colors": [
+          0
+        ],
+        "v_colors": [
+          3,
+          4
+        ],
+        "cross_disjoint": true
+      },
+      {
+        "state": "01123",
+        "u_colors": [
+          0,
+          3
+        ],
+        "v_colors": [
+          4
+        ],
+        "cross_disjoint": true
+      },
+      {
+        "state": "01212",
+        "u_colors": [
+          0
+        ],
+        "v_colors": [
+          3,
+          4
+        ],
+        "cross_disjoint": true
+      },
+      {
+        "state": "01213",
+        "u_colors": [
+          0,
+          3
+        ],
+        "v_colors": [
+          4
+        ],
+        "cross_disjoint": true
+      },
+      {
+        "state": "01231",
+        "u_colors": [
+          0,
+          1
+        ],
+        "v_colors": [
+          4
+        ],
+        "cross_disjoint": true
+      }
+    ]
+  },
+  "interpretation": "If q18 and q256 had the same color, every vertex adjacent to either endpoint would have to avoid that color, so N(q18) union N(q256) would need a 4-coloring. Non-4-colorability of that union is therefore a direct graph-theoretic forced-disequality lemma. If that test fails, the recursive minimum-separator data records the next exact factorization target."
+}
