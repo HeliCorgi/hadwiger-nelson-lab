@@ -1,0 +1,77 @@
+name: separator-left-q0-q10-compression
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/separator-left-q0-q10-compression.yml'
+      - 'tools/separator_left_q0_q10_compression.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m py_compile tools/separator_left_q0_q10_compression.py
+      - name: Independently compress q0=q10 interface
+        run: |
+          mkdir -p results/separator-left-q0-q10-compression
+          python tools/separator_left_q0_q10_compression.py \
+            --data-dir upstream/handoff/data \
+            --out results/separator-left-q0-q10-compression/analysis.json
+      - name: Write summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('results/separator-left-q0-q10-compression/analysis.json').read_text())
+          lines=['# q0=q10 recursive interface compression','',
+                 f"- separator: `{d['separator_qnodes']}` (minimum cut {d['min_cut_value']})",
+                 f"- q0-side extendable states: **{d['u_side_extendable_count']}**",
+                 f"- q10-side extendable states: **{d['v_side_extendable_count']}**",
+                 f"- intersection: **{d['intersection_count']}** states: `{[x['key'] for x in d['intersection']]}`",
+                 f"- all intersection states force q0=q10: **{d['verified_all_intersection_states_force_equal']}**",
+                 f"- q10 degree in left bag: **{d['q10_degree_in_left']}**, neighborhood exactly separator: **{d['q10_neighborhood_is_separator']}**",
+                 f"- separator induced edges: `{d['separator_induced_edges']}`",
+                 f"- minimum pairwise relation basis for the two viable states: **{d['minimum_pairwise_basis_size']}**"]
+          Path('results/separator-left-q0-q10-compression/SUMMARY.md').write_text('\n'.join(lines)+'\n')
+          PY
+      - name: Commit result
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add results/separator-left-q0-q10-compression
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record q0-q10 recursive interface [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: separator-left-q0-q10-compression-${{ github.run_id }}
+          path: results/separator-left-q0-q10-compression
+          if-no-files-found: error
+          retention-days: 30
