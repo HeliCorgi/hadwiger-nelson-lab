@@ -1,0 +1,103 @@
+name: separator-left-forcing-cores
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/separator-left-forcing-cores.yml'
+      - 'tools/separator_left_forcing_cores.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: separator-left-forcing-cores
+  cancel-in-progress: false
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout lab
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Checkout pinned upstream
+        uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Compile
+        run: python -m py_compile tools/separator_left_forcing_cores.py
+
+      - name: Extract forcing cores
+        run: |
+          mkdir -p results/separator-left-forcing-cores
+          timeout --signal=TERM --kill-after=30s 6600s \
+            python tools/separator_left_forcing_cores.py \
+              --data-dir upstream/handoff/data \
+              --out results/separator-left-forcing-cores/analysis.json
+
+      - name: Write summary
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          d=json.loads(Path('results/separator-left-forcing-cores/analysis.json').read_text())
+          g=d['tracked_relation_graph_after_contraction']
+          b=d['best_shared_core']
+          lines=[
+            '# Separator left-side forcing cores','',
+            f"- tracked equalities: `{d['forced_equal_pairs']}`",
+            f"- contracted tracked graph is K4 minus one edge: **{g['is_K4_minus_one_edge']}**",
+            f"- missing class edge: `{g['missing_class_edges_from_K4']}`",
+            f"- original left bag: **{d['left_bag_original_vertex_count']}** qnodes",
+            f"- best shared inclusion-minimal core: **{b['vertex_count']} vertices / {b['edge_count']} edges** (`{b['order']}`)",
+            '', '## Individual equality cores',''
+          ]
+          for k,v in d['individual_forcing_cores'].items():
+              lines.append(f"- `{k}`: **{v['vertex_count']} vertices / {v['edge_count']} edges**; verified both solvers={v['verification']['forced_equal_verified_both']}")
+          text='\n'.join(lines)+'\n'
+          Path('results/separator-left-forcing-cores/SUMMARY.md').write_text(text)
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f: f.write(text)
+          print(text)
+          PY
+
+      - name: Commit result
+        if: success()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add results/separator-left-forcing-cores
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record separator forcing-core extraction [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Upload analysis
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: separator-left-forcing-cores-${{ github.run_id }}
+          path: results/separator-left-forcing-cores
+          if-no-files-found: warn
+          retention-days: 30
