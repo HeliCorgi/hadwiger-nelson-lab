@@ -1,0 +1,47 @@
+name: check-separator-left-proof-tree
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/check-separator-left-proof-tree.yml'
+      - 'tools/check_separator_left_proof_tree.py'
+      - 'results/separator-left-q8-q9-relation-cnf/**'
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - run: python -m py_compile tools/check_separator_left_proof_tree.py
+      - name: Check hierarchical proof-tree composition
+        run: |
+          mkdir -p results/separator-left-proof-tree-check
+          python tools/check_separator_left_proof_tree.py \
+            --repo-root . \
+            --out results/separator-left-proof-tree-check/VERIFICATION.json
+      - name: Write summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('results/separator-left-proof-tree-check/VERIFICATION.json').read_text())
+          lines=['# Separator left proof-tree composition check','',
+                 f"- status: **{d['status']}**",
+                 f"- checks: **{len(d['checks'])}**",
+                 f"- all checks passed: **{d['all_checks_passed']}**",'',
+                 'Trust boundary:', d['trust_boundary'],'',
+                 'Finite conclusion checked:', d['finite_conclusion_checked'],'',
+                 'Scope:', d['geometric_scope']]
+          Path('results/separator-left-proof-tree-check/SUMMARY.md').write_text('\n'.join(lines)+'\n')
+          PY
+      - uses: actions/upload-artifact@v7
+        with:
+          name: separator-left-proof-tree-check-${{ github.run_id }}
+          path: results/separator-left-proof-tree-check
+          if-no-files-found: error
+          retention-days: 30
