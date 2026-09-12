@@ -1,0 +1,34 @@
+{
+  "status": "NO_FORCED_EQUAL_PAIR",
+  "classification": "D",
+  "graph_sha256": "f469397c9660e9875c3ed7753fbb0e9b5d18dddae27954f7902738f6d5ddee58",
+  "vertices": 3195,
+  "all_point_pairs": 5102415,
+  "saved_edges": 17920,
+  "exact_all_pairs_unit_edges": 17920,
+  "saved_edges_equal_exact_induced_unit_edges": true,
+  "omitted_unit_edges": 0,
+  "spurious_saved_edges": 0,
+  "separating_coloring_count": 98,
+  "all_separating_colorings_proper_on_all_unit_edges": true,
+  "distinct_vertex_color_signatures": 3195,
+  "all_distinct_vertex_pairs_separated": true,
+  "witness_bundle_sha256": "473c8e7e6648738e69370d0ae56475ae0f7539b02eb5172d002fbaf839566f6f",
+  "witness_sources": {
+    "initial": 4,
+    "checkpoint": 85,
+    "resume": 9
+  },
+  "resume_repair_rounds": [
+    {"pair": [1535, 1677], "remaining_pairs_after": 9},
+    {"pair": [2208, 3057], "remaining_pairs_after": 8},
+    {"pair": [1487, 2632], "remaining_pairs_after": 6},
+    {"pair": [1683, 3014], "remaining_pairs_after": 5},
+    {"pair": [1519, 1614], "remaining_pairs_after": 4},
+    {"pair": [2030, 2129], "remaining_pairs_after": 3},
+    {"pair": [2450, 2926], "remaining_pairs_after": 2},
+    {"pair": [2635, 2727], "remaining_pairs_after": 1},
+    {"pair": [2631, 2640], "remaining_pairs_after": 0}
+  ],
+  "scope": "The exact all-pairs completion equals the saved 17,920-edge graph, so the D conclusion applies to the full induced unit-distance graph on these 3,195 points."
+}
