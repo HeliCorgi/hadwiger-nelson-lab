@@ -155,15 +155,56 @@ Why this is interesting: a short explanation cannot simply be “there is a much
 
 Evidence: `results/quotient-critical/analysis.json`.
 
+## 8. Four non-port vertices are provably insufficient for the equality-interface language
+
+**Evidence level: Verified finite statement, independently reconstructed and re-exhausted.**
+
+The port-free semantic search observes only equality/disequality of colors on a chosen support. Every validated A/B fooling pair gives a difference graph on the 391 non-port vertices. A four-set can separate A and B only if one of its six internal pairs belongs to every difference graph.
+
+The terminal library contains:
+
+- 7011 independently revalidated A/B fooling-pair records;
+- 7008 unique difference graphs after exact deduplication;
+- cut-library SHA-256 `a58cb579f1fa725107ef10a776b290c089a8ff0cfc12dc4d75fa1fe82ba5ccfa`.
+
+The producing root-edge master exhaustively found no four-set hitting every cut. More importantly, a second implementation reconstructed the entire library directly from the saved colorings and then used a different decomposition:
+
+- write every four-set uniquely as `a<b<c<d`;
+- enumerate each first triple `a<b<c`;
+- for every cut not already hit by the three internal triple edges, intersect the allowed fourth vertices with `N_t(a) ∪ N_t(b) ∪ N_t(c)`;
+- a nonempty final intersection would produce a surviving four-set.
+
+The independent checker exhausted all **9,810,580** possible increasing first triples and found no survivor. Its implementation also matched literal brute force on 600 randomized toy instances.
+
+Therefore:
+
+> for the pinned A/B system, no port-free equality semantic interface supported on at most four vertices exists.
+
+Why this is interesting: earlier proof-guided probes repeatedly found four-vertex supports with only one common A/B equality state, so support 4 looked close to sufficient. Exact exhaustion shows that the last surviving ambiguity is not an artifact of poor search. Four vertices are genuinely below the expressive threshold of this particular observable language.
+
+This gives a small but precise **semantic complexity lower bound**: any port-free equality-only explanation must use at least five vertices. It also sharpens the role of the six-vertex quotient separator—the cleanest verified interface currently known is not trivially compressible to a four-vertex port-free equality witness.
+
+Scope warning: this statement is conditional on the pinned P2/C88 system. It does not rule out support-5 equality interfaces, richer observables, or an unconditional geometric gadget, and it does not change the Hadwiger–Nelson bound.
+
+Evidence:
+
+- `results/exact-cegis-loop/MASTER_FINAL.json`
+- `results/independent-fourset-verify/RECONSTRUCTION.json`
+- `results/independent-fourset-verify/VERIFICATION.json`
+- `results/independent-fourset-verify/SUMMARY.md`
+- `tools/reconstruct_fourset_cuts_independent.py`
+- `tools/verify_fourset_exhaustion_independent.cpp`
+- independent workflow run `34693564501`
+
 ## What to look for next
 
-When future computations produce new data, actively check for human-readable structure in at least these directions:
+The preferred next work is not merely a larger search. Actively look for human-readable or geometric compression:
 
-- can a large SAT implication be factored through a small separator or boundary state table?
-- do many forced-equal vertices admit a small family of local forcing rules?
-- do Kempe paths, shortest paths, or cutsets repeatedly reuse the same vertices?
-- do coordinates reveal exact rotations/reflections, lattice cosets, repeated distances, or recognizable unit-distance motifs?
-- is a candidate only one state, one edge, or one equality away from becoming an unconditional forcing gadget?
-- can an empirical pattern be upgraded to an exhaustive finite lemma with a small checker?
+- can the 261-vertex side of the six-separator be explained by a small family of local forcing lemmas that leaves only `012202` and `012203`?
+- can the 20 forced-equal quotient classes be generated from a few reusable local motifs?
+- can the recurring Kempe/path backbone be upgraded from a sampled pattern to an exhaustive finite statement?
+- do coordinates reveal exact rotations/reflections, lattice cosets, repeated distances, or unit-distance motifs that can bridge conditional forcing to geometry?
+- does a richer observable language produce a smaller semantic interface even though equality-only support `<=4` is impossible?
+- if support 5 is searched, what human explanation or geometric bridge is it intended to uncover?
 
 The preferred end product is not merely `UNSAT`, but a statement a human can explain without replaying the full search.
