@@ -19,17 +19,6 @@
   ],
   "full_pair_count": 7010,
   "lab_pair_count": 6138,
-  "last_process_stats": {
-    "canonical_prunes": 16292689,
-    "pair_states": 505,
-    "quad_leaves": 4012465,
-    "root_edges_completed_this_process": 505,
-    "triple_branch_vertices": 8484050,
-    "triple_incident_prunes": 0,
-    "triple_states": 41641
-  },
-  "method": "exact edge-branching four-set master with monotone cut-extension resume",
-  "next_root_rank": 21442,
   "next_step": "Send this support to the exact A/B semantic oracle. Oracle SAT adds another sound fooling-pair cut; oracle UNSAT yields a support-4 interface candidate.",
   "nonport_vertex_count": 391,
   "pivot_cut_index": 6060,
@@ -67,6 +56,5 @@
     464
   ],
   "unique_cut_count": 7007,
-  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8",
-  "version": 2
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8"
 }
