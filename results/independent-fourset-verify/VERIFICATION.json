@@ -1,0 +1,10 @@
+{
+  "status": "INDEPENDENT-EXHAUSTION-VERIFIED",
+  "method": "independent increasing-triple to fourth-vertex intersection",
+  "vertex_count": 391,
+  "unique_cut_count": 7008,
+  "triples_checked": 9810580,
+  "expected_triples": 9810580,
+  "decomposition_note": "Every four-set has unique a<b<c<d; for each a<b<c, legal d>c are intersected over all cuts not already hit inside the triple.",
+  "independent_of_producing_root_order": true
+}

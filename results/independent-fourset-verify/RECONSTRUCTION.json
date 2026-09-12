@@ -1,0 +1,19 @@
+{
+  "atom_count": 76245,
+  "binary_sha256": "ba0b502ce07b745a54f08baf89acc68ed6d3162adadc65aa16ae7f6969d7dc3f",
+  "checkpoint_status": "RUNNING-AFTER-EXACT-MASTER-CUT",
+  "cut_library_sha256": "a58cb579f1fa725107ef10a776b290c089a8ff0cfc12dc4d75fa1fe82ba5ccfa",
+  "cut_size_max": 25171,
+  "cut_size_min": 23440,
+  "does_not_import_producing_master": true,
+  "duplicate_cut_count": 3,
+  "edge_bytes": 9531,
+  "full_pair_count": 7011,
+  "lab_pair_count": 6139,
+  "method": "independent direct model validation and difference-mask reconstruction",
+  "nonport_vertex_count": 391,
+  "seed_pair_count": 872,
+  "status": "INDEPENDENT-CUT-RECONSTRUCTION-OK",
+  "unique_cut_count": 7008,
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8"
+}
