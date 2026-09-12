@@ -30,15 +30,36 @@ def check_solver(big,edges,Solver):
     sol,X=make_solver(set(big)|set(SEP),edges,Solver)
     try:
         base_sat=sol.solve()
-        # q6 color must be absent from every separator vertex.
+
+        # Unconditional diagnostic: q6 may share a color with some separator vertices
+        # when all five colors occur on the boundary.
         eq_possible={}
         for s in SEP:
             witness=None
             for c in range(K):
                 if sol.solve(assumptions=[X(6,c),X(s,c)]): witness=c;break
             eq_possible[str(s)]=witness
-        q6_absent=all(v is None for v in eq_possible.values())
-        # Any coloring with <=3 separator colors is contained in some fixed 3-color label subset.
+        unconditional_absent=all(v is None for v in eq_possible.values())
+
+        # The q22 singleton side can extend only when at least one color is absent
+        # from its whole neighborhood SEP. Test the exact conditional statement needed:
+        # if SEP omits some color (uses <=4 colors), q6 cannot share a color with
+        # any separator vertex. A counterexample is witnessed by s,c,missing with
+        # q6=s=c and 'missing' absent from every separator vertex.
+        conditional_counterexample=None
+        for s in SEP:
+            for c in range(K):
+                for missing in range(K):
+                    ass=[X(6,c),X(s,c)] + [-X(v,missing) for v in SEP]
+                    if sol.solve(assumptions=ass):
+                        conditional_counterexample={'separator_vertex':s,'shared_color':c,'missing_boundary_color':missing}
+                        break
+                if conditional_counterexample: break
+            if conditional_counterexample: break
+        absent_when_at_most4=conditional_counterexample is None
+
+        # Any coloring with <=3 separator colors is contained in some fixed
+        # three-color label subset. Rule all ten subsets out exactly.
         at_most3_witness=None
         for subset in combinations(range(K),3):
             Sset=set(subset);ass=[]
@@ -47,8 +68,16 @@ def check_solver(big,edges,Solver):
                     if c not in Sset:ass.append(-X(v,c))
             if sol.solve(assumptions=ass):at_most3_witness=list(subset);break
         at_least4=at_most3_witness is None
-        return {'base_sat':base_sat,'q6_equal_separator_color_witness':eq_possible,'q6_color_absent_from_separator':q6_absent,
-                'at_most3_separator_colors_witness_subset':at_most3_witness,'separator_uses_at_least4_colors':at_least4}
+
+        return {
+            'base_sat':base_sat,
+            'q6_equal_separator_color_witness':eq_possible,
+            'q6_color_unconditionally_absent_from_separator':unconditional_absent,
+            'at_most4_boundary_counterexample_to_q6_absence':conditional_counterexample,
+            'q6_color_absent_when_boundary_uses_at_most4_colors':absent_when_at_most4,
+            'at_most3_separator_colors_witness_subset':at_most3_witness,
+            'separator_uses_at_least4_colors':at_least4,
+        }
     finally:sol.delete()
 
 
@@ -62,17 +91,37 @@ def main():
     if cv!=10 or sep!=SEP:raise RuntimeError((cv,sep))
     ccs=components_without(len(old),redges,cut);ccs=[[old[x] for x in c] for c in ccs];big=next(c for c in ccs if 6 in c);small=next(c for c in ccs if 22 in c)
     n22=sorted({v for u,v in ledges if u==22}|{u for u,v in ledges if v==22})
-    # Standalone check of the known local K4 equality q5=q22.
+
+    # Standalone graph-theoretic check of the known local K4 equality q5=q22.
     k4_edges=all((min(u,v),max(u,v)) in Eset for u,v in combinations(LOCAL_COMMON,2))
     common_to_both=all((min(5,x),max(5,x)) in Eset and (min(22,x),max(22,x)) in Eset for x in LOCAL_COMMON)
-    checks={S.__name__:check_solver(big,ledges,S) for S in (Cadical195,Glucose4)}
-    palette_ok=all(v['base_sat'] and v['q6_color_absent_from_separator'] and v['separator_uses_at_least4_colors'] for v in checks.values())
-    rep={'upstream_sha':UPSTREAM_SHA,'separator_qnodes':SEP,'min_cut_value':cv,'q6_component_size':len(big),'q22_component_size':len(small),
-         'q22_neighbors_in_left':n22,'q22_degree':len(n22),'q22_neighborhood_is_separator':set(n22)==set(SEP),
-         'local_q5_eq_q22_k4_witness':LOCAL_COMMON,'local_witness_is_k4':k4_edges,'local_witness_common_to_q5_q22':common_to_both,
-         'solver_checks':checks,'palette_conditions_verified_both':palette_ok,
-         'human_proof_available':bool(len(small)==1 and set(n22)==set(SEP) and k4_edges and common_to_both and palette_ok),
-         'interpretation':'First, q5=q22 follows from the local K4 common-neighborhood lemma using q0,q4,q8,q21. The minimum q6-q22 separator is exactly the neighborhood of singleton q22. On the large q6 side, two independently checked properties suffice: q6 differs from every separator vertex, so its color is missing from the boundary palette; and the separator necessarily uses at least four colors. Any coloring extending to q22 must use at most four colors on its entire neighborhood. Hence a globally viable boundary uses exactly four colors, and both q6 and q22 are forced to the unique missing fifth color. Together with q5=q22 this proves q5=q6 without enumerating all ten-boundary partitions.'}
+
+    checks={Solver.__name__:check_solver(big,ledges,Solver) for Solver in (Cadical195,Glucose4)}
+    palette_ok=all(
+        v['base_sat'] and
+        v['q6_color_absent_when_boundary_uses_at_most4_colors'] and
+        v['separator_uses_at_least4_colors']
+        for v in checks.values()
+    )
+    human=bool(len(small)==1 and set(n22)==set(SEP) and k4_edges and common_to_both and palette_ok)
+
+    rep={
+      'upstream_sha':UPSTREAM_SHA,'separator_qnodes':SEP,'min_cut_value':cv,
+      'q6_component_size':len(big),'q22_component_size':len(small),
+      'q22_neighbors_in_left':n22,'q22_degree':len(n22),'q22_neighborhood_is_separator':set(n22)==set(SEP),
+      'local_q5_eq_q22_k4_witness':LOCAL_COMMON,'local_witness_is_k4':k4_edges,'local_witness_common_to_q5_q22':common_to_both,
+      'solver_checks':checks,'conditional_palette_conditions_verified_both':palette_ok,
+      'human_proof_available':human,
+      'interpretation':(
+        'First, q5=q22 follows from the local K4 common-neighborhood lemma using q0,q4,q8,q21. '
+        'The minimum q6-q22 separator is exactly the neighborhood of singleton q22. Any coloring extending to q22 '
+        'must omit q22 color from this boundary, hence the boundary uses at most four colors. Independently, the large '
+        'q6 side forces the separator to use at least four colors, and—conditional on the boundary using at most four—'
+        'forces q6 color to be absent from every separator vertex. Therefore every globally viable boundary uses exactly '
+        'four colors and both q6 and q22 take the unique missing fifth color. Together with q5=q22 this proves q5=q6 '
+        'without enumerating all canonical partitions of the ten-vertex boundary.'
+      )
+    }
     a.out.parent.mkdir(parents=True,exist_ok=True);a.out.write_text(json.dumps(rep,indent=2)+'\n')
     print(json.dumps(rep,indent=2))
 if __name__=='__main__':main()
