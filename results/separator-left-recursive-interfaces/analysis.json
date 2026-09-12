@@ -1,0 +1,133 @@
+{
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8",
+  "left_bag_size": 267,
+  "left_bag_edge_count": 1428,
+  "outer_separator_qnodes": [
+    0,
+    6,
+    8,
+    9,
+    10,
+    266
+  ],
+  "targets": [
+    {
+      "pair": [
+        5,
+        6
+      ],
+      "min_vertex_cut_value": 13,
+      "separator_qnodes": [
+        0,
+        7,
+        17,
+        18,
+        21,
+        92,
+        148,
+        172,
+        197,
+        198,
+        223,
+        238,
+        242
+      ],
+      "component_sizes": [
+        1,
+        253
+      ],
+      "u_component_size": 253,
+      "v_component_size": 1,
+      "other_component_sizes": [],
+      "enumerated": false
+    },
+    {
+      "pair": [
+        0,
+        10
+      ],
+      "min_vertex_cut_value": 5,
+      "separator_qnodes": [
+        14,
+        18,
+        54,
+        55,
+        256
+      ],
+      "component_sizes": [
+        1,
+        261
+      ],
+      "u_component_size": 261,
+      "v_component_size": 1,
+      "other_component_sizes": [],
+      "enumerated": true,
+      "all_canonical_boundary_states": 52,
+      "viable_boundary_state_count": 2,
+      "all_viable_states_force_equal": true,
+      "bad_state_count": 0,
+      "singleton_equal_state_count": 2,
+      "viable_states": [
+        {
+          "boundary_state": "01230",
+          "u_colors": [
+            4
+          ],
+          "v_colors": [
+            4
+          ],
+          "all_cross_pairs_equal": true
+        },
+        {
+          "boundary_state": "01233",
+          "u_colors": [
+            4
+          ],
+          "v_colors": [
+            4
+          ],
+          "all_cross_pairs_equal": true
+        }
+      ],
+      "viable_state_keys": [
+        "01230",
+        "01233"
+      ]
+    },
+    {
+      "pair": [
+        8,
+        9
+      ],
+      "min_vertex_cut_value": 14,
+      "separator_qnodes": [
+        0,
+        4,
+        5,
+        13,
+        20,
+        21,
+        22,
+        62,
+        87,
+        97,
+        111,
+        126,
+        178,
+        239
+      ],
+      "component_sizes": [
+        1,
+        1,
+        251
+      ],
+      "u_component_size": 1,
+      "v_component_size": 251,
+      "other_component_sizes": [
+        1
+      ],
+      "enumerated": false
+    }
+  ],
+  "interpretation": "Each forced equality is recursively factored through a minimum vertex separator inside the 267-qnode left bag. For cuts of size at most eight, all canonical color partitions are enumerated exactly and the two endpoint-side color option sets are checked independently across the cut."
+}
