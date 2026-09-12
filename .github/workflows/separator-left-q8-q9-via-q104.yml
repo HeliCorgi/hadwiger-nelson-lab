@@ -1,0 +1,80 @@
+name: separator-left-q8-q9-via-q104
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/separator-left-q8-q9-via-q104.yml'
+      - 'tools/separator_left_q8_q9_via_q104.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m py_compile tools/separator_left_q8_q9_via_q104.py
+      - name: Enumerate q104 interface
+        run: |
+          mkdir -p results/separator-left-q8-q9-via-q104
+          python tools/separator_left_q8_q9_via_q104.py \
+            --data-dir upstream/handoff/data \
+            --out results/separator-left-q8-q9-via-q104/analysis.json
+      - name: Write summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('results/separator-left-q8-q9-via-q104/analysis.json').read_text())
+          lines=['# q8=q9 via q104 seven-boundary interface','',
+                 f"- separator: `{d['separator_qnodes']}` (minimum cut {d['min_cut_value']})",
+                 f"- component sizes: {d['big_component_size']} / {d['small_component_size']}",
+                 f"- q104 degree: **{d['q104_degree']}**; neighborhood exactly separator: **{d['q104_neighborhood_is_separator']}**",
+                 f"- large-side extendable states: **{d['big_side_extendable_count']}**",
+                 f"- q104-side extendable states: **{d['q104_side_extendable_count']}**",
+                 f"- intersection states: **{d['intersection_count']}**",
+                 f"- q104 options equal missing boundary colors in every intersection state: **{d['all_intersection_q104_colors_equal_missing']}**",
+                 f"- q8 options always subset of missing colors: **{d['all_intersection_q8_subset_missing']}**",
+                 f"- q9 options always subset of missing colors: **{d['all_intersection_q9_subset_missing']}**",
+                 f"- q8,q9,q104 are the same singleton color in every intersection state: **{d['all_intersection_three_same_singleton']}**",
+                 f"- solver cross-check: {d['solver_crosscheck']}"]
+          Path('results/separator-left-q8-q9-via-q104/SUMMARY.md').write_text('\n'.join(lines)+'\n')
+          PY
+      - name: Commit result
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add results/separator-left-q8-q9-via-q104
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record q8-q9 q104 interface [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: separator-left-q8-q9-via-q104-${{ github.run_id }}
+          path: results/separator-left-q8-q9-via-q104
+          if-no-files-found: error
+          retention-days: 30
