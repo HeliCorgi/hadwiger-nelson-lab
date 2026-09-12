@@ -1,0 +1,21 @@
+{
+  "status": "NO_FORCED_EQUAL_PAIR",
+  "classification": "D",
+  "graph_sha256": "89eec3d4e3448083ce8dcea4072f736047801d277d8b08b47ec55535da3e33a6",
+  "base_vertices": 760,
+  "added_vertices": 1752,
+  "vertices": 2512,
+  "all_point_pairs": 3153816,
+  "exact_induced_unit_edges": 18201,
+  "saved_edges_equal_exact_completion": true,
+  "initial_proper_5colorings": 1,
+  "targeted_repair_colorings": 268,
+  "total_separating_colorings": 269,
+  "all_separating_colorings_proper_on_all_unit_edges": true,
+  "distinct_vertex_color_signatures": 2512,
+  "remaining_unseparated_pairs": 0,
+  "repair_witness_file_sha256": "da4f1d56f35dedc788c9a1ad892d0441e06b896912b8319d16a734172a518b6b",
+  "closure_contact_threshold": 3,
+  "closure_candidate_contact_range": [3, 44],
+  "scope": "Full induced unit-distance graph on the 2,512 saved exact points; no conditional constraints."
+}
