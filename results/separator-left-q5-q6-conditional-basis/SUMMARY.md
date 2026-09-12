@@ -14,4 +14,4 @@
 - all minimum bases: `[[17]]`
 - all six constraints UNSAT in both solvers: **True**
 
-- solver cross-check: CaDiCaL195 and Glucose4 found identical minimum-cardinality subsets of extra boundary vertices whose exclusion of the fifth color blocks q6 from taking the q4 or q8 K4 colors.
+- solver cross-check: CaDiCaL195 and Glucose4 found identical minimum-cardinality fifth-color-ban bases. Rescue witnesses are recorded separately for each solver.

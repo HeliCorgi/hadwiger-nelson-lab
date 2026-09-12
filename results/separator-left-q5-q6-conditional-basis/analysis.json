@@ -53,7 +53,189 @@
           223
         ]
       ],
-      "full_six_constraints_unsat_both": true
+      "full_six_constraints_unsat_both": true,
+      "single_literal_rescue_witnesses": [
+        {
+          "freed_vertex": 17,
+          "cadical_projection": {
+            "0": 0,
+            "4": 1,
+            "8": 2,
+            "21": 3,
+            "6": 1,
+            "17": 4,
+            "30": 2,
+            "59": 0,
+            "68": 2,
+            "105": 3,
+            "223": 0
+          },
+          "glucose_projection": {
+            "0": 0,
+            "4": 1,
+            "8": 2,
+            "21": 3,
+            "6": 1,
+            "17": 4,
+            "30": 3,
+            "59": 0,
+            "68": 1,
+            "105": 0,
+            "223": 3
+          },
+          "freed_vertex_is_fifth_in_both": true
+        },
+        {
+          "freed_vertex": 30,
+          "cadical_projection": {
+            "0": 0,
+            "4": 1,
+            "8": 2,
+            "21": 3,
+            "6": 1,
+            "17": 2,
+            "30": 4,
+            "59": 0,
+            "68": 3,
+            "105": 2,
+            "223": 3
+          },
+          "glucose_projection": {
+            "0": 0,
+            "4": 1,
+            "8": 2,
+            "21": 3,
+            "6": 1,
+            "17": 2,
+            "30": 4,
+            "59": 0,
+            "68": 3,
+            "105": 0,
+            "223": 3
+          },
+          "freed_vertex_is_fifth_in_both": true
+        },
+        {
+          "freed_vertex": 59,
+          "cadical_projection": {
+            "0": 0,
+            "4": 1,
+            "8": 2,
+            "21": 3,
+            "6": 1,
+            "17": 2,
+            "30": 2,
+            "59": 4,
+            "68": 1,
+            "105": 0,
+            "223": 3
+          },
+          "glucose_projection": {
+            "0": 0,
+            "4": 1,
+            "8": 2,
+            "21": 3,
+            "6": 1,
+            "17": 2,
+            "30": 2,
+            "59": 4,
+            "68": 3,
+            "105": 2,
+            "223": 3
+          },
+          "freed_vertex_is_fifth_in_both": true
+        },
+        {
+          "freed_vertex": 68,
+          "cadical_projection": {
+            "0": 0,
+            "4": 1,
+            "8": 2,
+            "21": 3,
+            "6": 1,
+            "17": 2,
+            "30": 0,
+            "59": 2,
+            "68": 4,
+            "105": 2,
+            "223": 2
+          },
+          "glucose_projection": {
+            "0": 0,
+            "4": 1,
+            "8": 2,
+            "21": 3,
+            "6": 1,
+            "17": 2,
+            "30": 3,
+            "59": 2,
+            "68": 4,
+            "105": 3,
+            "223": 3
+          },
+          "freed_vertex_is_fifth_in_both": true
+        },
+        {
+          "freed_vertex": 105,
+          "cadical_projection": {
+            "0": 0,
+            "4": 1,
+            "8": 2,
+            "21": 3,
+            "6": 1,
+            "17": 2,
+            "30": 0,
+            "59": 0,
+            "68": 1,
+            "105": 4,
+            "223": 3
+          },
+          "glucose_projection": {
+            "0": 0,
+            "4": 1,
+            "8": 2,
+            "21": 3,
+            "6": 1,
+            "17": 2,
+            "30": 2,
+            "59": 0,
+            "68": 3,
+            "105": 4,
+            "223": 2
+          },
+          "freed_vertex_is_fifth_in_both": true
+        },
+        {
+          "freed_vertex": 223,
+          "cadical_projection": {
+            "0": 0,
+            "4": 1,
+            "8": 2,
+            "21": 3,
+            "6": 1,
+            "17": 2,
+            "30": 0,
+            "59": 0,
+            "68": 2,
+            "105": 0,
+            "223": 4
+          },
+          "glucose_projection": {
+            "0": 0,
+            "4": 1,
+            "8": 2,
+            "21": 3,
+            "6": 1,
+            "17": 2,
+            "30": 2,
+            "59": 2,
+            "68": 1,
+            "105": 2,
+            "223": 4
+          },
+          "freed_vertex_is_fifth_in_both": true
+        }
+      ]
     },
     "q6_equals_q8": {
       "target_color": 2,
@@ -63,9 +245,37 @@
           17
         ]
       ],
-      "full_six_constraints_unsat_both": true
+      "full_six_constraints_unsat_both": true,
+      "unconstrained_example_cadical": {
+        "0": 0,
+        "4": 1,
+        "8": 2,
+        "21": 3,
+        "6": 2,
+        "17": 4,
+        "30": 2,
+        "59": 1,
+        "68": 2,
+        "105": 4,
+        "223": 1
+      },
+      "unconstrained_example_glucose": {
+        "0": 0,
+        "4": 1,
+        "8": 2,
+        "21": 3,
+        "6": 2,
+        "17": 4,
+        "30": 3,
+        "59": 2,
+        "68": 4,
+        "105": 3,
+        "223": 3
+      },
+      "examples_have_q17_fifth": true
     }
   },
-  "solver_crosscheck": "CaDiCaL195 and Glucose4 found identical minimum-cardinality subsets of extra boundary vertices whose exclusion of the fifth color blocks q6 from taking the q4 or q8 K4 colors.",
-  "interpretation": "Because q0,q4,q8,q21 form a K4, any boundary using at most four colors uses exactly their four colors. By color symmetry fix them to 0,1,2,3; then each extra separator vertex must avoid color 4. q6 is already graph-adjacent to whichever K4 anchors are marked true. The only nontrivial cases are q6=q4 and q6=q8. This scan finds the smallest subset of the six extra boundary vertices that must merely avoid the fifth color in order to make each case impossible."
+  "solver_crosscheck": "CaDiCaL195 and Glucose4 found identical minimum-cardinality fifth-color-ban bases. Rescue witnesses are recorded separately for each solver.",
+  "human_clause": "Fix q0,q4,q8,q21 to colors 0,1,2,3. Edges q6-q0 and q6-q21 rule out colors 0 and 3. If q6 has q8 color 2, q17 is forced to the fifth color 4. If q6 has q4 color 1, at least one of q17,q30,q59,q68,q105,q223 is forced to color 4; this six-literal OR is minimal in the sense that freeing any one literal while banning color 4 at the other five restores satisfiability. Therefore if the whole separator is restricted to the four K4 colors, q6 cannot use any K4 color and must use the fifth color.",
+  "interpretation": "Because q0,q4,q8,q21 form a K4, any boundary using at most four colors uses exactly their four colors. The scan compresses the remaining conditional q6 argument into one forced literal (q6=q8 => q17=fifth) and one minimal six-literal OR (q6=q4 => at least one extra boundary vertex=fifth)."
 }
