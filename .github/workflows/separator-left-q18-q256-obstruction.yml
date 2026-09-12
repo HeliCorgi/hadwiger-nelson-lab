@@ -1,0 +1,61 @@
+name: separator-left-q18-q256-obstruction
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/separator-left-q18-q256-obstruction.yml'
+      - 'tools/separator_left_q18_q256_obstruction.py'
+  workflow_dispatch:
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m py_compile tools/separator_left_q18_q256_obstruction.py
+      - name: Analyze q18-q256 obstruction
+        run: |
+          mkdir -p results/separator-left-q18-q256-obstruction
+          python tools/separator_left_q18_q256_obstruction.py \
+            --data-dir upstream/handoff/data \
+            --out results/separator-left-q18-q256-obstruction/analysis.json
+      - name: Write summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('results/separator-left-q18-q256-obstruction/analysis.json').read_text())
+          c=d['deletion_minimal_union_core']
+          lines=['# q18 != q256 local obstruction','',
+                 f"- target: `{d['target_pair']}`",
+                 f"- degrees in q0-side bag: q18={d['q18_degree']}, q256={d['q256_degree']}",
+                 f"- union-neighborhood: **{d['union_neighborhood_size']} vertices / {d['union_neighborhood_edge_count']} edges**",
+                 f"- union-neighborhood verified 5-chromatic by both solvers: **{d['union_neighborhood_five_chromatic_verified_both']}**",
+                 f"- deletion-minimal non-4-colorable core: **{c['vertex_count']} vertices / {c['edge_count']} edges**",
+                 f"- pair minimum vertex cut in q0-side bag: **{d['pair_min_vertex_cut_value_in_q0_side']}**, `{d['pair_min_vertex_cut_qnodes']}`"]
+          Path('results/separator-left-q18-q256-obstruction/SUMMARY.md').write_text('\n'.join(lines)+'\n')
+          PY
+      - uses: actions/upload-artifact@v7
+        with:
+          name: separator-left-q18-q256-obstruction-${{ github.run_id }}
+          path: results/separator-left-q18-q256-obstruction
+          if-no-files-found: error
+          retention-days: 30
