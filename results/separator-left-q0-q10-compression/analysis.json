@@ -18,38 +18,409 @@
   "u_side_extendable_count": 3,
   "v_side_extendable_count": 26,
   "intersection_count": 2,
-  "u_side_extendable_keys": [
-    "01230",
-    "01233",
-    "01234"
+  "u_side_rows": [
+    {
+      "state": [
+        0,
+        1,
+        2,
+        3,
+        0
+      ],
+      "key": "01230",
+      "u_colors": [
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        2,
+        3,
+        3
+      ],
+      "key": "01233",
+      "u_colors": [
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "key": "01234",
+      "u_colors": [
+        3,
+        4
+      ]
+    }
   ],
-  "v_side_extendable_keys": [
-    "00110",
-    "00111",
-    "00112",
-    "00120",
-    "00121",
-    "00122",
-    "00123",
-    "01100",
-    "01101",
-    "01102",
-    "01120",
-    "01121",
-    "01122",
-    "01123",
-    "01200",
-    "01201",
-    "01202",
-    "01203",
-    "01220",
-    "01221",
-    "01222",
-    "01223",
-    "01230",
-    "01231",
-    "01232",
-    "01233"
+  "v_side_rows": [
+    {
+      "state": [
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      "key": "00110",
+      "v_colors": [
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "key": "00111",
+      "v_colors": [
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        0,
+        1,
+        1,
+        2
+      ],
+      "key": "00112",
+      "v_colors": [
+        3,
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        0,
+        1,
+        2,
+        0
+      ],
+      "key": "00120",
+      "v_colors": [
+        3,
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        0,
+        1,
+        2,
+        1
+      ],
+      "key": "00121",
+      "v_colors": [
+        3,
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        0,
+        1,
+        2,
+        2
+      ],
+      "key": "00122",
+      "v_colors": [
+        3,
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        0,
+        1,
+        2,
+        3
+      ],
+      "key": "00123",
+      "v_colors": [
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        1,
+        0,
+        0
+      ],
+      "key": "01100",
+      "v_colors": [
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "key": "01101",
+      "v_colors": [
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        1,
+        0,
+        2
+      ],
+      "key": "01102",
+      "v_colors": [
+        3,
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        1,
+        2,
+        0
+      ],
+      "key": "01120",
+      "v_colors": [
+        3,
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        1,
+        2,
+        1
+      ],
+      "key": "01121",
+      "v_colors": [
+        3,
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        1,
+        2,
+        2
+      ],
+      "key": "01122",
+      "v_colors": [
+        3,
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        1,
+        2,
+        3
+      ],
+      "key": "01123",
+      "v_colors": [
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        2,
+        0,
+        0
+      ],
+      "key": "01200",
+      "v_colors": [
+        3,
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        2,
+        0,
+        1
+      ],
+      "key": "01201",
+      "v_colors": [
+        3,
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        2,
+        0,
+        2
+      ],
+      "key": "01202",
+      "v_colors": [
+        3,
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        2,
+        0,
+        3
+      ],
+      "key": "01203",
+      "v_colors": [
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        2,
+        2,
+        0
+      ],
+      "key": "01220",
+      "v_colors": [
+        3,
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        2,
+        2,
+        1
+      ],
+      "key": "01221",
+      "v_colors": [
+        3,
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        2,
+        2,
+        2
+      ],
+      "key": "01222",
+      "v_colors": [
+        3,
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        2,
+        2,
+        3
+      ],
+      "key": "01223",
+      "v_colors": [
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        2,
+        3,
+        0
+      ],
+      "key": "01230",
+      "v_colors": [
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        2,
+        3,
+        1
+      ],
+      "key": "01231",
+      "v_colors": [
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        2,
+        3,
+        2
+      ],
+      "key": "01232",
+      "v_colors": [
+        4
+      ]
+    },
+    {
+      "state": [
+        0,
+        1,
+        2,
+        3,
+        3
+      ],
+      "key": "01233",
+      "v_colors": [
+        4
+      ]
+    }
   ],
   "intersection": [
     {
@@ -123,6 +494,29 @@
     266
   ],
   "q0_degree_in_left": 23,
+  "q62_neighbors_in_left": [
+    4,
+    5,
+    8,
+    21,
+    44,
+    58,
+    68,
+    71,
+    91,
+    97,
+    104,
+    141,
+    156,
+    173,
+    191,
+    196,
+    210,
+    213,
+    222,
+    252,
+    257
+  ],
   "separator_induced_edges": [
     [
       14,
@@ -133,7 +527,7 @@
       55
     ]
   ],
-  "common_pair_relations": [
+  "common_pair_relations_global_two_states": [
     {
       "positions": [
         0,
@@ -231,7 +625,272 @@
       "direct_edge": false
     }
   ],
-  "minimum_pairwise_basis_size": null,
-  "minimum_pairwise_bases": [],
-  "interpretation": "Glucose4 independently reconstructs the size-5 recursive interface for q0=q10. q10 is a singleton side whose entire left-bag neighborhood is the five separator vertices. In every globally viable separator state the boundary uses four colors and both q0 and q10 are forced to the unique fifth color."
+  "minimum_pairwise_basis_size_global_two_states": null,
+  "minimum_pairwise_bases_global_two_states": [],
+  "q0_side_augmented_nodes": [
+    0,
+    14,
+    18,
+    54,
+    55,
+    256
+  ],
+  "q0_side_augmented_states": [
+    [
+      0,
+      1,
+      2,
+      3,
+      0,
+      4
+    ],
+    [
+      0,
+      1,
+      2,
+      3,
+      4,
+      0
+    ],
+    [
+      0,
+      1,
+      2,
+      3,
+      4,
+      1
+    ],
+    [
+      0,
+      1,
+      2,
+      3,
+      4,
+      4
+    ]
+  ],
+  "q0_side_augmented_sources": [
+    {
+      "separator_state": "01230",
+      "q0_color": 4,
+      "canonical_augmented_state": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        1
+      ]
+    },
+    {
+      "separator_state": "01233",
+      "q0_color": 4,
+      "canonical_augmented_state": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        4
+      ]
+    },
+    {
+      "separator_state": "01234",
+      "q0_color": 3,
+      "canonical_augmented_state": [
+        0,
+        1,
+        2,
+        3,
+        0,
+        4
+      ]
+    },
+    {
+      "separator_state": "01234",
+      "q0_color": 4,
+      "canonical_augmented_state": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        0
+      ]
+    }
+  ],
+  "q0_side_common_pair_relations": [
+    {
+      "positions": [
+        0,
+        1
+      ],
+      "qnodes": [
+        0,
+        14
+      ],
+      "kind": "neq",
+      "direct_edge": true
+    },
+    {
+      "positions": [
+        0,
+        2
+      ],
+      "qnodes": [
+        0,
+        18
+      ],
+      "kind": "neq",
+      "direct_edge": true
+    },
+    {
+      "positions": [
+        0,
+        3
+      ],
+      "qnodes": [
+        0,
+        54
+      ],
+      "kind": "neq",
+      "direct_edge": false
+    },
+    {
+      "positions": [
+        1,
+        2
+      ],
+      "qnodes": [
+        14,
+        18
+      ],
+      "kind": "neq",
+      "direct_edge": false
+    },
+    {
+      "positions": [
+        1,
+        3
+      ],
+      "qnodes": [
+        14,
+        54
+      ],
+      "kind": "neq",
+      "direct_edge": true
+    },
+    {
+      "positions": [
+        1,
+        4
+      ],
+      "qnodes": [
+        14,
+        55
+      ],
+      "kind": "neq",
+      "direct_edge": false
+    },
+    {
+      "positions": [
+        2,
+        3
+      ],
+      "qnodes": [
+        18,
+        54
+      ],
+      "kind": "neq",
+      "direct_edge": false
+    },
+    {
+      "positions": [
+        2,
+        4
+      ],
+      "qnodes": [
+        18,
+        55
+      ],
+      "kind": "neq",
+      "direct_edge": true
+    },
+    {
+      "positions": [
+        2,
+        5
+      ],
+      "qnodes": [
+        18,
+        256
+      ],
+      "kind": "neq",
+      "direct_edge": false
+    },
+    {
+      "positions": [
+        3,
+        4
+      ],
+      "qnodes": [
+        54,
+        55
+      ],
+      "kind": "neq",
+      "direct_edge": false
+    },
+    {
+      "positions": [
+        3,
+        5
+      ],
+      "qnodes": [
+        54,
+        256
+      ],
+      "kind": "neq",
+      "direct_edge": false
+    }
+  ],
+  "q0_side_minimum_pairwise_basis_size": null,
+  "q0_side_minimum_pairwise_bases": [],
+  "q0_eq_62_local_class_to_separator_edges": [
+    {
+      "separator_qnode": 14,
+      "edge_witnesses": [
+        [
+          0,
+          14
+        ]
+      ],
+      "adjacent_after_q0_eq_62": true
+    },
+    {
+      "separator_qnode": 18,
+      "edge_witnesses": [
+        [
+          0,
+          18
+        ]
+      ],
+      "adjacent_after_q0_eq_62": true
+    },
+    {
+      "separator_qnode": 54,
+      "edge_witnesses": [],
+      "adjacent_after_q0_eq_62": false
+    },
+    {
+      "separator_qnode": 55,
+      "edge_witnesses": [],
+      "adjacent_after_q0_eq_62": false
+    },
+    {
+      "separator_qnode": 256,
+      "edge_witnesses": [],
+      "adjacent_after_q0_eq_62": false
+    }
+  ],
+  "interpretation": "Glucose4 independently reconstructs the size-5 recursive interface for q0=q10. The q0 side permits exactly three separator states. The third state 01234 allows q0 colors 3 or 4, but q10 is a singleton of degree five adjacent exactly to the separator, so that all-five-colors boundary state is impossible globally. The remaining states 01230 and 01233 force both q0 and q10 to color 4."
 }
