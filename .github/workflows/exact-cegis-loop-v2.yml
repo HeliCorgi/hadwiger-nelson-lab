@@ -1,0 +1,296 @@
+name: exact-cegis-loop-v2
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/exact-cegis-loop-v2.yml'
+      - '.github/exact-cegis-loop-v2.trigger'
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: exact-cegis-loop
+  cancel-in-progress: false
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  CHECKPOINT: checkpoints/semantic_portfree_s4.json.gz
+  ROOT: results/exact-cegis-loop
+
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      - name: Checkout lab
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Checkout pinned upstream handoff
+        uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Compile and self-test exact master
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C upstream rev-parse HEAD)" = "$UPSTREAM_SHA"
+          gzip -t "$CHECKPOINT"
+          python -m py_compile \
+            tools/exact_fourset_master.py \
+            tools/exact_fourset_master_monotone.py \
+            tools/check_fourset_candidate.py \
+            tools/append_semantic_fooling_pair.py
+          python tools/exact_fourset_master_monotone.py --self-test
+
+      - name: Run monotone-resumable exact CEGIS loop
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$ROOT/history" "$ROOT/master-current"
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          persist_progress() {
+            local message="$1"
+            git add "$CHECKPOINT" "$ROOT" || true
+            if ! git diff --cached --quiet; then
+              git commit -m "$message [skip ci]"
+              git pull --rebase origin main
+              git push origin HEAD:main
+            fi
+          }
+
+          # Keep a large guard before the 330-minute GitHub job timeout. Each
+          # exact-master slice can consume about 15.5 minutes including timeout
+          # cleanup, so do not start a slice in the final guarded interval.
+          safe_deadline=$((SECONDS + 18000))
+
+          # Legacy first-candidate witness is duplicate-safe. Keeping this here
+          # makes a fresh checkout robust if the historical append was missed.
+          if [[ -f results/fourset-candidate-check/analysis.json ]]; then
+            status=$(python - <<'PY'
+          import json
+          print(json.load(open('results/fourset-candidate-check/analysis.json'))['status'])
+          PY
+          )
+            if [[ "$status" == "SAT-FOOLING-PAIR" ]]; then
+              python tools/append_semantic_fooling_pair.py \
+                --data-dir upstream/handoff/data \
+                --checkpoint "$CHECKPOINT" \
+                --oracle-result results/fourset-candidate-check/analysis.json
+            fi
+          fi
+
+          for loop in $(seq 1 400); do
+            if (( SECONDS + 1000 >= safe_deadline )); then
+              echo "safe workflow deadline reached before iteration $loop"
+              persist_progress 'Checkpoint monotone exact CEGIS safe stop'
+              break
+            fi
+
+            echo "=== monotone exact CEGIS iteration $loop ==="
+            set +e
+            timeout --signal=TERM --kill-after=30s 930s \
+              python tools/exact_fourset_master_monotone.py \
+                --data-dir upstream/handoff/data \
+                --checkpoint "$CHECKPOINT" \
+                --result-dir "$ROOT/master-current" \
+                --time-limit-sec 870 \
+                --lookahead-cuts 32
+            rc=$?
+            set -e
+
+            case "$rc" in
+              0|75|124|137|143) ;;
+              *) echo "unexpected exact-master exit code $rc"; exit "$rc" ;;
+            esac
+
+            if [[ -f "$ROOT/master-current/FINAL.json" ]]; then
+              cp "$ROOT/master-current/FINAL.json" "$ROOT/MASTER_FINAL.json"
+              echo "terminal exact-master result produced"
+              persist_progress 'Checkpoint terminal monotone exact-master result'
+              break
+            fi
+
+            if [[ -f "$ROOT/master-current/CANDIDATE.json" ]]; then
+              mapfile -t support < <(python - <<'PY'
+          import json
+          d=json.load(open('results/exact-cegis-loop/master-current/CANDIDATE.json'))
+          for v in d['support_vertices']:
+              print(v)
+          PY
+          )
+              if [[ "${#support[@]}" -ne 4 ]]; then
+                echo "bad candidate support"; exit 2
+              fi
+
+              oracle_tmp="/tmp/semantic-$loop.json"
+              python tools/check_fourset_candidate.py \
+                --data-dir upstream/handoff/data \
+                --result "$oracle_tmp" \
+                --support "${support[@]}"
+
+              lab_iter=$(python - <<'PY'
+          import gzip,json
+          with gzip.open('checkpoints/semantic_portfree_s4.json.gz','rt') as f:
+              print(json.load(f)['iterations'])
+          PY
+          )
+              cp "$ROOT/master-current/CANDIDATE.json" \
+                "$ROOT/history/master-before-${lab_iter}.json"
+              cp "$oracle_tmp" "$ROOT/history/oracle-${lab_iter}.json"
+
+              oracle_status=$(python - "$oracle_tmp" <<'PY'
+          import json,sys
+          print(json.load(open(sys.argv[1]))['status'])
+          PY
+          )
+              echo "oracle status=$oracle_status support=${support[*]}"
+
+              if [[ "$oracle_status" == "SAT-FOOLING-PAIR" ]]; then
+                python tools/append_semantic_fooling_pair.py \
+                  --data-dir upstream/handoff/data \
+                  --checkpoint "$CHECKPOINT" \
+                  --oracle-result "$oracle_tmp"
+                # Critical v2 behavior: retain STATE.json and ROOT_ORDER.json.
+                # The new cut only strengthens the master, so roots completely
+                # exhausted before this candidate remain exhausted. The exact
+                # master verifies prefix compatibility and retries this root.
+                rm -f \
+                  "$ROOT/master-current/CANDIDATE.json" \
+                  "$ROOT/master-current/FINAL.json"
+                # Persist every semantic witness. This keeps both the new cut
+                # and the root partition needed for monotone resume durable.
+                persist_progress "Checkpoint monotone semantic witness ${lab_iter}"
+                continue
+              elif [[ "$oracle_status" == "UNSAT-INTERFACE-CANDIDATE" ]]; then
+                cp "$oracle_tmp" "$ROOT/INTERFACE_CANDIDATE.json"
+                echo "terminal semantic interface candidate produced"
+                persist_progress 'Checkpoint semantic interface candidate'
+                break
+              else
+                cp "$oracle_tmp" "$ROOT/ORACLE_ERROR.json"
+                persist_progress 'Checkpoint semantic oracle error'
+                exit 2
+              fi
+            fi
+
+            if [[ "$rc" == "75" ]]; then
+              echo "safe exact-master slice ended; persist and continue from completed root prefix"
+              persist_progress 'Checkpoint monotone exact-master slice'
+              continue
+            fi
+
+            if [[ "$rc" == "124" || "$rc" == "137" || "$rc" == "143" ]]; then
+              echo "outer timeout/signal observed; preserve durable state and stop defensively"
+              persist_progress 'Checkpoint interrupted monotone exact-master slice'
+              break
+            fi
+
+            echo "exact master returned without candidate/final; stopping defensively"
+            persist_progress 'Checkpoint defensive monotone exact CEGIS stop'
+            break
+          done
+
+          gzip -t "$CHECKPOINT"
+          python - <<'PY'
+          import gzip,json
+          with gzip.open('checkpoints/semantic_portfree_s4.json.gz','rt') as f:
+              d=json.load(f)
+          print('durable lab iterations',d['iterations'],'total cuts',d['iterations']+872,'status',d['status'])
+          PY
+          persist_progress 'Checkpoint monotone exact semantic CEGIS final state'
+
+      - name: Write human-readable status
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import gzip, json
+          from pathlib import Path
+
+          root = Path('results/exact-cegis-loop')
+          root.mkdir(parents=True, exist_ok=True)
+          with gzip.open('checkpoints/semantic_portfree_s4.json.gz','rt') as f:
+              ck = json.load(f)
+          state_path = root / 'master-current' / 'STATE.json'
+          state = json.loads(state_path.read_text()) if state_path.exists() else {}
+
+          terminal = 'none (resumable)'
+          if (root / 'INTERFACE_CANDIDATE.json').exists():
+              terminal = 'semantic interface candidate (requires independent verification)'
+          elif (root / 'MASTER_FINAL.json').exists():
+              terminal = 'exact-master exhaustion (requires independent verification)'
+
+          lines = [
+              '# Exact CEGIS status',
+              '',
+              f"- Lab fooling pairs: **{ck['iterations']}**",
+              f"- Total sound fooling pairs/cuts before dedup: **{ck['iterations'] + 872}**",
+              f"- Checkpoint status: `{ck.get('status')}`",
+              f"- Exact-master state: `{state.get('status', 'missing')}`",
+              f"- State version: **{state.get('version', 'n/a')}**",
+              f"- Resume mode: `{state.get('resume_mode', 'n/a')}`",
+              f"- Unique cuts: **{state.get('unique_cut_count', 'n/a')}**",
+              f"- Duplicate cuts: **{state.get('duplicate_cut_count', 'n/a')}**",
+              f"- Root rank: **{state.get('next_root_rank', 'n/a')} / {state.get('pivot_root_edge_count', 'n/a')}** (rank count only; not a runtime-completion percentage)",
+              f"- Pivot source: `{state.get('pivot_cut_source', 'n/a')}`",
+              f"- Root-order SHA256: `{state.get('root_order_sha256', 'n/a')}`",
+              f"- Cut-library SHA256: `{state.get('cut_library_sha256', 'n/a')}`",
+              f"- Terminal event: **{terminal}**",
+              '',
+              'Monotone-resume invariant: when the ordered unique-cut library is a verified prefix extension, completed roots remain impossible because added cuts only strengthen the hitting constraints. The candidate root itself is retried.',
+          ]
+          text='\n'.join(lines)+'\n'
+          (root / 'STATUS.md').write_text(text, encoding='utf-8')
+          print(text)
+          with open(Path(__import__('os').environ['GITHUB_STEP_SUMMARY']), 'a', encoding='utf-8') as f:
+              f.write(text)
+          PY
+
+      - name: Persist checkpoint and loop state
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$CHECKPOINT" "$ROOT" || true
+          if ! git diff --cached --quiet; then
+            git commit -m 'Checkpoint monotone exact semantic CEGIS [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Upload loop state
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: exact-cegis-loop-v2-${{ github.run_id }}
+          path: |
+            checkpoints/semantic_portfree_s4.json.gz
+            results/exact-cegis-loop
+          if-no-files-found: warn
+          retention-days: 30
