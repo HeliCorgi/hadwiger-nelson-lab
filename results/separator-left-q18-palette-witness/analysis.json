@@ -1,0 +1,62 @@
+{
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8",
+  "q18_side_size": 265,
+  "anchor_equality_classes": {
+    "23": [
+      23
+    ],
+    "35": [
+      35
+    ],
+    "57": [
+      57
+    ],
+    "86": [
+      3,
+      5,
+      22,
+      33,
+      54,
+      63,
+      65,
+      86,
+      189,
+      210
+    ],
+    "159": [
+      159
+    ]
+  },
+  "solver_crosscheck": "Cadical195 and Glucose4 equality classes identical",
+  "conditional_color_classes_under_q57_eq_q159": [
+    [
+      23
+    ],
+    [
+      35
+    ],
+    [
+      57,
+      159
+    ],
+    [
+      3,
+      5,
+      22,
+      33,
+      54,
+      63,
+      65,
+      86,
+      189,
+      210
+    ]
+  ],
+  "raw_conditional_common_neighbors": [],
+  "raw_witness_edges": [],
+  "equality_class_conditional_common_neighbors": [],
+  "equality_class_witness_edges": [],
+  "has_raw_two_adjacent_fifth_color_witnesses": false,
+  "has_eqclass_two_adjacent_fifth_color_witnesses": false,
+  "interpretation": "Assume q57=q159 and q23,q35,q57,q86 use four distinct colors, as in forbidden state 01232. Any vertex adjacent to each of the four corresponding color classes must use the fifth color. If two such witness vertices are adjacent, the assumption is impossible. The scan tests this first on raw tracked classes and then after replacing each anchor by its exact forced-equality class, independently reconstructed with CaDiCaL195 and Glucose4."
+}
