@@ -1,0 +1,201 @@
+{
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8",
+  "separator_qnodes": [
+    4,
+    5,
+    33,
+    62,
+    68,
+    78,
+    226
+  ],
+  "min_cut_value": 7,
+  "big_component_size": 259,
+  "small_component_size": 1,
+  "q104_neighbors_in_left": [
+    4,
+    5,
+    33,
+    62,
+    68,
+    78,
+    226
+  ],
+  "q104_degree": 7,
+  "q104_neighborhood_is_separator": true,
+  "big_side_extendable_count": 12,
+  "q104_side_extendable_count": 81,
+  "intersection_count": 2,
+  "big_side_rows": [
+    {
+      "state": "0112323",
+      "q8_colors": [
+        4
+      ],
+      "q9_colors": [
+        4
+      ]
+    },
+    {
+      "state": "0112324",
+      "q8_colors": [
+        3
+      ],
+      "q9_colors": [
+        2,
+        3
+      ]
+    },
+    {
+      "state": "0112333",
+      "q8_colors": [
+        4
+      ],
+      "q9_colors": [
+        4
+      ]
+    },
+    {
+      "state": "0112334",
+      "q8_colors": [
+        3
+      ],
+      "q9_colors": [
+        2,
+        3
+      ]
+    },
+    {
+      "state": "0112340",
+      "q8_colors": [
+        3
+      ],
+      "q9_colors": [
+        2,
+        3
+      ]
+    },
+    {
+      "state": "0112343",
+      "q8_colors": [
+        4
+      ],
+      "q9_colors": [
+        4
+      ]
+    },
+    {
+      "state": "0112344",
+      "q8_colors": [
+        3
+      ],
+      "q9_colors": [
+        2,
+        3
+      ]
+    },
+    {
+      "state": "0123224",
+      "q8_colors": [
+        2
+      ],
+      "q9_colors": [
+        2
+      ]
+    },
+    {
+      "state": "0123234",
+      "q8_colors": [
+        2
+      ],
+      "q9_colors": [
+        2
+      ]
+    },
+    {
+      "state": "0123420",
+      "q8_colors": [
+        2
+      ],
+      "q9_colors": [
+        3
+      ]
+    },
+    {
+      "state": "0123424",
+      "q8_colors": [
+        2
+      ],
+      "q9_colors": [
+        3
+      ]
+    },
+    {
+      "state": "0123434",
+      "q8_colors": [
+        2
+      ],
+      "q9_colors": [
+        2
+      ]
+    }
+  ],
+  "intersection_rows": [
+    {
+      "state": "0112323",
+      "q8_colors": [
+        4
+      ],
+      "q9_colors": [
+        4
+      ],
+      "q104_colors": [
+        4
+      ],
+      "used_colors": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "missing_colors": [
+        4
+      ],
+      "q104_equals_missing": true,
+      "all_three_same_singleton": true,
+      "q8_subset_missing": true,
+      "q9_subset_missing": true
+    },
+    {
+      "state": "0112333",
+      "q8_colors": [
+        4
+      ],
+      "q9_colors": [
+        4
+      ],
+      "q104_colors": [
+        4
+      ],
+      "used_colors": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "missing_colors": [
+        4
+      ],
+      "q104_equals_missing": true,
+      "all_three_same_singleton": true,
+      "q8_subset_missing": true,
+      "q9_subset_missing": true
+    }
+  ],
+  "all_intersection_q104_colors_equal_missing": true,
+  "all_intersection_q8_subset_missing": true,
+  "all_intersection_q9_subset_missing": true,
+  "all_intersection_three_same_singleton": true,
+  "solver_crosscheck": "Cadical195 and Glucose4 enumerations identical",
+  "interpretation": "A single seven-vertex separator isolates q104 while q8 and q9 remain together on the large side. Exact boundary enumeration checks whether globally viable states force q8, q9 and q104 to the same missing palette color, thereby proving q8=q9 through one shared interface rather than two separate pairwise arguments."
+}
