@@ -1,0 +1,65 @@
+name: separator-left-q8-q9-relation-cnf
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/separator-left-q8-q9-relation-cnf.yml'
+      - 'tools/separator_left_q8_q9_relation_cnf.py'
+  workflow_dispatch:
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m py_compile tools/separator_left_q8_q9_relation_cnf.py
+      - name: Compress q8-q9 large-side relation
+        run: |
+          mkdir -p results/separator-left-q8-q9-relation-cnf
+          python tools/separator_left_q8_q9_relation_cnf.py \
+            --data-dir upstream/handoff/data \
+            --out results/separator-left-q8-q9-relation-cnf/analysis.json
+      - name: Write summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('results/separator-left-q8-q9-relation-cnf/analysis.json').read_text())
+          lines=['# q8/q9 large-side relation CNF','',
+                 f"- separator: `{d['separator_qnodes']}`",
+                 f"- exact large-side states: **{d['large_side_state_count']}**",
+                 f"- common pairwise relations: **{d['common_pairwise_relation_count']}**",
+                 f"- pairwise closure states: **{d['pairwise_closure_state_count']}** (extras {d['pairwise_closure_extra_state_count']})",
+                 f"- valid width-2 clauses: **{d['valid_width2_clause_count']}**",
+                 f"- minimum width-2 clause cover: **{d['minimum_width2_clause_cover_size']} clauses**",
+                 f"- number of minimum covers: **{d['minimum_cover_count']}**",
+                 f"- exact formula verified: **{d['exact_formula_verified']}**",
+                 '', 'Chosen residual clauses:']
+          for c in d['chosen_width2_clauses']:
+              lines.append(f"- `{c['literals']}`; eliminates `{c['eliminates_states']}`")
+          Path('results/separator-left-q8-q9-relation-cnf/SUMMARY.md').write_text('\n'.join(lines)+'\n')
+          PY
+      - uses: actions/upload-artifact@v7
+        with:
+          name: separator-left-q8-q9-relation-cnf-${{ github.run_id }}
+          path: results/separator-left-q8-q9-relation-cnf
+          if-no-files-found: error
+          retention-days: 30
