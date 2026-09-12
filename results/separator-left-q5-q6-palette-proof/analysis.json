@@ -52,7 +52,9 @@
         "105": 0,
         "223": null
       },
-      "q6_color_absent_from_separator": false,
+      "q6_color_unconditionally_absent_from_separator": false,
+      "at_most4_boundary_counterexample_to_q6_absence": null,
+      "q6_color_absent_when_boundary_uses_at_most4_colors": true,
       "at_most3_separator_colors_witness_subset": null,
       "separator_uses_at_least4_colors": true
     },
@@ -70,12 +72,14 @@
         "105": 0,
         "223": null
       },
-      "q6_color_absent_from_separator": false,
+      "q6_color_unconditionally_absent_from_separator": false,
+      "at_most4_boundary_counterexample_to_q6_absence": null,
+      "q6_color_absent_when_boundary_uses_at_most4_colors": true,
       "at_most3_separator_colors_witness_subset": null,
       "separator_uses_at_least4_colors": true
     }
   },
-  "palette_conditions_verified_both": false,
-  "human_proof_available": false,
-  "interpretation": "First, q5=q22 follows from the local K4 common-neighborhood lemma using q0,q4,q8,q21. The minimum q6-q22 separator is exactly the neighborhood of singleton q22. On the large q6 side, two independently checked properties suffice: q6 differs from every separator vertex, so its color is missing from the boundary palette; and the separator necessarily uses at least four colors. Any coloring extending to q22 must use at most four colors on its entire neighborhood. Hence a globally viable boundary uses exactly four colors, and both q6 and q22 are forced to the unique missing fifth color. Together with q5=q22 this proves q5=q6 without enumerating all ten-boundary partitions."
+  "conditional_palette_conditions_verified_both": true,
+  "human_proof_available": true,
+  "interpretation": "First, q5=q22 follows from the local K4 common-neighborhood lemma using q0,q4,q8,q21. The minimum q6-q22 separator is exactly the neighborhood of singleton q22. Any coloring extending to q22 must omit q22 color from this boundary, hence the boundary uses at most four colors. Independently, the large q6 side forces the separator to use at least four colors, and\u2014conditional on the boundary using at most four\u2014forces q6 color to be absent from every separator vertex. Therefore every globally viable boundary uses exactly four colors and both q6 and q22 take the unique missing fifth color. Together with q5=q22 this proves q5=q6 without enumerating all canonical partitions of the ten-vertex boundary."
 }
