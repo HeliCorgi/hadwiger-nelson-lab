@@ -2,6 +2,7 @@
   "atom_count": 76245,
   "checkpoint_iterations": 6139,
   "checkpoint_status": "RUNNING-AFTER-EXACT-MASTER-CUT",
+  "completed_pivot_root_edges": 23440,
   "cut_library_sha256": "a58cb579f1fa725107ef10a776b290c089a8ff0cfc12dc4d75fa1fe82ba5ccfa",
   "cut_size_max": 25171,
   "cut_size_mean": 24607.330764840182,
@@ -17,15 +18,28 @@
     316
   ],
   "full_pair_count": 7011,
+  "implication_if_independently_verified": "For the pinned A/B system, no port-free equality semantic interface supported on at most four vertices exists.",
   "lab_pair_count": 6139,
   "nonport_vertex_count": 391,
   "pivot_cut_index": 6060,
   "pivot_cut_size": 23440,
   "pivot_cut_source": "checkpoint:5191",
   "pivot_root_edge_count": 23440,
+  "proof_note": "Every four-set hits the fixed pivot cut and is assigned to its earliest fixed pivot edge. Completed roots from an older prefix cut library remain impossible after additional cuts are appended. Independent verification is still required before theorem promotion.",
   "resume_mode": "resume-same-library-v2",
   "root_order_sha256": "f72cdbf49f6a06929ebae1efe58b795b466c1ef4bd5bfa2f923ee6b3029532a7",
+  "search_stats": {
+    "canonical_prunes": 34591,
+    "pair_states": 1,
+    "quad_leaves": 5086,
+    "root_edges_completed_this_process": 1,
+    "triple_branch_vertices": 16321,
+    "triple_incident_prunes": 0,
+    "triple_states": 74
+  },
   "seed_pair_count": 872,
+  "statement": "No four-set of the 391 non-port vertices hits every validated unique difference-graph cut in this library.",
+  "status": "EXACT-MASTER-EXHAUSTED-REQUIRES-INDEPENDENT-VERIFY",
   "unique_cut_count": 7008,
   "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8"
 }
