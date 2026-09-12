@@ -1,0 +1,21 @@
+{
+  "status": "PROOF-TREE-COMPOSITION-VERIFIED",
+  "check_count": 19,
+  "all_checks_passed": true,
+  "verified_components": [
+    "q0-side three-state language is exactly the eight recorded disequalities",
+    "q18!=q256 palette gate has seven viable cross-disjoint states and rejects only the all-five-colors q18-side state",
+    "q0=q10 recursive interface leaves exactly 01230 and 01233 with both endpoints color 4",
+    "q5=q6 conditional palette leaves and q5=q22 local K4 witness are internally consistent",
+    "q8/q9 large-side 12-state language is exactly the recorded 13 pairwise relations plus the unique minimum four width-2 clauses",
+    "q104 singleton gate leaves exactly 0112323 and 0112333 with q8=q9=q104 equal to the unique missing color",
+    "outer p-side states realize q5=q6, q0=q10 and q8=q9",
+    "K4-minus-one-edge class relation gives exactly 012202 and 012203"
+  ],
+  "trust_boundary": "The checker uses only Python standard-library logic and saved JSON evidence. It independently verifies composition, canonical-state formulas, palette-set deductions and the final K4-minus-edge reduction. It does not re-solve the graph-coloring SAT instances that produced leaf state tables/palette predicates; those leaves are separately cross-checked by CaDiCaL195 and Glucose4.",
+  "finite_conclusion_checked": "Given the saved solver-crosschecked leaf lemmas, the left side of the six-vertex quotient separator permits exactly 012202 and 012203 via q5=q6, q0=q10, q8=q9 and K4 minus one edge.",
+  "geometric_scope": "Conditional quotient/P2 finite statement only; no new unit-distance or Hadwiger-Nelson lower-bound claim.",
+  "workflow_run": 34699960544,
+  "artifact_id": 10300111590,
+  "artifact_sha256": "0ef3e3c4de58c8e1d9ec7cad4a40de8a452a02bbdf176bfcc9c454052d411408"
+}
