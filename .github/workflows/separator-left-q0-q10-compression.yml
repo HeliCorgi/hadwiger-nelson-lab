@@ -49,13 +49,15 @@ jobs:
           d=json.loads(Path('results/separator-left-q0-q10-compression/analysis.json').read_text())
           lines=['# q0=q10 recursive interface compression','',
                  f"- separator: `{d['separator_qnodes']}` (minimum cut {d['min_cut_value']})",
-                 f"- q0-side extendable states: **{d['u_side_extendable_count']}**",
+                 f"- q0-side extendable states: **{d['u_side_extendable_count']}**: `{[(x['key'], x['u_colors']) for x in d['u_side_rows']]}`",
                  f"- q10-side extendable states: **{d['v_side_extendable_count']}**",
                  f"- intersection: **{d['intersection_count']}** states: `{[x['key'] for x in d['intersection']]}`",
                  f"- all intersection states force q0=q10: **{d['verified_all_intersection_states_force_equal']}**",
                  f"- q10 degree in left bag: **{d['q10_degree_in_left']}**, neighborhood exactly separator: **{d['q10_neighborhood_is_separator']}**",
                  f"- separator induced edges: `{d['separator_induced_edges']}`",
-                 f"- minimum pairwise relation basis for the two viable states: **{d['minimum_pairwise_basis_size']}**"]
+                 f"- pairwise basis for the two globally viable separator states: **{d['minimum_pairwise_basis_size_global_two_states']}**",
+                 f"- q0-side augmented states on `[q0]+separator`: `{d['q0_side_augmented_states']}`",
+                 f"- pairwise basis for those q0-side augmented states: **{d['q0_side_minimum_pairwise_basis_size']}**"]
           Path('results/separator-left-q0-q10-compression/SUMMARY.md').write_text('\n'.join(lines)+'\n')
           PY
       - name: Commit result
