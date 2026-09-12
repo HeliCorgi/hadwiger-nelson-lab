@@ -1,0 +1,248 @@
+{
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8",
+  "separator_qnodes": [
+    0,
+    6,
+    8,
+    9,
+    10,
+    266
+  ],
+  "p_qnode": 5,
+  "left_bag_size": 267,
+  "target_pairs": [
+    [
+      5,
+      6
+    ],
+    [
+      0,
+      10
+    ],
+    [
+      8,
+      9
+    ]
+  ],
+  "solver_crosscheck": "Cadical195 and Glucose4 produced identical equality classes",
+  "anchor_equality_classes": {
+    "5": [
+      3,
+      5,
+      6,
+      22,
+      33,
+      54,
+      63,
+      65,
+      86,
+      189,
+      210,
+      222,
+      252
+    ],
+    "0": [
+      0,
+      10,
+      39,
+      62,
+      98,
+      105,
+      214,
+      251
+    ],
+    "8": [
+      1,
+      8,
+      9,
+      17,
+      19,
+      55,
+      61,
+      71,
+      72,
+      74,
+      82,
+      100,
+      104
+    ]
+  },
+  "unique_target_equality_classes": [
+    [
+      3,
+      5,
+      6,
+      22,
+      33,
+      54,
+      63,
+      65,
+      86,
+      189,
+      210,
+      222,
+      252
+    ],
+    [
+      0,
+      10,
+      39,
+      62,
+      98,
+      105,
+      214,
+      251
+    ],
+    [
+      1,
+      8,
+      9,
+      17,
+      19,
+      55,
+      61,
+      71,
+      72,
+      74,
+      82,
+      100,
+      104
+    ]
+  ],
+  "targets": [
+    {
+      "target_pair": [
+        5,
+        6
+      ],
+      "equality_class": [
+        3,
+        5,
+        6,
+        22,
+        33,
+        54,
+        63,
+        65,
+        86,
+        189,
+        210,
+        222,
+        252
+      ],
+      "equality_class_size": 13,
+      "local_common_neighborhood_forcing_edges": [
+        {
+          "pair": [
+            5,
+            22
+          ],
+          "common_neighborhood_size": 4,
+          "common_neighbors": [
+            0,
+            4,
+            8,
+            21
+          ],
+          "k4_witness": [
+            0,
+            4,
+            8,
+            21
+          ]
+        }
+      ],
+      "local_forcing_edge_count": 1,
+      "shortest_local_forcing_path": null,
+      "target_explained_by_local_chain": false
+    },
+    {
+      "target_pair": [
+        0,
+        10
+      ],
+      "equality_class": [
+        0,
+        10,
+        39,
+        62,
+        98,
+        105,
+        214,
+        251
+      ],
+      "equality_class_size": 8,
+      "local_common_neighborhood_forcing_edges": [
+        {
+          "pair": [
+            0,
+            62
+          ],
+          "common_neighborhood_size": 4,
+          "common_neighbors": [
+            4,
+            5,
+            8,
+            21
+          ],
+          "k4_witness": [
+            4,
+            5,
+            8,
+            21
+          ]
+        }
+      ],
+      "local_forcing_edge_count": 1,
+      "shortest_local_forcing_path": null,
+      "target_explained_by_local_chain": false
+    },
+    {
+      "target_pair": [
+        8,
+        9
+      ],
+      "equality_class": [
+        1,
+        8,
+        9,
+        17,
+        19,
+        55,
+        61,
+        71,
+        72,
+        74,
+        82,
+        100,
+        104
+      ],
+      "equality_class_size": 13,
+      "local_common_neighborhood_forcing_edges": [
+        {
+          "pair": [
+            8,
+            17
+          ],
+          "common_neighborhood_size": 4,
+          "common_neighbors": [
+            0,
+            4,
+            21,
+            22
+          ],
+          "k4_witness": [
+            0,
+            4,
+            21,
+            22
+          ]
+        }
+      ],
+      "local_forcing_edge_count": 1,
+      "shortest_local_forcing_path": null,
+      "target_explained_by_local_chain": false
+    }
+  ],
+  "interpretation": "Forced equality is an equivalence relation across all proper 5-colorings of the left bag. Each target anchor class is reconstructed exactly with two solvers. Inside each class, pairs whose common-neighborhood graph is not 3-colorable give short graph-theoretic equality lemmas; shortest paths test whether the target equality factors through such local lemmas."
+}
