@@ -1,11 +1,11 @@
 {
   "atom_count": 76245,
-  "checkpoint_iterations": 6137,
+  "checkpoint_iterations": 6138,
   "checkpoint_status": "RUNNING-AFTER-EXACT-MASTER-CUT",
-  "cut_library_sha256": "744d89365d4f5e1438cc4adeb7e7a59df8e278973af6aab28f436b3856d045dc",
+  "cut_library_sha256": "1eed49867f86da07af17add1fd5acc59631961d669062b73b854765ae7831ef9",
   "cut_size_max": 25171,
-  "cut_size_mean": 24607.37696260348,
-  "cut_size_median": 24653.0,
+  "cut_size_mean": 24607.383188240332,
+  "cut_size_median": 24653,
   "cut_size_min": 23440,
   "duplicate_cut_count": 3,
   "first_pivot_edge_positions": [
@@ -16,16 +16,16 @@
     26,
     316
   ],
-  "full_pair_count": 7009,
-  "lab_pair_count": 6137,
+  "full_pair_count": 7010,
+  "lab_pair_count": 6138,
   "nonport_vertex_count": 391,
   "pivot_cut_index": 6060,
   "pivot_cut_size": 23440,
   "pivot_cut_source": "checkpoint:5191",
   "pivot_root_edge_count": 23440,
-  "resume_mode": "resume-same-library-v2",
+  "resume_mode": "resume-monotone-prefix-v2",
   "root_order_sha256": "f72cdbf49f6a06929ebae1efe58b795b466c1ef4bd5bfa2f923ee6b3029532a7",
   "seed_pair_count": 872,
-  "unique_cut_count": 7006,
+  "unique_cut_count": 7007,
   "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8"
 }
