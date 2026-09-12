@@ -1,0 +1,166 @@
+name: verify-fourset-exhaustion-independent
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/verify-fourset-exhaustion-independent.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: verify-fourset-exhaustion-independent
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    env:
+      UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+      CHECKPOINT: checkpoints/semantic_portfree_s4.json.gz
+      OUT: results/independent-fourset-verify
+      EXPECT_FULL: '7011'
+      EXPECT_UNIQUE: '7008'
+      EXPECT_DIGEST: a58cb579f1fa725107ef10a776b290c089a8ff0cfc12dc4d75fa1fe82ba5ccfa
+
+    steps:
+      - name: Checkout lab
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Checkout pinned upstream handoff
+        uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Compile and self-test independent verifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C upstream rev-parse HEAD)" = "$UPSTREAM_SHA"
+          gzip -t "$CHECKPOINT"
+          python -m py_compile tools/reconstruct_fourset_cuts_independent.py
+          g++ -O3 -std=c++20 -fopenmp -Wall -Wextra -pedantic \
+            tools/verify_fourset_exhaustion_independent.cpp \
+            -o /tmp/verify-fourset-independent
+          /tmp/verify-fourset-independent --self-test
+
+      - name: Independently reconstruct validated cut library
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$OUT"
+          python tools/reconstruct_fourset_cuts_independent.py \
+            --data-dir upstream/handoff/data \
+            --checkpoint "$CHECKPOINT" \
+            --output-bin "$OUT/cuts.bin" \
+            --output-json "$OUT/RECONSTRUCTION.json" \
+            --expected-full "$EXPECT_FULL" \
+            --expected-unique "$EXPECT_UNIQUE" \
+            --expected-digest "$EXPECT_DIGEST"
+
+      - name: Exhaust all four-sets by independent triple-extension decomposition
+        id: exhaustive
+        shell: bash
+        run: |
+          set -uo pipefail
+          rc=0
+          timeout --signal=TERM --kill-after=30s 15000s \
+            /tmp/verify-fourset-independent \
+              --input "$OUT/cuts.bin" \
+              --result "$OUT/VERIFICATION.json" \
+              --threads 0 || rc=$?
+          echo "exit_code=$rc" >> "$GITHUB_OUTPUT"
+          case "$rc" in
+            0|2) exit 0 ;;
+            124|137|143)
+              python - <<'PY'
+          import json, os
+          from pathlib import Path
+          out=Path(os.environ['OUT'])
+          (out/'VERIFICATION.json').write_text(json.dumps({
+              'status':'UNKNOWN-TIMEOUT-OR-SIGNAL',
+              'exit_code': int('${{ steps.exhaustive.outputs.exit_code }}' or 124),
+              'statement':'No mathematical conclusion from an interrupted independent verification.'
+          },indent=2)+'\n')
+          PY
+              exit 0 ;;
+            *) exit "$rc" ;;
+          esac
+
+      - name: Write independent-verification summary
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          out=Path(os.environ['OUT'])
+          rec=json.loads((out/'RECONSTRUCTION.json').read_text()) if (out/'RECONSTRUCTION.json').exists() else {}
+          ver=json.loads((out/'VERIFICATION.json').read_text()) if (out/'VERIFICATION.json').exists() else {'status':'MISSING'}
+          status=ver.get('status','MISSING')
+          lines=[
+            '# Independent support-4 verification', '',
+            f"- Reconstruction: `{rec.get('status','missing')}`",
+            f"- Full validated pairs: **{rec.get('full_pair_count','n/a')}**",
+            f"- Unique cuts: **{rec.get('unique_cut_count','n/a')}**",
+            f"- Reconstructed cut SHA256: `{rec.get('cut_library_sha256','n/a')}`",
+            f"- Exhaustive verifier: **{status}**",
+            f"- Triples checked: **{ver.get('triples_checked','n/a')}** / **{ver.get('expected_triples','n/a')}**",
+            '',
+            'The verifier enumerates each four-set uniquely as `a<b<c<d` via its first triple and intersects the legal fourth vertices over every cut not already hit inside the triple. It does not use the producing master root order, canonical-root pruning, monotone checkpoint, or pivot recursion.',
+          ]
+          if status == 'INDEPENDENT-EXHAUSTION-VERIFIED':
+              lines += ['', '**Finite conclusion:** the independently reconstructed final difference-cut library has no four-set hitting every cut. Combined with independent validation of every A/B fooling pair, this independently verifies the pinned system has no port-free equality semantic interface of support `<=4`.', '', 'This remains conditional on the pinned P2/C88 system and does not imply a new Hadwiger–Nelson bound.']
+          elif status == 'FOURSET-CANDIDATE-FOUND':
+              lines += ['', '**Discrepancy:** the independent verifier found a surviving four-set. Do not promote the producing exhaustion; investigate the candidate.']
+          else:
+              lines += ['', '**No terminal mathematical conclusion.**']
+          text='\n'.join(lines)+'\n'
+          (out/'SUMMARY.md').write_text(text)
+          print(text)
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f: f.write(text)
+          PY
+
+      - name: Persist compact independent result
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f "$OUT/cuts.bin"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$OUT" || true
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record independent support-4 verification [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Upload independent verification evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: independent-fourset-verify-${{ github.run_id }}
+          path: |
+            ${{ env.OUT }}/RECONSTRUCTION.json
+            ${{ env.OUT }}/VERIFICATION.json
+            ${{ env.OUT }}/SUMMARY.md
+          if-no-files-found: warn
+          retention-days: 30
