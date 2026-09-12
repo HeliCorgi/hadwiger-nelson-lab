@@ -19,16 +19,16 @@
   "full_pair_count": 7009,
   "lab_pair_count": 6137,
   "last_process_stats": {
-    "canonical_prunes": 18427389,
-    "pair_states": 1017,
-    "quad_leaves": 31507734,
-    "root_edges_completed_this_process": 1016,
-    "triple_branch_vertices": 26250060,
+    "canonical_prunes": 21366508,
+    "pair_states": 1096,
+    "quad_leaves": 30455756,
+    "root_edges_completed_this_process": 1095,
+    "triple_branch_vertices": 26292026,
     "triple_incident_prunes": 0,
-    "triple_states": 149994
+    "triple_states": 150329
   },
   "method": "exact edge-branching four-set master with monotone cut-extension resume",
-  "next_root_rank": 7826,
+  "next_root_rank": 8921,
   "nonport_vertex_count": 391,
   "pivot_cut_index": 6060,
   "pivot_cut_size": 23440,
