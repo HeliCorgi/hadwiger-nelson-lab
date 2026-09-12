@@ -1,0 +1,81 @@
+{
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8",
+  "separator_qnodes": [
+    0,
+    4,
+    8,
+    17,
+    21,
+    30,
+    59,
+    68,
+    105,
+    223
+  ],
+  "min_cut_value": 10,
+  "q6_component_size": 256,
+  "q22_component_size": 1,
+  "q22_neighbors_in_left": [
+    0,
+    4,
+    8,
+    17,
+    21,
+    30,
+    59,
+    68,
+    105,
+    223
+  ],
+  "q22_degree": 10,
+  "q22_neighborhood_is_separator": true,
+  "local_q5_eq_q22_k4_witness": [
+    0,
+    4,
+    8,
+    21
+  ],
+  "local_witness_is_k4": true,
+  "local_witness_common_to_q5_q22": true,
+  "solver_checks": {
+    "Cadical195": {
+      "base_sat": true,
+      "q6_equal_separator_color_witness": {
+        "0": null,
+        "4": 0,
+        "8": 0,
+        "17": null,
+        "21": null,
+        "30": 0,
+        "59": 0,
+        "68": 0,
+        "105": 0,
+        "223": null
+      },
+      "q6_color_absent_from_separator": false,
+      "at_most3_separator_colors_witness_subset": null,
+      "separator_uses_at_least4_colors": true
+    },
+    "Glucose4": {
+      "base_sat": true,
+      "q6_equal_separator_color_witness": {
+        "0": null,
+        "4": 0,
+        "8": 0,
+        "17": null,
+        "21": null,
+        "30": 0,
+        "59": 0,
+        "68": 0,
+        "105": 0,
+        "223": null
+      },
+      "q6_color_absent_from_separator": false,
+      "at_most3_separator_colors_witness_subset": null,
+      "separator_uses_at_least4_colors": true
+    }
+  },
+  "palette_conditions_verified_both": false,
+  "human_proof_available": false,
+  "interpretation": "First, q5=q22 follows from the local K4 common-neighborhood lemma using q0,q4,q8,q21. The minimum q6-q22 separator is exactly the neighborhood of singleton q22. On the large q6 side, two independently checked properties suffice: q6 differs from every separator vertex, so its color is missing from the boundary palette; and the separator necessarily uses at least four colors. Any coloring extending to q22 must use at most four colors on its entire neighborhood. Hence a globally viable boundary uses exactly four colors, and both q6 and q22 are forced to the unique missing fifth color. Together with q5=q22 this proves q5=q6 without enumerating all ten-boundary partitions."
+}
