@@ -1,0 +1,71 @@
+{
+  "upstream_sha": "d1e80998bda337d9fa721f2e96d203ae54e97fc8",
+  "separator_qnodes": [
+    0,
+    4,
+    8,
+    17,
+    21,
+    30,
+    59,
+    68,
+    105,
+    223
+  ],
+  "k4_anchors": [
+    0,
+    4,
+    8,
+    21
+  ],
+  "k4_fixed_colors": {
+    "0": 0,
+    "4": 1,
+    "8": 2,
+    "21": 3
+  },
+  "extra_boundary_vertices": [
+    17,
+    30,
+    59,
+    68,
+    105,
+    223
+  ],
+  "k4_is_clique": true,
+  "q6_direct_edges_to_k4": {
+    "0": true,
+    "4": false,
+    "8": false,
+    "21": true
+  },
+  "conditional_targets": {
+    "q6_equals_q4": {
+      "target_color": 1,
+      "minimum_forbid_fifth_basis_size": 6,
+      "minimum_bases": [
+        [
+          17,
+          30,
+          59,
+          68,
+          105,
+          223
+        ]
+      ],
+      "full_six_constraints_unsat_both": true
+    },
+    "q6_equals_q8": {
+      "target_color": 2,
+      "minimum_forbid_fifth_basis_size": 1,
+      "minimum_bases": [
+        [
+          17
+        ]
+      ],
+      "full_six_constraints_unsat_both": true
+    }
+  },
+  "solver_crosscheck": "CaDiCaL195 and Glucose4 found identical minimum-cardinality subsets of extra boundary vertices whose exclusion of the fifth color blocks q6 from taking the q4 or q8 K4 colors.",
+  "interpretation": "Because q0,q4,q8,q21 form a K4, any boundary using at most four colors uses exactly their four colors. By color symmetry fix them to 0,1,2,3; then each extra separator vertex must avoid color 4. q6 is already graph-adjacent to whichever K4 anchors are marked true. The only nontrivial cases are q6=q4 and q6=q8. This scan finds the smallest subset of the six extra boundary vertices that must merely avoid the fifth color in order to make each case impossible."
+}
