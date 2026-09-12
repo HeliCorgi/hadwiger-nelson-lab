@@ -1,0 +1,79 @@
+name: separator-left-q18-q256-compression
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/separator-left-q18-q256-compression.yml'
+      - 'tools/separator_left_q18_q256_compression.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m py_compile tools/separator_left_q18_q256_compression.py
+      - name: Compress q18-q256 interface
+        run: |
+          mkdir -p results/separator-left-q18-q256-compression
+          python tools/separator_left_q18_q256_compression.py \
+            --data-dir upstream/handoff/data \
+            --out results/separator-left-q18-q256-compression/analysis.json
+      - name: Write human-readable summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('results/separator-left-q18-q256-compression/analysis.json').read_text())
+          lines=['# q18 != q256 recursive interface compression','',
+                 f"- separator: `{d['separator_qnodes']}` (minimum cut {d['min_cut_value']})",
+                 f"- side sizes: {d['u_component_size']} / {d['v_component_size']}",
+                 f"- q18-side states: **{d['u_side_extendable_count']}**: `{[(x['state'],x['endpoint_colors']) for x in d['u_side_rows']]}`",
+                 f"- intersection states: **{d['intersection_count']}**: `{[x['state'] for x in d['intersection_rows']]}`",
+                 f"- q18-side states excluded by q256 side: `{d['u_side_rows_excluded_by_v_side']}`",
+                 f"- q256 degree: **{d['q256_degree']}**; neighborhood exactly separator: **{d['q256_neighborhood_is_separator']}**",
+                 f"- q18 always uses an already-used boundary color on intersection: **{d['all_intersection_q18_colors_are_used_boundary_colors']}**",
+                 f"- q256 options are exactly the missing boundary colors: **{d['all_intersection_q256_colors_equal_missing_boundary_colors']}**",
+                 f"- endpoint option sets always disjoint: **{d['all_intersection_cross_disjoint']}**",
+                 f"- solver cross-check: {d['solver_crosscheck']}"]
+          Path('results/separator-left-q18-q256-compression/SUMMARY.md').write_text('\n'.join(lines)+'\n')
+          PY
+      - name: Commit result
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add results/separator-left-q18-q256-compression
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record q18-q256 recursive compression [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: separator-left-q18-q256-compression-${{ github.run_id }}
+          path: results/separator-left-q18-q256-compression
+          if-no-files-found: error
+          retention-days: 30
