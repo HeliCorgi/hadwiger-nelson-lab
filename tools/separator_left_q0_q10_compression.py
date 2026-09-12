@@ -114,10 +114,15 @@ def main():
         r['direct_edge']=(min(r['qnodes']),max(r['qnodes'])) in Eset
     bsz,bases=min_relation_bases(all_states,viable,rels)
 
-    if not all(len(x['u_colors'])==1 for x in left_rows):
-        raise RuntimeError(('q0 side has non-singleton endpoint options', left_rows))
     tracked=[TARGET[0]]+sep
-    left_aug=[canonicalize((x['u_colors'][0],)+x['state']) for x in left_rows]
+    left_aug=[]
+    left_aug_sources=[]
+    for row in left_rows:
+        for c in row['u_colors']:
+            st=canonicalize((c,)+row['state'])
+            left_aug.append(st)
+            left_aug_sources.append({'separator_state':row['key'],'q0_color':c,'canonical_augmented_state':list(st)})
+    left_aug=sorted(set(left_aug))
     all_aug=list(rgs(len(tracked)))
     left_rels=state_relations(left_aug,tracked)
     for r in left_rels:
@@ -148,9 +153,10 @@ def main():
       'separator_induced_edges':[[u,v] for u,v in ledges if u in set(sep) and v in set(sep)],
       'common_pair_relations_global_two_states':rels,'minimum_pairwise_basis_size_global_two_states':bsz,'minimum_pairwise_bases_global_two_states':bases,
       'q0_side_augmented_nodes':tracked,'q0_side_augmented_states':[list(x) for x in left_aug],
+      'q0_side_augmented_sources':left_aug_sources,
       'q0_side_common_pair_relations':left_rels,'q0_side_minimum_pairwise_basis_size':left_bsz,'q0_side_minimum_pairwise_bases':left_bases,
       'q0_eq_62_local_class_to_separator_edges':q0class_to_sep,
-      'interpretation':'Glucose4 independently reconstructs the size-5 recursive interface for q0=q10. The q0 side permits exactly three states. In all three q0 itself is the same unique fifth color relative to the first four separator colors; q256 may copy q14, copy q55, or copy q0. q10 is a singleton of degree five adjacent exactly to the separator, so the third case uses all five colors on its neighborhood and is impossible. The remaining two cases force q10 to the same fifth color as q0.'
+      'interpretation':'Glucose4 independently reconstructs the size-5 recursive interface for q0=q10. The q0 side permits exactly three separator states. The third state 01234 allows q0 colors 3 or 4, but q10 is a singleton of degree five adjacent exactly to the separator, so that all-five-colors boundary state is impossible globally. The remaining states 01230 and 01233 force both q0 and q10 to color 4.'
     }
     a.out.parent.mkdir(parents=True,exist_ok=True); a.out.write_text(json.dumps(rep,indent=2)+'\n')
     print(json.dumps({
