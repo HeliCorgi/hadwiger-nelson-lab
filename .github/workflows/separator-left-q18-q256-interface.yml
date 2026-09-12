@@ -1,0 +1,63 @@
+name: separator-left-q18-q256-interface
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/separator-left-q18-q256-interface.yml'
+      - 'tools/separator_left_q18_q256_interface.py'
+  workflow_dispatch:
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m py_compile tools/separator_left_q18_q256_interface.py
+      - name: Analyze q18-q256 recursive interface
+        run: |
+          mkdir -p results/separator-left-q18-q256-interface
+          python tools/separator_left_q18_q256_interface.py \
+            --data-dir upstream/handoff/data \
+            --out results/separator-left-q18-q256-interface/analysis.json
+      - name: Write summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('results/separator-left-q18-q256-interface/analysis.json').read_text())
+          lines=['# q18 != q256 recursive interface','',
+                 f"- separator: `{d['separator_qnodes']}` (minimum cut {d['min_cut_value']})",
+                 f"- side sizes: q18={d['q18_component_size']}, q256={d['q256_component_size']}",
+                 f"- q256 neighborhood exactly separator: **{d['q256_neighborhood_is_separator']}**",
+                 f"- q18-side extendable states: **{d['q18_side_extendable_count']}**",
+                 f"- q256-side extendable states: **{d['q256_side_extendable_count']}**",
+                 f"- intersection: **{d['intersection_count']}** states: `{[x['key'] for x in d['intersection']]}`",
+                 f"- all intersection states force q18!=q256: **{d['all_intersection_states_force_distinct']}**",
+                 f"- CaDiCaL/Glucose exact agreement: **{d['solver_crosscheck_exact_agreement']}**",
+                 f"- separator induced edges: `{d['separator_induced_edges']}`"]
+          Path('results/separator-left-q18-q256-interface/SUMMARY.md').write_text('\n'.join(lines)+'\n')
+          PY
+      - uses: actions/upload-artifact@v7
+        with:
+          name: separator-left-q18-q256-interface-${{ github.run_id }}
+          path: results/separator-left-q18-q256-interface
+          if-no-files-found: error
+          retention-days: 30
