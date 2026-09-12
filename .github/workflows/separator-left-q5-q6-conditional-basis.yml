@@ -1,0 +1,78 @@
+name: separator-left-q5-q6-conditional-basis
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/separator-left-q5-q6-conditional-basis.yml'
+      - 'tools/separator_left_q5_q6_conditional_basis.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m py_compile tools/separator_left_q5_q6_conditional_basis.py
+      - name: Find minimal conditional basis
+        run: |
+          mkdir -p results/separator-left-q5-q6-conditional-basis
+          python tools/separator_left_q5_q6_conditional_basis.py \
+            --data-dir upstream/handoff/data \
+            --out results/separator-left-q5-q6-conditional-basis/analysis.json
+      - name: Write summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('results/separator-left-q5-q6-conditional-basis/analysis.json').read_text())
+          lines=['# q5=q6 conditional palette basis','',
+                 f"- K4 anchors: `{d['k4_anchors']}`; clique={d['k4_is_clique']}",
+                 f"- q6 direct edges to K4 anchors: `{d['q6_direct_edges_to_k4']}`",
+                 f"- extra boundary vertices: `{d['extra_boundary_vertices']}`",'']
+          for name,r in d['conditional_targets'].items():
+              lines += [f"## {name}",
+                        f"- minimum number of extra vertices that must avoid the fifth color: **{r['minimum_forbid_fifth_basis_size']}**",
+                        f"- all minimum bases: `{r['minimum_bases']}`",
+                        f"- all six constraints UNSAT in both solvers: **{r['full_six_constraints_unsat_both']}**",'']
+          lines += [f"- solver cross-check: {d['solver_crosscheck']}"]
+          Path('results/separator-left-q5-q6-conditional-basis/SUMMARY.md').write_text('\n'.join(lines)+'\n')
+          PY
+      - name: Commit result
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add results/separator-left-q5-q6-conditional-basis
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record q5-q6 conditional basis [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: separator-left-q5-q6-conditional-basis-${{ github.run_id }}
+          path: results/separator-left-q5-q6-conditional-basis
+          if-no-files-found: error
+          retention-days: 30
