@@ -23,7 +23,7 @@
   "pivot_cut_size": 23440,
   "pivot_cut_source": "checkpoint:5191",
   "pivot_root_edge_count": 23440,
-  "resume_mode": "resume-same-library-v1-upgrade",
+  "resume_mode": "resume-same-library-v2",
   "root_order_sha256": "f72cdbf49f6a06929ebae1efe58b795b466c1ef4bd5bfa2f923ee6b3029532a7",
   "seed_pair_count": 872,
   "unique_cut_count": 7006,
