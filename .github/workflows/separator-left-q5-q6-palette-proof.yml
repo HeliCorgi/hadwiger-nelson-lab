@@ -47,18 +47,20 @@ jobs:
           import json
           from pathlib import Path
           d=json.loads(Path('results/separator-left-q5-q6-palette-proof/analysis.json').read_text())
-          lines=['# q5=q6 palette proof','',
+          lines=['# q5=q6 conditional palette proof','',
                  f"- separator: `{d['separator_qnodes']}` (minimum cut {d['min_cut_value']})",
                  f"- q6/q22 component sizes: {d['q6_component_size']} / {d['q22_component_size']}",
                  f"- q22 degree: **{d['q22_degree']}**; neighborhood exactly separator: **{d['q22_neighborhood_is_separator']}**",
                  f"- local q5=q22 witness: `{d['local_q5_eq_q22_k4_witness']}`; K4={d['local_witness_is_k4']}; common to both={d['local_witness_common_to_q5_q22']}",
-                 f"- palette conditions verified by both solvers: **{d['palette_conditions_verified_both']}**",
+                 f"- conditional palette conditions verified by both solvers: **{d['conditional_palette_conditions_verified_both']}**",
                  f"- human proof available: **{d['human_proof_available']}**",'']
           for name,c in d['solver_checks'].items():
               lines += [f"## {name}",
                         f"- base SAT: {c['base_sat']}",
-                        f"- q6 color absent from every separator vertex: {c['q6_color_absent_from_separator']}",
-                        f"- separator necessarily uses at least four colors: {c['separator_uses_at_least4_colors']}",
+                        f"- unconditional q6 color absence: {c['q6_color_unconditionally_absent_from_separator']}",
+                        f"- counterexample to q6 absence when boundary uses <=4 colors: `{c['at_most4_boundary_counterexample_to_q6_absence']}`",
+                        f"- q6 color absent whenever boundary uses <=4 colors: **{c['q6_color_absent_when_boundary_uses_at_most4_colors']}**",
+                        f"- separator necessarily uses at least four colors: **{c['separator_uses_at_least4_colors']}**",
                         f"- <=3-color witness subset: `{c['at_most3_separator_colors_witness_subset']}`",'']
           Path('results/separator-left-q5-q6-palette-proof/SUMMARY.md').write_text('\n'.join(lines)+'\n')
           PY
