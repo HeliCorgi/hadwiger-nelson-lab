@@ -1,0 +1,81 @@
+name: separator-left-q5-q6-palette-proof
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/separator-left-q5-q6-palette-proof.yml'
+      - 'tools/separator_left_q5_q6_palette_proof.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m py_compile tools/separator_left_q5_q6_palette_proof.py
+      - name: Verify q5=q6 palette proof
+        run: |
+          mkdir -p results/separator-left-q5-q6-palette-proof
+          python tools/separator_left_q5_q6_palette_proof.py \
+            --data-dir upstream/handoff/data \
+            --out results/separator-left-q5-q6-palette-proof/analysis.json
+      - name: Write human-readable summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('results/separator-left-q5-q6-palette-proof/analysis.json').read_text())
+          lines=['# q5=q6 palette proof','',
+                 f"- separator: `{d['separator_qnodes']}` (minimum cut {d['min_cut_value']})",
+                 f"- q6/q22 component sizes: {d['q6_component_size']} / {d['q22_component_size']}",
+                 f"- q22 degree: **{d['q22_degree']}**; neighborhood exactly separator: **{d['q22_neighborhood_is_separator']}**",
+                 f"- local q5=q22 witness: `{d['local_q5_eq_q22_k4_witness']}`; K4={d['local_witness_is_k4']}; common to both={d['local_witness_common_to_q5_q22']}",
+                 f"- palette conditions verified by both solvers: **{d['palette_conditions_verified_both']}**",
+                 f"- human proof available: **{d['human_proof_available']}**",'']
+          for name,c in d['solver_checks'].items():
+              lines += [f"## {name}",
+                        f"- base SAT: {c['base_sat']}",
+                        f"- q6 color absent from every separator vertex: {c['q6_color_absent_from_separator']}",
+                        f"- separator necessarily uses at least four colors: {c['separator_uses_at_least4_colors']}",
+                        f"- <=3-color witness subset: `{c['at_most3_separator_colors_witness_subset']}`",'']
+          Path('results/separator-left-q5-q6-palette-proof/SUMMARY.md').write_text('\n'.join(lines)+'\n')
+          PY
+      - name: Commit result
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add results/separator-left-q5-q6-palette-proof
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record q5-q6 palette proof [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: separator-left-q5-q6-palette-proof-${{ github.run_id }}
+          path: results/separator-left-q5-q6-palette-proof
+          if-no-files-found: error
+          retention-days: 30
