@@ -1,0 +1,16 @@
+{
+  "status": "BOUNDED_CENSUS_EMPTY",
+  "field": "Q(zeta30,sqrt(-11))",
+  "denominator": 5,
+  "max_support": 4,
+  "coeff_max": 3,
+  "sign_symmetry_reduced": true,
+  "numerators_checked": 1242048,
+  "float_near_candidates": 0,
+  "exact_unit_candidates_before_root_filter": 0,
+  "zeta30_roots_removed": 0,
+  "nonroot_count": 0,
+  "results": [],
+  "elapsed_seconds": 0.673,
+  "scope_note": "Finite sparse coefficient census only; empty does not exclude denominator-5 rotations outside these bounds."
+}
