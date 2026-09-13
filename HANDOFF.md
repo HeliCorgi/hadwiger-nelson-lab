@@ -25,7 +25,9 @@ Implementation:
 - `tools/hn_closed_copy_direct.py` — reproducible one-candidate builder;
 - `tools/hn_exact_complete_io.py` + `tools/hn_exact_completion.cpp` — selected-point all-pairs exact induced completion, no float prefilter;
 - `tools/hn_probe_completed_graph.py` — ordinary 5-colorability, diverse proper-coloring signatures, and residual direct pair-inequality SAT;
-- `tools/hn_symmetry_sat_probe.py` — sound whole-graph color-symmetry breaking using an actual triangle; use only for ordinary 5-colorability, not as a shortcut for pair forcing.
+- `tools/hn_symmetry_sat_probe.py` — sound whole-graph color-symmetry breaking using an actual triangle; use only for ordinary 5-colorability, not as a shortcut for pair forcing;
+- `tools/hn_tabucol.py` — validated heuristic 5-color witness search; failure is non-evidence;
+- `tools/hn_local_pair_separation.py` — targeted local-repair separation for residual same-signature pairs; every success is a full validated proper coloring, failure is non-evidence.
 
 ### Closed-copy portfolio run
 
@@ -63,14 +65,35 @@ Evidence:
 - `results/unconditional-2026-09-14/closed-copy/PROBE.json`
 - `results/unconditional-2026-09-14/closed-copy-anchor95/SUMMARY.md`
 
-### Active order-6 control
+### Exact order-6 control: NOT_A; B scan active
 
-The order-6 / anchor `(45,173)` candidate is being tested separately because the portfolio's limited SAT screen returned UNKNOWN. Its exact all-pairs completion has already completed successfully; generic and sound triangle-symmetry 5-colorability probes are the active unresolved step. Until they return SAT/UNSAT, classify this candidate only as **C/UNKNOWN**, never as evidence for A or B.
+The order-6 / anchor `(45,173)` graph is now fully exact-completed:
 
-Relevant workflows:
+- **2,628 vertices**;
+- **15,708 exact induced unit-distance edges**;
+- **3,451,878** unordered point pairs checked exactly;
+- final completion added zero missed unit edges;
+- completed graph SHA-256 `2275306ce8ad3d5bdb7d6c514990f08c103fa2474bfdc36a954c8abcac902bcb`.
 
-- `.github/workflows/hn-closed-copy-anchor45-order6.yml`
-- `.github/workflows/hn-closed-copy-anchor45-order6-symmetry.yml`
+The earlier generic probe run `34783286450` was cancelled while solving after geometry completion; this cancellation is non-evidence.
+
+Ordinary 5-colorability is nevertheless settled positively by two independent witness routes:
+
+1. Actions run `34783432616`, artifact `10325667672`: sound triangle color-symmetry breaking on actual triangle `(0,1,5)`; attempts 0–2 UNKNOWN, attempt 3 SAT; full returned coloring validated on all 15,708 exact edges.
+2. Actions run `34783526599`, artifact `10324809446`: TabuCol-style local search reached zero conflicts at restart 2 / iteration 389,211; full returned coloring validated on all exact edges.
+
+Therefore **order 6 / anchor `(45,173)` is NOT_A**. Do not spend more work on whole-graph UNSAT for this instance.
+
+B is still active. Two independent colorings leave residual same-signature pairs. The active workflow is:
+
+- `.github/workflows/hn-closed-copy-anchor45-order6-separation.yml`
+- tool: `tools/hn_local_pair_separation.py`
+
+It targets a residual pair `(u,v)` by fixing `u` to its current color and `v` to one chosen different color (WLOG by global color permutation), then locally repairing the rest. Successful full colorings refine the residual blocks. Timeout/repair failure has no logical meaning.
+
+Evidence checkpoint:
+
+- `results/unconditional-2026-09-14/closed-copy-anchor45-order6/SUMMARY.md`
 
 ## Previous checkpoint — Cycle 7 top-200 is closed
 
@@ -132,9 +155,9 @@ Operational lesson: **timeout/UNKNOWN is never pair evidence**. For future hard 
 
 ## Resume here
 
-1. Resolve the exact order-6 `(45,173)` candidate. If SAT, generate diverse validated colorings before pair-by-pair SAT; if all signatures separate, record this concrete graph D. If whole-graph dual UNSAT appears, independently certify before A.
+1. Finish the exact order-6 `(45,173)` B scan. If targeted local repair separates every pair, record this concrete graph D for A/B. If residual pairs remain, use direct pair-inequality SAT only on those pairs; any UNSAT needs independent reproduction before B.
 2. Do not spend the next cycle merely enumerating more single-anchor root-of-unity rings. The intended next mechanism is to **link closed orbits**, e.g. multi-anchor / selector compositions or an asymmetric non-root-of-unity exact rotation, so global compatibility is attacked more strongly than in the order-3 D instance.
-3. In particular, the pre-restart plan called for mixing an **asymmetric 5-denominator rotation** between closed orbits. That part has not yet been implemented; it is the next construction-level target once the order-6 control is classified.
+3. In particular, the pre-restart plan called for mixing an **asymmetric 5-denominator rotation** between closed orbits. That part has not yet been implemented; it is the next construction-level target once the order-6 B control is classified.
 4. Preserve exact coordinates, semantic graph hashes, all-pairs completion audits, and compact coloring witnesses for every completed candidate.
 
 For each new candidate:
