@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/hn-linked-closed-orbits-fast.yml'
+      - 'tools/hn_linked_closed_orbits_fast.py'
   workflow_dispatch:
 
 permissions:
@@ -38,13 +39,12 @@ jobs:
           python -m pip install scipy==1.14.1
       - name: Verify pinned G510
         run: echo "$G510_SHA256  upstream/handoff/data/g510_k2.json" | sha256sum -c -
-      - name: Geometry-only linked-orbit selection
+      - name: Optimized geometry-only linked-orbit selection
         run: |
           mkdir -p "$OUT_DIR"
-          PYTHONPATH=tools python tools/hn_linked_closed_orbits.py \
+          PYTHONPATH=tools python tools/hn_linked_closed_orbits_fast.py \
             --graph upstream/handoff/data/g510_k2.json --out-dir "$OUT_DIR" \
-            --ring-order 3 --ring-anchor 95,101 \
-            --pivot-count 8 --geometry-keep 0 --sample-models 1 --conflicts 1 --seed 20260914
+            --ring-order 3 --ring-anchor 95,101 --pivot-count 8 --seed 20260914
       - name: Exact all-pairs completion
         run: |
           g++ -O3 -std=c++17 tools/hn_exact_completion.cpp -o /tmp/hn_exact_completion
