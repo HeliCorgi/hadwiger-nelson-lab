@@ -1,0 +1,12 @@
+{
+  "graph_sha256": "632ab11f24bf084221db31fec8e1eda522a18eba8d95dbd3bddf9cbcae1fe49d",
+  "vertices": 9115,
+  "all_unordered_point_pairs": 41537055,
+  "checker": "tools/hn_exact_completion.cpp",
+  "floating_prefilter_used": false,
+  "exact_unit_pairs_found": 81068,
+  "saved_edges": 81068,
+  "edge_sets_equal": true,
+  "omitted_unit_edges": 0,
+  "spurious_saved_edges": 0
+}
