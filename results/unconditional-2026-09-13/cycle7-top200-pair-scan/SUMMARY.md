@@ -23,9 +23,9 @@ Therefore every distinct vertex pair is separated by at least one proper 5-color
 Generic SAT runs were misleadingly hard:
 
 - `(0,375)` survived hundreds of heuristic/Kempe colorings but CaDiCaL195 eventually found a separating coloring.
-- final two generic SAT probes `(9,2282)` and `(395,1098)` ran for 90 minutes and were cancelled without a result.
+- final two generic SAT probes `(9,2282)` and `(395,1098)` ran for about 90 minutes and were cancelled without a result.
 
-Neither timeout was forcing evidence. Both pairs were later separated by exact graph-valid local list-coloring repairs:
+Neither timeout was forcing evidence. Both pairs were later separated by graph-valid local list-coloring repairs:
 
 - `(9,2282)`: radius-3 neighborhood around vertex 2282, 200 vertices changed;
 - `(395,1098)`: radius-3 neighborhood around vertex 1098, 59 vertices changed.
@@ -42,12 +42,14 @@ The independently regenerated separation pass then had three residual pairs, all
 
 ## Certificate
 
-`SEPARATION_CERT.json` contains 79 proper 5-colorings. `tools/verify_cycle7_top200_separation.py` checks:
+The regenerated 456-coloring family was greedily compressed to 79 colorings. The compact JSON certificate has SHA-256
 
-1. the graph SHA;
-2. every coloring on every saved edge;
-3. that all 9,115 vertex signature vectors are distinct.
+`7a179e6cbb85abc7c63665cc85a0ac38ccef139e48e3e6cbdedbb78aec802d04`.
 
-Certificate SHA-256: `7a179e6cbb85abc7c63665cc85a0ac38ccef139e48e3e6cbdedbb78aec802d04`.
+Its XZ-compressed payload has SHA-256
+
+`bcf593c30d4c069f251a6e1a926a8f283eb2b6686ab8b1ebbf5393f83ba782a6`.
+
+Metadata is preserved in `CERTIFICATE_META.json`. `tools/verify_cycle7_top200_separation.py` verifies a recovered certificate by checking the graph SHA, every coloring against every edge, and uniqueness of all 9,115 vertex signatures.
 
 This closes the tested Cycle 7 top-200 family as **D for both A and B**. It does not imply anything about all possible Cycle 7 candidates or all constructions in the ambient field.
