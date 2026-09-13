@@ -15,38 +15,58 @@ For target B, **any strictly positive Euclidean distance is sufficient**. The Le
 
 Conditional quotient/C88/palette results remain available as components, but they are not the active todo list unless a concrete construction removes their assumptions.
 
-## Latest unconditional checkpoint — Cycle 7 top-200 closure
+## Latest unconditional checkpoint — Cycle 7 top-200 fully closed as D
 
-Workflow run [`34750198928`](https://github.com/HeliCorgi/hadwiger-nelson-lab/actions/runs/34750198928) completed successfully from pinned upstream commit
+The exact Cycle 7 top-200 graph has:
 
-`d1e80998bda337d9fa721f2e96d203ae54e97fc8`.
+- **9,115 vertices**;
+- **81,068 unit-distance edges**;
+- graph SHA-256 `632ab11f24bf084221db31fec8e1eda522a18eba8d95dbd3bddf9cbcae1fe49d`.
 
-The workflow rebuilt the geometric chain from the pinned G510 data and checked semantic identity of the Cycle 3 graph rather than relying on JSON byte-for-byte identity.
+The producing workflow run [`34750198928`](https://github.com/HeliCorgi/hadwiger-nelson-lab/actions/runs/34750198928) rebuilt the chain from pinned upstream commit `d1e80998bda337d9fa721f2e96d203ae54e97fc8` and found a proper 5-coloring with CaDiCaL195. This already closed the direct A attempt.
 
-Reconstruction/result:
+The subsequent target-B scan is now also complete.
 
-- Cycle 3: **760 vertices / 4,280 edges**;
-- Cycle 3 semantic SHA-256 over `{pts,edges}`: `6cefdd905c4ab09108ea4005e80e3b234e3b2826de759b73bd619163b9943380`;
-- Cycle 4: **2,512 vertices**, adding 1,752 exact points;
-- Cycle 6: **8,915 vertices / 78,063 edges**, adding 6,403 exact points;
-- Cycle 7 exact candidate pool: **13,556 points**;
-- tested graph after adding the entire ranked top-200 candidate set: **9,115 vertices / 81,068 edges**;
-- every retained edge was checked as an exact unit-distance edge;
-- CaDiCaL195 result: **SAT** in 87.778 s;
-- the returned 5-coloring was independently checked against all 81,068 edges by the workflow;
-- tested graph SHA-256: `632ab11f24bf084221db31fec8e1eda522a18eba8d95dbd3bddf9cbcae1fe49d`.
+### Independent exact geometry audit
 
-The producing run classifies this tested direct-extension family as **D**: adding all top-200 Cycle 7 candidates still does **not** produce a non-5-colorable unit-distance graph.
+`tools/hn_exact_completion.cpp` was run over **all 41,537,055 unordered point pairs** with no floating-point prefilter. It found exactly **81,068** unit-distance pairs.
 
-Artifact: `10315263782`, digest `sha256:17e65652d2b95eaed786720b9176825f73f07b20dfecf343fb9bd96812e3c5d2`. It contains `run/GRAPH.json`, `run/COLORING.txt`, `run/REBUILD.json`, `run/VERDICT.json`, the reconstructed Cycle 3 files, and the compact summary.
+That exact edge set equals the saved graph edge set:
 
-### Important scope of the D result
+- omitted unit edges: **0**;
+- spurious saved edges: **0**.
 
-The successful 5-coloring closes the **direct A attempt** for this top-200 closure: this 9,115-vertex graph is 5-colorable.
+Therefore the coloring conclusion below applies to the full induced unit-distance graph on these 9,115 exact points, not merely to a saved subgraph.
 
-It does **not** show that the graph has no fixed forced-equal pair. A 5-colorable graph can still satisfy target B. Therefore the next high-value computation is an unconditional all-pairs forcing scan on this exact 9,115-vertex graph, seeded by the verified coloring from the artifact and additional proper 5-colorings.
+### Fixed-pair scan result
 
-If every distinct point pair can be separated by at least one validated proper 5-coloring, then the top-200 graph is fully D for both A and B. If a pair survives and `G + (c(u) != c(v))` is UNSAT, it becomes a B candidate and must be independently checked.
+A regenerated family of **456 validated proper 5-colorings** was used to refine vertex color signatures. A greedy compression retained **79 colorings** while keeping all 9,115 vertex signatures distinct.
+
+Hence for every distinct pair `u != v`, at least one proper 5-coloring satisfies `c(u) != c(v)`.
+
+> **The Cycle 7 top-200 graph contains no distinct fixed forced-equal pair.**
+
+Thus this tested graph is **D for both A and B**.
+
+Evidence:
+
+- [`results/unconditional-2026-09-13/cycle7-top200-pair-scan/SUMMARY.md`](results/unconditional-2026-09-13/cycle7-top200-pair-scan/SUMMARY.md)
+- `results/unconditional-2026-09-13/cycle7-top200-pair-scan/SEPARATION_CERT.json` when present in the checkpoint bundle
+- [`tools/verify_cycle7_top200_separation.py`](tools/verify_cycle7_top200_separation.py)
+- [`tools/hn_exact_completion.cpp`](tools/hn_exact_completion.cpp)
+
+The final hard pairs are also a useful solver lesson. Generic SAT on `(9,2282)` and `(395,1098)` ran for 90 minutes and was cancelled without a result, but both were later separated quickly by local list-coloring repairs. Timeout/UNKNOWN was correctly not treated as forcing evidence.
+
+### Scope
+
+This closes only the tested **Cycle 7 top-200** construction. It does not rule out:
+
+- other subsets of the 13,556 Cycle 7 exact candidates;
+- different candidate-ranking objectives;
+- extensions using a genuinely different forcing mechanism;
+- unrelated finite unit-distance constructions.
+
+Repeatedly adding more points by the same contact-ranked closure heuristic is no longer the preferred next move unless a new mechanism explains why the previous color-space flexibility should disappear.
 
 ## Result-recording policy
 
@@ -115,14 +135,15 @@ The conditional 261-qnode side of the six-vertex separator has a hierarchical ex
 - `q0=q10`;
 - `q8=q9`.
 
-The detailed historical derivation, palette gates, exact state tables, and solver-crosschecks are retained in repository results and git history. They should be pursued further only when tied to a concrete unconditional geometric construction.
+The detailed historical derivation, palette gates, exact state tables, and solver cross-checks are retained in repository results and git history. They should be pursued further only when tied to a concrete unconditional geometric construction.
 
 ## Current direction
 
-1. Use the Cycle 7 artifact's exact `run/GRAPH.json` and verified `run/COLORING.txt` as the next checkpoint.
-2. Search the 9,115-vertex graph for a fixed forced-equal pair using only actual vertices and actual unit-distance edges. Any positive port distance is eligible.
-3. Accumulate validated proper 5-colorings to refine equality blocks; a small separating family is enough to prove no forced pair.
-4. If an inequality query is UNSAT, treat it only as a candidate until rechecked independently; also verify the graph itself remains 5-colorable and the two points are distinct.
-5. If all pairs are separated, record the top-200 family as fully D and move to a genuinely different unconditional construction mechanism rather than adding more conditional palette lemmas.
+1. Treat the Cycle 7 top-200 graph as a closed **D** lane for both A and B; do not rescan it for a fixed pair.
+2. Preserve the exact-audit hash and the separating-coloring certificate/checker.
+3. Move to a genuinely different unconditional construction mechanism rather than another open-ended contact-ranked closure of the same graph.
+4. Prefer constructions whose objective attacks **global 5-coloring freedom**, not one witness coloring at a time.
+5. For any new candidate graph, first test ordinary 5-colorability, then use a diverse validated coloring portfolio before spending long SAT runs on individual pairs.
+6. Any inequality UNSAT is only a B candidate until independently reproduced/certified. Any actual non-5-colorable UDG is already an A candidate and takes priority.
 
 See [`HANDOFF.md`](HANDOFF.md) for the operational continuation plan and [`RESEARCH.md`](RESEARCH.md) for background.
