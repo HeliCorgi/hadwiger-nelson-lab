@@ -1,0 +1,175 @@
+name: hn-closed-copy-assembly
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-closed-copy-assembly.yml'
+      - 'tools/hn_closed_copy_assembly.py'
+      - 'tools/hn_probe_completed_graph.py'
+      - 'tools/hn_exact.py'
+      - 'tools/hn_exact_completion.cpp'
+      - 'tools/hn_unconditional_scan.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hn-closed-copy-assembly
+  cancel-in-progress: false
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  G510_SHA256: 0248fe0c7fd2df06d818aee0c188a7b70362d5990c1ca39271fc057b7b898346
+  OUT_DIR: results/unconditional-2026-09-14/closed-copy
+
+jobs:
+  closed-copy-search:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install scipy==1.14.1
+
+      - name: Verify pinned G510
+        run: |
+          echo "$G510_SHA256  upstream/handoff/data/g510_k2.json" | sha256sum -c -
+
+      - name: Closed cyclic multi-copy screening
+        run: |
+          mkdir -p "$OUT_DIR"
+          PYTHONPATH=tools python tools/hn_closed_copy_assembly.py \
+            --graph upstream/handoff/data/g510_k2.json \
+            --out-dir "$OUT_DIR" \
+            --orders 3,6 \
+            --anchor-count 18 \
+            --geometry-keep 4 \
+            --sample-models 8 \
+            --conflicts 600000 \
+            --seed 20260914
+
+      - name: Exact all-pairs completion of selected point set
+        run: |
+          g++ -O3 -std=c++17 tools/hn_exact_completion.cpp -o /tmp/hn_exact_completion
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root=Path(os.environ['OUT_DIR'])
+          g=json.loads((root/'SELECTED_GRAPH.json').read_text())
+          with (root/'POINTS.txt').open('w') as f:
+              print(len(g['pts']), file=f)
+              for p in g['pts']:
+                  print(p['den'], *p['a'], *p['b'], file=f)
+          PY
+          /tmp/hn_exact_completion < "$OUT_DIR/POINTS.txt" > "$OUT_DIR/EXACT_EDGES.txt" 2> "$OUT_DIR/EXACT_COMPLETION.log"
+          tail -20 "$OUT_DIR/EXACT_COMPLETION.log"
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          root=Path(os.environ['OUT_DIR'])
+          selected=json.loads((root/'SELECTED_GRAPH.json').read_text())
+          exact=[]
+          for line in (root/'EXACT_EDGES.txt').read_text().splitlines():
+              if line.strip():
+                  u,v=map(int,line.split())
+                  exact.append([u,v])
+          inherited={tuple(e) for e in selected['edges']}
+          full={tuple(e) for e in exact}
+          assert inherited <= full, (len(inherited-full), 'screen edges missing from exact completion')
+          completed=dict(selected)
+          completed['edges']=exact
+          completed['construction']=selected.get('construction','closed cyclic multi-copy')+'; exact all-pairs induced completion'
+          completed['induced_unit_edge_completion_pending']=False
+          completed['all_pairs_exactly_checked']=len(selected['pts'])*(len(selected['pts'])-1)//2
+          path=root/'COMPLETED_GRAPH.json'
+          path.write_text(json.dumps(completed,separators=(',',':'))+'\n')
+          audit={
+              'vertices':len(selected['pts']),
+              'screen_edges':len(inherited),
+              'exact_induced_edges':len(exact),
+              'new_edges_from_exact_completion':len(full-inherited),
+              'all_pairs_exactly_checked':len(selected['pts'])*(len(selected['pts'])-1)//2,
+              'float_prefilter_used_for_final_completion':False,
+              'screen_edges_subset_of_exact_completion':True,
+              'graph_sha256':hashlib.sha256(path.read_bytes()).hexdigest(),
+          }
+          (root/'GEOMETRY.json').write_text(json.dumps(audit,indent=2)+'\n')
+          print(json.dumps(audit,indent=2))
+          PY
+
+      - name: Probe completed graph for A and B
+        run: |
+          PYTHONPATH=tools python tools/hn_probe_completed_graph.py \
+            --graph "$OUT_DIR/COMPLETED_GRAPH.json" \
+            --out-dir "$OUT_DIR/probe" \
+            --sample-models 64 \
+            --pair-seconds 1200 \
+            --conflicts 1000000 \
+            --seed 20260914
+
+      - name: Write compact summary
+        if: always()
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root=Path(os.environ['OUT_DIR'])
+          lines=['# Closed cyclic multi-copy assembly — 2026-09-14','']
+          lines += ['Mechanism: exact copies of pinned G510 are arranged in a finite root-of-unity orbit; each copy shares its selected `b` anchor with the next copy\'s `a` anchor, including the final/first seam. Only literal exact unit-distance edges are constraints.','']
+          sel=root/'SELECTED.json'
+          if sel.exists():
+              d=json.loads(sel.read_text())['selection']
+              lines += [f"- selected order: **{d.get('order')}**",
+                        f"- selected anchor: **{d.get('anchor')}**",
+                        f"- screening vertices: **{d.get('vertices')}**",
+                        f"- screening exact cross edges added: **{d.get('added_cross_edges')}**",'']
+          geo=root/'GEOMETRY.json'
+          if geo.exists():
+              d=json.loads(geo.read_text())
+              lines += [f"- exact completed graph: **{d['vertices']} vertices / {d['exact_induced_edges']} edges**",
+                        f"- all unordered pairs checked exactly: **{d['all_pairs_exactly_checked']}**",
+                        f"- edges newly discovered by exact completion: **{d['new_edges_from_exact_completion']}**",
+                        f"- completed graph SHA-256: `{d['graph_sha256']}`",'']
+          probe=root/'probe'/'PROBE.json'
+          if probe.exists():
+              d=json.loads(probe.read_text())
+              lines += [f"- CaDiCaL195: **{d.get('cadical195')}**",
+                        f"- classification: **{d.get('classification')}**",
+                        f"- status: **{d.get('status')}**",
+                        f"- proper 5-color witnesses retained: **{d.get('proper_5color_witnesses',0)}**",
+                        f"- remaining unseparated pairs: **{d.get('remaining_unseparated_pairs','n/a')}**"]
+              if d.get('forced_equal_pair_candidate') is not None:
+                  lines += [f"- dual-UNSAT forced-equal candidate: **{d['forced_equal_pair_candidate']}**"]
+          else:
+              lines += ['Probe did not reach `PROBE.json`; inspect logs.']
+          lines += ['','Safety boundary: timeout/UNKNOWN is not evidence. A/B candidates still require the independent confirmation rules in `HANDOFF.md`. The float neighbor search is screening only; final selected geometry is completed over all pairs by exact arithmetic.']
+          out=root/'SUMMARY.md'
+          out.write_text('\n'.join(lines)+'\n')
+          print(out.read_text())
+          PY
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: hn-closed-copy-assembly-${{ github.run_id }}
+          path: ${{ env.OUT_DIR }}
+          if-no-files-found: error
+          retention-days: 30
