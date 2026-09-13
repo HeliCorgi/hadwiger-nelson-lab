@@ -1,0 +1,34 @@
+{
+  "status": "NO_EDGE_TO_EDGE_MATCH",
+  "ring_vertices": 1192,
+  "ring_edges": 7008,
+  "rotation": {
+    "a": [
+      -1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "b": [
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "den": 10
+  },
+  "exact_unit_modulus": true,
+  "zeta30_root": false,
+  "matches_found": 0,
+  "truncated_at": null,
+  "matches": [],
+  "scope_note": "Exact search over oriented unit edges of this closed ring only."
+}
