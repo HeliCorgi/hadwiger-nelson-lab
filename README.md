@@ -1,197 +1,128 @@
 # hadwiger-nelson-lab
 
-Computational research workspace for the Hadwiger–Nelson problem, currently focused on five-color forcing structures handed off from [`HeliCorgi/five-color-forcing-anatomy`](https://github.com/HeliCorgi/five-color-forcing-anatomy).
+Computational research workspace for the Hadwiger–Nelson problem.
 
-> This repository does **not** claim a solution of the Hadwiger–Nelson problem. Results here are finite computational intermediate statements with explicitly stated scope.
+> This repository does **not** claim a solution of the Hadwiger–Nelson problem. The current work searches for unconditional finite unit-distance constructions that would improve the lower bound, while retaining older conditional finite results as audited components.
 
-## Result-recording policy
+## Active objective — unconditional geometry first
 
-Whenever a search produces a lemma-like or theorem-like mathematical statement, record it together with:
+The active target is one of:
 
-- the exact statement and scope;
-- why it follows mathematically from the computed object;
-- the generating code and compact result/certificate path;
-- solver/checker identity and whether an independent implementation rechecked it;
-- an explicit warning when the statement is conditional or does not imply a new Hadwiger–Nelson bound.
+- **A:** a finite planar unit-distance graph that is not 5-colorable; or
+- **B:** a finite 5-colorable planar unit-distance graph with two fixed, distinct actual points that receive the same color in every proper 5-coloring.
 
-Large reproducible proof traces should normally remain GitHub Actions artifacts rather than Git blobs. The repository retains regeneration code, compact metadata, hashes/artifact IDs, and the human-readable mathematical claim.
+For target B, **any strictly positive Euclidean distance is sufficient**. The Lean-checked `PositiveDistance` reduction shows that a positive-distance forced-equal pair can be chained to reach the usual spindle geometry, so the old `d >= 1/2` search threshold is no longer a requirement.
 
-Potentially interesting structure should also be preserved even when it is not yet a theorem or a new lower bound. See [`STRUCTURAL_NOTES.md`](STRUCTURAL_NOTES.md) for human-readable notes separating verified finite statements, exact computational observations, empirical patterns, and conjectural interpretations. The working rule is to prefer an explanation a human can inspect over an isolated solver verdict whenever such a compression can be found.
+Conditional quotient/C88/palette results remain available as components, but they are not the active todo list unless a concrete construction removes their assumptions.
 
-## Verified mathematical/computational result log
+## Latest unconditional checkpoint — Cycle 7 top-200 closure
 
-All statements below use upstream commit
+Workflow run [`34750198928`](https://github.com/HeliCorgi/hadwiger-nelson-lab/actions/runs/34750198928) completed successfully from pinned upstream commit
 
 `d1e80998bda337d9fa721f2e96d203ae54e97fc8`.
 
-### Q1. Critical quotient for the P2 forcing relation
+The workflow rebuilt the geometric chain from the pinned G510 data and checked semantic identity of the Cycle 3 graph rather than relying on JSON byte-for-byte identity.
 
-Let `Q = H*/C88` be the quotient obtained by contracting the 88 prescribed equality conditions, and let `p,q` be the quotient vertices containing original vertices 217 and 490.
+Reconstruction/result:
 
-The checked quotient has **305 vertices and 1599 edges**. `Q` is 5-colorable, while
+- Cycle 3: **760 vertices / 4,280 edges**;
+- Cycle 3 semantic SHA-256 over `{pts,edges}`: `6cefdd905c4ab09108ea4005e80e3b234e3b2826de759b73bd619163b9943380`;
+- Cycle 4: **2,512 vertices**, adding 1,752 exact points;
+- Cycle 6: **8,915 vertices / 78,063 edges**, adding 6,403 exact points;
+- Cycle 7 exact candidate pool: **13,556 points**;
+- tested graph after adding the entire ranked top-200 candidate set: **9,115 vertices / 81,068 edges**;
+- every retained edge was checked as an exact unit-distance edge;
+- CaDiCaL195 result: **SAT** in 87.778 s;
+- the returned 5-coloring was independently checked against all 81,068 edges by the workflow;
+- tested graph SHA-256: `632ab11f24bf084221db31fec8e1eda522a18eba8d95dbd3bddf9cbcae1fe49d`.
 
-`G = Q + pq`
+The producing run classifies this tested direct-extension family as **D**: adding all top-200 Cycle 7 candidates still does **not** produce a non-5-colorable unit-distance graph.
 
-is not 5-colorable. Deleting any one vertex from `G` makes it 5-colorable, so this added-edge obstruction is vertex-critical at the checked quotient level. `G` has no articulation point and no 2-vertex cut, and the `p`-to-`q` vertex connectivity in `Q` is **6**.
+Artifact: `10315263782`, digest `sha256:17e65652d2b95eaed786720b9176825f73f07b20dfecf343fb9bd96812e3c5d2`. It contains `run/GRAPH.json`, `run/COLORING.txt`, `run/REBUILD.json`, `run/VERDICT.json`, the reconstructed Cycle 3 files, and the compact summary.
 
-Evidence: [`results/quotient-critical/analysis.json`](results/quotient-critical/analysis.json), generated by [`tools/quotient_critical.py`](tools/quotient_critical.py).
+### Important scope of the D result
 
-### Q2. Local common-neighborhood forcing lemma
+The successful 5-coloring closes the **direct A attempt** for this top-200 closure: this 9,115-vertex graph is 5-colorable.
 
-For any graph in a proper 5-coloring, if the common-neighborhood graph of vertices `u,v` is not 3-colorable, then `c(u)=c(v)`: if `u,v` used distinct colors, their common neighbors would have only the other three colors available.
+It does **not** show that the graph has no fixed forced-equal pair. A 5-colorable graph can still satisfy target B. Therefore the next high-value computation is an unconditional all-pairs forcing scan on this exact 9,115-vertex graph, seeded by the verified coloring from the artifact and additional proper 5-colorings.
 
-In the checked quotient, port `p` and quotient node 22 (original vertex 36) have a common neighborhood exactly equal to `K4`, so they are forced equal by this local rule. This does **not** by itself connect `p` to `q`.
+If every distinct point pair can be separated by at least one validated proper 5-coloring, then the top-200 graph is fully D for both A and B. If a pair survives and `G + (c(u) != c(v))` is UNSAT, it becomes a B candidate and must be independently checked.
 
-Evidence: [`results/local-equality-chain/analysis.json`](results/local-equality-chain/analysis.json), generated by [`tools/local_equality_chain.py`](tools/local_equality_chain.py).
+## Result-recording policy
 
-### Q3. Six-vertex color-symmetric separator interface
+Whenever a search produces a lemma-like or theorem-like statement, preserve:
 
-A minimum `p`-`q` vertex separator in `Q` is
+- the exact statement and scope;
+- the generating code and compact result/certificate path;
+- exact geometry information where relevant;
+- solver/checker identity and independent-check status;
+- an explicit distinction between A/B/C/D status;
+- all conditionality and all unchecked steps.
 
-`S = {0, 6, 8, 9, 10, 266}`.
+Heuristic failure is never proof, solver UNKNOWN is never treated as forcing, and a candidate forcing pair is not promoted to B until ordinary 5-colorability and inequality-UNSAT have independent checks.
 
-Deleting `S` separates a 261-vertex component containing `p` from a 38-vertex component containing `q`.
+Large reproducible traces should normally remain GitHub Actions artifacts rather than Git blobs. Keep regeneration code, compact metadata, hashes/artifact IDs, and human-readable conclusions in the repository.
 
-There are 202 canonical equality partitions of six labeled boundary vertices using at most five colors. A CaDiCaL discovery computation and a separate Glucose4 implementation verified:
+## Historical conditional finite results
 
-- left / `p` side extendable states: 2;
-- right / `q` side extendable states: 81;
-- intersection: exactly one state, `012203`.
+The repository also contains a substantial audited conditional forcing program inherited from [`HeliCorgi/five-color-forcing-anatomy`](https://github.com/HeliCorgi/five-color-forcing-anatomy). These results remain useful research components but do not themselves improve the Hadwiger–Nelson lower bound.
 
-The restricted-growth state `012203` has blocks
+### Critical quotient and six-vertex interface
 
-`{q0,q10} | {q6} | {q8,q9} | {q266}`.
+For `Q = H*/C88`:
 
-For that unique common state, both side solvers force their port to the same singleton boundary color, the block containing `q6`. Therefore every proper 5-coloring of `Q` satisfies
+- `Q` has **305 vertices / 1,599 edges** and is 5-colorable;
+- `Q + pq` is not 5-colorable and is vertex-critical under single-vertex deletion;
+- a minimum `p`–`q` separator has six vertices;
+- exact boundary-state enumeration leaves one globally compatible state and forces the two ports to the same color.
 
-`c(217) = c(490)`.
+Evidence includes:
 
-This is a **color-symmetric six-vertex interface proof of the conditional P2 forcing statement**. It is not an unconditional unit-distance forcing gadget and does not prove `χ(R²) >= 6`.
+- [`results/quotient-critical/analysis.json`](results/quotient-critical/analysis.json)
+- [`results/separator-interface/analysis.json`](results/separator-interface/analysis.json)
+- [`results/separator-verify/analysis.json`](results/separator-verify/analysis.json)
+- [`results/proof-lrat/`](results/proof-lrat/)
 
-Discovery: [`results/separator-interface/analysis.json`](results/separator-interface/analysis.json). Independent verification: [`results/separator-verify/analysis.json`](results/separator-verify/analysis.json).
+This is a conditional finite statement, not an actual planar unit-distance forcing gadget.
 
-### P1. Independently checked UNSAT proof for the P2 contradiction
+### Closed support-`<=4` equality-interface lane
 
-The SAT contradiction is normalized as
+For the pinned conditional A/B system, the port-free equality-observable search on supports of size at most four was independently exhausted:
 
-`COMMON ∧ A-only ∧ B-only`,
+- 7,011 validated A/B witness pairs;
+- 7,008 unique difference cuts;
+- all 23,440 producing roots exhausted;
+- an independent implementation checked all **9,810,580** increasing first triples and found no surviving four-set.
 
-where `COMMON` is the shared 5-coloring encoding of `H*`, `A-only` contains the C88 equalities, and `B-only` contains `c(217) != c(490)`.
-
-The normalized CNF has 1965 Boolean variables and 13,203 clauses: 12,318 common, 880 A-only, and 5 B-only.
-
-Glucose4 produced an UNSAT DRUP proof. The proof was independently processed with pinned `drat-trim` commit `2e3b2dc0ecf938addbd779d42877b6ed69d9a985`, converted to LRAT, and accepted by the independent `lrat-check` checker.
-
-The trimmed LRAT dependency cone contains 11,018 initial clauses and 215,041 learned clauses. All 880 A-only clauses, all 5 B-only clauses, and all 393 graph vertices remain represented, so ordinary proof trimming does not expose a small local cause.
-
-Compact evidence: [`results/proof-lrat/PARTITION.json`](results/proof-lrat/PARTITION.json) and [`results/proof-lrat/LRAT_CONE.json`](results/proof-lrat/LRAT_CONE.json). Regeneration/analysis: [`tools/lrat_export.py`](tools/lrat_export.py).
-
-Full proof artifact: `10185491584` from run `34564305431`; ZIP SHA-256 `fc062d366b78700baf008ef18b8d424a30400717691c8be42f2ff153371c423f`.
-
-### P2. Proof-guided interpolation probe
-
-Learned clauses were mined for 4-, 5-, and 6-vertex supports. For each size, 180 candidate supports were projected to canonical equality partitions, for 540 exact checks total.
-
-No sampled support separated A from B. The minimum A/B state overlap was 1 for each support size. This remains a useful non-exhaustive observation, not a completeness theorem.
-
-Evidence: [`results/proof-interpolant-deep/DEEP_SUMMARY.json`](results/proof-interpolant-deep/DEEP_SUMMARY.json), generated by [`tools/proof_interpolant_deep.py`](tools/proof_interpolant_deep.py).
-
-### P3. Independently verified absence of port-free equality interfaces on at most four vertices
-
-Define
-
-- `A = H* ∧ C88`;
-- `B = H* ∧ (c(217) != c(490))`.
-
-For a non-port support `S`, observe only the equality partition induced by the five colors on `S`. If an equality separator exists on fewer than four vertices, adding arbitrary non-port vertices preserves separation, so exact exhaustion of four-sets is complete for support `<=4`.
-
-For every validated A/B fooling pair `(alpha,beta)`, form a difference graph `D(alpha,beta)` on the 391 non-port vertices, where `{u,v}` is an edge iff
-
-`[alpha(u)=alpha(v)] != [beta(u)=beta(v)]`.
-
-Any separating four-set must contain an edge from every such difference graph.
-
-The producing exact CEGIS/master run `34683854626` ended with:
-
-- **872** upstream seed fooling pairs;
-- **6139** lab-generated fooling pairs;
-- **7011** validated pairs before cut deduplication;
-- **7008** unique difference-graph cuts;
-- **391** non-port vertices and **76,245** pair-atoms;
-- all **23,440 / 23,440** fixed pivot roots exhausted.
-
-It reported that no four-set hits all 7008 cuts. The final cut-library SHA-256 is
-
-`a58cb579f1fa725107ef10a776b290c089a8ff0cfc12dc4d75fa1fe82ba5ccfa`.
-
-This was then rechecked by a deliberately different implementation in workflow run [`34693564501`](https://github.com/HeliCorgi/hadwiger-nelson-lab/actions/runs/34693564501):
-
-1. [`tools/reconstruct_fourset_cuts_independent.py`](tools/reconstruct_fourset_cuts_independent.py) independently reloads the pinned graph data and checkpoint, validates every A model against `A` and every B model against `B`, and reconstructs the difference cuts without importing the producing master. It reproduced **7011** validated pairs, **7008** unique cuts, 3 duplicate cuts, and the same cut-library SHA-256.
-2. [`tools/verify_fourset_exhaustion_independent.cpp`](tools/verify_fourset_exhaustion_independent.cpp) uses a different exhaustive decomposition. Every four-set is written uniquely as `a<b<c<d`; for each increasing triple `a<b<c`, it intersects all legal fourth vertices `d>c` over cuts not already hit inside the triple. It does not use the producing pivot, root order, canonical-root pruning, or monotone checkpoint.
-3. The independent verifier exhaustively checked **9,810,580 / 9,810,580** increasing triples and found no surviving four-set. Its randomized preflight also matched literal brute force on 600 toy instances.
-
-Therefore the following finite statement is independently verified:
+Finite conclusion:
 
 > **For the pinned A/B system, no port-free equality semantic interface supported on at most four vertices exists.**
 
-Equivalently, within this particular port-free equality-observable language, any separator must use at least five vertices.
+Evidence:
 
-Compact independent evidence:
-
+- [`results/exact-cegis-loop/MASTER_FINAL.json`](results/exact-cegis-loop/MASTER_FINAL.json)
 - [`results/independent-fourset-verify/RECONSTRUCTION.json`](results/independent-fourset-verify/RECONSTRUCTION.json)
 - [`results/independent-fourset-verify/VERIFICATION.json`](results/independent-fourset-verify/VERIFICATION.json)
 - [`results/independent-fourset-verify/SUMMARY.md`](results/independent-fourset-verify/SUMMARY.md)
 
-Independent-run artifact: id `10297481903`, SHA-256 `b546962ed743046fe8d55008e019efaaf52ba6a8772b0aed0b3afaa65f45e344`.
+Do not restart this support-4 lane as unfinished work.
 
-**Scope warning:** P3 is conditional on the pinned P2/C88 finite system and on the chosen equality-observable language. It does not rule out support-5 or larger equality interfaces, other semantic observables, or an unconditional geometric forcing gadget. It does **not** improve the Hadwiger–Nelson lower bound.
+### Human-readable palette/interface decomposition
 
-## Human-readable interpretation of P3
+The conditional 261-qnode side of the six-vertex separator has a hierarchical explanation via the forced equalities
 
-The support-4 search did not merely fail to find a small interface. It is now exhausted and independently re-exhausted.
+- `q5=q6`;
+- `q0=q10`;
+- `q8=q9`.
 
-This says something structural about the conditional forcing relation: although many individual four-sets come very close to separating the A and B model families, **no four non-port vertices can carry enough equality-pattern information to explain the relation completely**. The already verified six-vertex quotient separator therefore remains the smallest clean human-readable interface currently known in this project; P3 shows that the narrower port-free equality language cannot compress all the way to four vertices.
-
-This is a negative structural result, not a geometric endpoint. The natural next mathematical questions are:
-
-- whether support-5 port-free equality interfaces exist;
-- whether the six-vertex quotient separator can be explained by a small set of graph-theoretic lemmas rather than state enumeration;
-- whether a different observable language exposes a smaller interface;
-- and, ultimately, whether the conditional forcing machinery can be converted into an unconditional unit-distance same-color forcing gadget.
-
-## Exact CEGIS engineering note
-
-The terminal producing run used a monotone-resumable master. Adding a new fooling-pair cut only strengthens the hitting constraints, so an already exhausted root remains impossible. The implementation fixes and hashes the root order, verifies ordered cut-prefix compatibility, and retries only the root that produced a newly refuted candidate.
-
-Run `34683854626` exercised this optimization twice in production:
-
-- upgraded legacy state resumed at root **4833**, not 0;
-- candidate `{318,394,399,444}` at root **10484** was SAT in both CaDiCaL195 and Glucose4; after adding its cut, search resumed at **10484**;
-- candidate `{4,301,402,464}` at root **21442** was again SAT in both solvers; after adding its cut, search resumed at **21442**;
-- the strengthened library then reached **23440 / 23440**.
-
-Producing evidence: [`results/exact-cegis-loop/MASTER_FINAL.json`](results/exact-cegis-loop/MASTER_FINAL.json), [`results/exact-cegis-loop/STATUS.md`](results/exact-cegis-loop/STATUS.md), and the run artifact `10298170797` with ZIP SHA-256 `33be9aa4456a8fb293811c39b5a4bf58574d9a34c9f8bbc812b5091a7fb96d29`.
-
-## Historical Run-4 counter correction
-
-Run `34562068005` added **2705** sound cuts relative to Run 2 and made **2705** exact-oracle calls with zero oracle UNKNOWNs. The checkpoint field `fast_candidates`, however, is **2702**, not 2705. The three-count difference means it is incorrect to state that all 2705 oracle calls came from the fast layer without tracing their source path.
-
-Preserve the counters separately:
-
-- Run-4 sound cuts added: **2705**;
-- exact oracle calls: **2705**;
-- `fast_candidates`: **2702**.
-
-Run-4 artifact id `10187878072`, digest `sha256:f32e432c7f4cc8b30ce9ddbc449e9e8b23d863ad0d83772c745ed73cb1be8bcd`.
+The detailed historical derivation, palette gates, exact state tables, and solver-crosschecks are retained in repository results and git history. They should be pursued further only when tied to a concrete unconditional geometric construction.
 
 ## Current direction
 
-The support-`<=4` port-free equality lane is closed for the pinned system. Re-running the same master is not useful.
+1. Use the Cycle 7 artifact's exact `run/GRAPH.json` and verified `run/COLORING.txt` as the next checkpoint.
+2. Search the 9,115-vertex graph for a fixed forced-equal pair using only actual vertices and actual unit-distance edges. Any positive port distance is eligible.
+3. Accumulate validated proper 5-colorings to refine equality blocks; a small separating family is enough to prove no forced pair.
+4. If an inequality query is UNSAT, treat it only as a candidate until rechecked independently; also verify the graph itself remains 5-colorable and the two points are distinct.
+5. If all pairs are separated, record the top-200 family as fully D and move to a genuinely different unconditional construction mechanism rather than adding more conditional palette lemmas.
 
-The six-vertex separator result remains the clearest verified finite explanation of the conditional P2 same-color relation. A high-value human-readable subproblem is to explain why the 261-vertex `p` side of that separator permits only the two boundary states `012202` and `012203`.
-
-A separate possible search lane is support 5 or a richer observable language, but any such computation should be motivated by what explanatory or geometric bridge it could provide rather than by search size alone.
-
-The eventual Hadwiger–Nelson objective remains geometric: obtain an unconditional forced-mono pair at Euclidean distance at least `1/2`, or an equivalent finite 6-chromatic unit-distance construction.
-
-See [`HANDOFF.md`](HANDOFF.md) for the operational continuation plan and [`RESEARCH.md`](RESEARCH.md) for the mathematical setup.
+See [`HANDOFF.md`](HANDOFF.md) for the operational continuation plan and [`RESEARCH.md`](RESEARCH.md) for background.
