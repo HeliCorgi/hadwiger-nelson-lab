@@ -1,0 +1,13 @@
+{
+  "graph_sha256": "632ab11f24bf084221db31fec8e1eda522a18eba8d95dbd3bddf9cbcae1fe49d",
+  "vertices": 9115,
+  "edges": 81068,
+  "full_regenerated_coloring_count": 456,
+  "compact_coloring_count": 79,
+  "distinct_vertex_signatures": 9115,
+  "remaining_unseparated_pairs": 0,
+  "compact_certificate_json_sha256": "7a179e6cbb85abc7c63665cc85a0ac38ccef139e48e3e6cbdedbb78aec802d04",
+  "compact_certificate_xz_sha256": "bcf593c30d4c069f251a6e1a926a8f283eb2b6686ab8b1ebbf5393f83ba782a6",
+  "compact_certificate_json_bytes": 721556,
+  "compact_certificate_xz_bytes": 195564
+}
