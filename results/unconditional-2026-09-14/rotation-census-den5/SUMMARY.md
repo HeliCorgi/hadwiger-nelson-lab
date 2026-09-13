@@ -1,9 +1,9 @@
 # Exact denominator-5 rotation census
 
 - status: **BOUNDED_CENSUS_EMPTY**
-- sparse numerator support <= **4**
-- nonzero coefficient magnitude <= **5**
-- numerators checked: **9386080**
+- sparse numerator support <= **3**
+- nonzero coefficient magnitude <= **20**
+- numerators checked: **18016320**
 - float-near candidates exact-checked: **11**
 - exact unit candidates before root filter: **0**
 - zeta30 roots removed: **0**
