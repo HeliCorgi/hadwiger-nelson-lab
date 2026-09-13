@@ -1,0 +1,70 @@
+name: hn-cycle7-residual-forcing-scan
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-cycle7-residual-forcing-scan.yml'
+      - 'tools/hn_cycle7_residual_forcing_scan.py'
+      - 'results/unconditional-2026-09-13/cycle7-top200-local-residual/RESIDUAL_BLOCKS.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install SAT dependency
+        run: python -m pip install -r requirements.txt
+
+      - name: Download successful Cycle 7 top-200 artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: hn-cycle7-top200-v2-34750198928
+          path: input
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: HeliCorgi/hadwiger-nelson-lab
+          run-id: 34750198928
+
+      - name: Verify artifact layout and graph hash
+        run: |
+          test -f input/run/GRAPH.json
+          test -f input/run/COLORING.txt
+          echo '632ab11f24bf084221db31fec8e1eda522a18eba8d95dbd3bddf9cbcae1fe49d  input/run/GRAPH.json' | sha256sum -c -
+
+      - name: Scan residual fixed-pair candidates
+        run: |
+          mkdir -p results/unconditional-2026-09-13/cycle7-top200-residual-sat
+          python tools/hn_cycle7_residual_forcing_scan.py \
+            --graph input/run/GRAPH.json \
+            --coloring input/run/COLORING.txt \
+            --blocks results/unconditional-2026-09-13/cycle7-top200-local-residual/RESIDUAL_BLOCKS.json \
+            --out-dir results/unconditional-2026-09-13/cycle7-top200-residual-sat \
+            --seconds 6500 \
+            --conflicts 2000000
+
+      - name: Show result
+        if: always()
+        run: |
+          if test -f results/unconditional-2026-09-13/cycle7-top200-residual-sat/SCAN.json; then
+            cat results/unconditional-2026-09-13/cycle7-top200-residual-sat/SCAN.json
+          fi
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: hn-cycle7-residual-forcing-${{ github.run_id }}
+          path: results/unconditional-2026-09-13/cycle7-top200-residual-sat
+          if-no-files-found: warn
+          retention-days: 30
