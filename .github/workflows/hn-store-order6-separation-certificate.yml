@@ -1,0 +1,132 @@
+name: hn-store-order6-separation-certificate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-store-order6-separation-certificate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  G510_SHA256: 0248fe0c7fd2df06d818aee0c188a7b70362d5990c1ca39271fc057b7b898346
+  OUT_DIR: /tmp/order6-cert
+  RESULT_DIR: results/unconditional-2026-09-14/closed-copy-anchor45-order6
+  SEED_COLORING: results/unconditional-2026-09-14/closed-copy-anchor45-order6/COLORING.txt
+
+jobs:
+  rebuild-verify-and-store:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install scipy==1.14.1
+      - name: Verify pinned G510
+        run: echo "$G510_SHA256  upstream/handoff/data/g510_k2.json" | sha256sum -c -
+      - name: Rebuild exact order-6 graph
+        run: |
+          mkdir -p "$OUT_DIR"
+          PYTHONPATH=tools python tools/hn_closed_copy_direct.py \
+            --graph upstream/handoff/data/g510_k2.json --out-dir "$OUT_DIR" \
+            --order 6 --anchor 45,173
+          g++ -O3 -std=c++17 tools/hn_exact_completion.cpp -o /tmp/hn_exact_completion
+          python tools/hn_exact_complete_io.py prepare --graph "$OUT_DIR/SELECTED_GRAPH.json" --out "$OUT_DIR/POINTS.txt"
+          /tmp/hn_exact_completion < "$OUT_DIR/POINTS.txt" > "$OUT_DIR/EXACT_EDGES.txt" 2> "$OUT_DIR/EXACT_COMPLETION.log"
+          python tools/hn_exact_complete_io.py finish --graph "$OUT_DIR/SELECTED_GRAPH.json" --edges "$OUT_DIR/EXACT_EDGES.txt" --out-dir "$OUT_DIR"
+      - name: Verify stored seed coloring
+        run: |
+          PYTHONPATH=tools python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from hn_unconditional_scan import valid_coloring
+          g=json.loads((Path(os.environ['OUT_DIR'])/'COMPLETED_GRAPH.json').read_text())
+          c=list(map(int,Path(os.environ['SEED_COLORING']).read_text().strip()))
+          assert len(c)==len(g['pts'])==2628
+          assert valid_coloring(c,len(c),[tuple(e) for e in g['edges']])
+          PY
+      - name: Reproduce complete pair separation
+        run: |
+          PYTHONPATH=tools python tools/hn_local_pair_separation.py \
+            --graph "$OUT_DIR/COMPLETED_GRAPH.json" \
+            --seed-coloring "$SEED_COLORING" \
+            --out-dir "$OUT_DIR/separation" \
+            --seconds 600 --pair-seconds 18 --iterations 400000 \
+            --perturb 24 --max-failures 18 --seed 2026091402
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=Path(os.environ['OUT_DIR'])/'separation'/'SEPARATION.json'
+          d=json.loads(p.read_text())
+          assert d['status']=='NO_FORCED_EQUAL_PAIR',d['status']
+          assert d['classification']=='D'
+          assert d['remaining_pairs']==0
+          assert d['failures']==[]
+          assert d['saved_witness_count']==d['compressed_witness_count']
+          PY
+      - name: Encode compact certificate
+        run: |
+          python - <<'PY'
+          import base64, hashlib, json, lzma, os
+          from pathlib import Path
+          root=Path(os.environ['OUT_DIR'])
+          result=Path(os.environ['RESULT_DIR'])
+          result.mkdir(parents=True,exist_ok=True)
+          data=json.loads((root/'separation'/'WITNESSES.json').read_text())
+          models=data['models']
+          raw=(''.join(''.join(map(str,c))+'\n' for c in models)).encode('ascii')
+          packed=lzma.compress(raw,preset=9|lzma.PRESET_EXTREME)
+          (result/'WITNESSES.txt.xz.b64').write_text(base64.b64encode(packed).decode('ascii')+'\n')
+          sep=json.loads((root/'separation'/'SEPARATION.json').read_text())
+          compact={k:v for k,v in sep.items() if k not in ('remaining_blocks','records')}
+          compact['certificate_raw_sha256']=hashlib.sha256(raw).hexdigest()
+          compact['certificate_xz_sha256']=hashlib.sha256(packed).hexdigest()
+          (result/'SEPARATION.json').write_text(json.dumps(compact,indent=2)+'\n')
+          print(json.dumps(compact,indent=2))
+          PY
+      - name: Independently verify compact certificate
+        run: |
+          PYTHONPATH=tools python tools/verify_coloring_separation_certificate.py \
+            --graph "$OUT_DIR/COMPLETED_GRAPH.json" \
+            --certificate "$RESULT_DIR/WITNESSES.txt.xz.b64" \
+            --expected-witnesses 205 \
+            --expected-graph-sha256 2275306ce8ad3d5bdb7d6c514990f08c103fa2474bfdc36a954c8abcac902bcb \
+            > "$RESULT_DIR/VERIFICATION.json"
+          cat "$RESULT_DIR/VERIFICATION.json"
+      - name: Commit durable certificate
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$RESULT_DIR/WITNESSES.txt.xz.b64" "$RESULT_DIR/SEPARATION.json" "$RESULT_DIR/VERIFICATION.json"
+          if git diff --cached --quiet; then
+            echo 'certificate already current'
+          else
+            git commit -m 'Store verified order-6 pair separation certificate'
+            git push origin HEAD:main
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: hn-order6-durable-certificate-${{ github.run_id }}
+          path: |
+            ${{ env.RESULT_DIR }}/WITNESSES.txt.xz.b64
+            ${{ env.RESULT_DIR }}/SEPARATION.json
+            ${{ env.RESULT_DIR }}/VERIFICATION.json
+          if-no-files-found: warn
+          retention-days: 30
