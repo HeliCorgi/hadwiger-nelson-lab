@@ -29,7 +29,7 @@ jobs:
         run: |
           PYTHONPATH=tools python tools/hn_rotation_census.py \
             --out-dir "$OUT_DIR" \
-            --denominator 5 --max-support 4 --coeff-max 3 \
+            --denominator 5 --max-support 5 --coeff-max 3 \
             --float-tolerance 1e-9 --max-results 200
       - name: Store census result
         run: |
@@ -39,7 +39,7 @@ jobs:
           if git diff --cached --quiet; then
             echo 'result already current'
           else
-            git commit -m 'Store exact denominator-5 rotation census'
+            git commit -m 'Expand exact denominator-5 rotation census'
             git push origin HEAD:main
           fi
       - uses: actions/upload-artifact@v7
