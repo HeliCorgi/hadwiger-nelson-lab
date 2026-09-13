@@ -1,0 +1,109 @@
+name: hn-cycle7-top200-v2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-cycle7-top200-v2.yml'
+      - 'tools/hn_cycle7_top200_rebuild.py'
+      - 'tools/hn_circle_closure.py'
+      - 'tools/hn_exact.py'
+      - 'tools/hn_unconditional_scan.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hn-cycle7-top200-v2
+  cancel-in-progress: false
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  G510_SHA256: 0248fe0c7fd2df06d818aee0c188a7b70362d5990c1ca39271fc057b7b898346
+  CYCLE3_SHA256: a5e329e1a1e89c6b627630eda821f3402fe07578eaef5ffa9c675bd0da6313e4
+  OUT_DIR: results/unconditional-2026-09-13/cycle7-top200-v2
+
+jobs:
+  rebuild-and-solve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install scipy==1.14.1 sympy==1.13.3
+
+      - name: Verify pinned G510
+        run: |
+          echo "$G510_SHA256  upstream/handoff/data/g510_k2.json" | sha256sum -c -
+
+      - name: Rebuild Cycle 3 from G510
+        run: |
+          mkdir -p "$OUT_DIR/cycle3"
+          PYTHONPATH=tools python tools/hn_circle_closure.py \
+            --graph upstream/handoff/data/g510_k2.json \
+            --out-dir "$OUT_DIR/cycle3" \
+            --max-new 250 \
+            --min-contacts 3 \
+            --scan-seconds 1
+          echo "$CYCLE3_SHA256  $OUT_DIR/cycle3/GRAPH.json" | sha256sum -c -
+
+      - name: Rebuild Cycle 4, Cycle 6, top-200 and solve
+        run: |
+          mkdir -p "$OUT_DIR/run"
+          PYTHONPATH=tools python tools/hn_cycle7_top200_rebuild.py \
+            --cycle3 "$OUT_DIR/cycle3/GRAPH.json" \
+            --out-dir "$OUT_DIR/run"
+
+      - name: Write compact summary
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('results/unconditional-2026-09-13/cycle7-top200-v2/run')
+          r=root/'REBUILD.json'; v=root/'VERDICT.json'
+          lines=['# Cycle 7 top-200 closure check (v2)','']
+          if r.exists():
+              d=json.loads(r.read_text())
+              lines += [f"- reconstructed Cycle 4: **{d['cycle4_vertices']} vertices**",
+                        f"- reconstructed Cycle 6: **{d['cycle6_vertices']} vertices / {d['cycle6_edges']} edges**",
+                        f"- exact Cycle 7 candidate pool: **{d['cycle7_candidates']['exact_candidates']} points**",
+                        f"- tested all-top-200 graph: **{d['top200_vertices']} vertices / {d['top200_edges']} edges**",'']
+          if v.exists():
+              d=json.loads(v.read_text())
+              lines += [f"- CaDiCaL195: **{d['cadical195']}**",
+                        f"- classification: **{d['classification']}**",
+                        f"- conclusion: {d['conclusion']}",
+                        f"- graph SHA-256: `{d['graph_sha256']}`"]
+          else:
+              lines += ['Run did not reach VERDICT.json; inspect logs.']
+          lines += ['','All retained edges are exact unit-distance edges; no C88, quotient, palette, or forced-color assumptions are imposed.']
+          out=Path('results/unconditional-2026-09-13/cycle7-top200-v2/SUMMARY.md')
+          out.write_text('\n'.join(lines)+'\n')
+          print(out.read_text())
+          PY
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: hn-cycle7-top200-v2-${{ github.run_id }}
+          path: ${{ env.OUT_DIR }}
+          if-no-files-found: error
+          retention-days: 30
