@@ -86,7 +86,7 @@ Therefore do not write “Cycle 7 has no forcing pair” yet. The correct curren
 Also distinguish two geometry checks:
 
 - `hn_cycle7_top200_rebuild.py::induced_edges` uses a floating `|r^2-1|<1e-7` prefilter, then exact `unit_modulus` on every retained candidate and asserts no false positives;
-- it does not constitute a completely float-free enumeration of all ~41.5 million point pairs.
+- it does not constitute a completely float-free enumeration of all 41,537,055 point pairs.
 
 Before theorem-level claims about the *full induced* 9,115-point unit-distance graph, perform one independent exact all-pairs audit or another argument that proves no unit edge can be missed by the floating prefilter. After that audit, gate future work by the audited graph SHA instead of repeating the expensive geometry check every scan.
 
@@ -112,11 +112,7 @@ with the full 9,115-entry integer list substituted for the toy four-entry exampl
 
 ### Step 2: independently audit induced unit edges once
 
-Preferred: write/use an exact or rigorously bounded all-pairs checker over all
-
-`9115*9114/2 = 41,532,?`
-
-point pairs. Compute the exact count programmatically rather than copying this incomplete handwritten expression into a result file.
+Preferred: write/use an exact or rigorously bounded all-pairs checker over all **41,537,055** point pairs.
 
 Requirements:
 
