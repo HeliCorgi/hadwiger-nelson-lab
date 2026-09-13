@@ -1,365 +1,250 @@
-# Handoff — P2 forcing / semantic-interface program
+# Handoff — Hadwiger–Nelson main target / unconditional geometry
 
-Last updated: 2026-09-12
+Last updated: 2026-09-13
 
-## Scope and proof discipline
+## USER OVERRIDE — this section supersedes older priorities
 
-This repository continues the finite five-color forcing program inherited from `HeliCorgi/five-color-forcing-anatomy` at pinned upstream commit
+The active goal is an actual Hadwiger–Nelson lower-bound improvement, not further compression of conditional palette/C88/quotient statements.
+
+Only prioritize work that directly seeks one of:
+
+- **A:** a finite planar unit-distance graph that is not 5-colorable;
+- **B:** a finite 5-colorable planar unit-distance graph containing a fixed pair of distinct actual points forced to the same color in every proper 5-coloring;
+- **C:** a concrete incomplete unconditional construction toward A or B, with the unchecked part stated explicitly;
+- **D:** a tested unconditional family that fails the intended A/B mechanism.
+
+The Lean-checked `PositiveDistance` bridge removes the old `d >= 1/2` search threshold: **any fixed forced-equal pair at any Euclidean distance `d>0` is enough** after chaining. Do not reject a forcing candidate because its distance is small.
+
+Do not return to conditional palette/C88/quotient/proof-compression/Lean-only work unless a specific construction explains how it removes the conditional assumptions.
+
+## Latest checkpoint — Cycle 7 top-200 direct extension
+
+Workflow run:
+
+- https://github.com/HeliCorgi/hadwiger-nelson-lab/actions/runs/34750198928
+- status: **success**
+- head commit used by the run: `afc203994e861cd945242f16b71896b3cf5f6313`
+- pinned upstream: `d1e80998bda337d9fa721f2e96d203ae54e97fc8`
+
+Artifact:
+
+- id: `10315263782`
+- name: `hn-cycle7-top200-v2-34750198928`
+- digest: `sha256:17e65652d2b95eaed786720b9176825f73f07b20dfecf343fb9bd96812e3c5d2`
+- important files: `run/GRAPH.json`, `run/COLORING.txt`, `run/REBUILD.json`, `run/VERDICT.json`, plus reconstructed Cycle 3 files.
+
+### Exact reconstruction chain
+
+The successful run rebuilt everything from the pinned upstream G510 data.
+
+1. **Cycle 3**
+   - 760 vertices / 4,280 edges;
+   - semantic SHA-256 over canonical JSON `{pts,edges}`:
+     `6cefdd905c4ab09108ea4005e80e3b234e3b2826de759b73bd619163b9943380`;
+   - this semantic hash replaced the earlier incorrect byte-for-byte `GRAPH.json` hash gate.
+2. **Cycle 4**
+   - 2,512 vertices;
+   - 2,543 float proposals;
+   - 1,752 retained exact new points.
+3. **Cycle 6**
+   - 8,915 vertices / 78,063 edges;
+   - 9,302 float proposals;
+   - 6,403 retained exact new points.
+4. **Cycle 7 candidate pool**
+   - 15,216,277 base pairs within floating radius 2 used for proposal generation;
+   - 13,556 float proposals after multiplicity/contact filtering;
+   - all 13,556 reconstructed as distinct exact candidates in this run.
+5. **Top-200 test graph**
+   - Cycle 6 plus the first 200 ranked exact candidates;
+   - 9,115 vertices / 81,068 induced unit edges according to `induced_edges`;
+   - every retained edge is verified exactly with `unit_modulus`;
+   - graph SHA-256: `632ab11f24bf084221db31fec8e1eda522a18eba8d95dbd3bddf9cbcae1fe49d`.
+
+### SAT result
+
+CaDiCaL195 returned **SAT** in 87.778 seconds. The returned coloring was checked against all 81,068 saved edges and written to `run/COLORING.txt` as one 9,115-digit color string.
+
+Producing verdict:
+
+- `cadical195 = SAT`;
+- `proper_5_coloring_verified = true`;
+- producing classification: `D`;
+- conclusion: `Entire top-200 Cycle7 candidate family remains 5-colorable.`
+
+Total rebuild+SAT time recorded by the workflow: 122.886 seconds.
+
+## Precise scope of the Cycle 7 result
+
+This closes the **direct A attempt** for the top-200 closure. Adding all 200 selected candidates does not produce a non-5-colorable graph.
+
+It does **not** yet close target B. A graph can be 5-colorable while still containing a fixed pair forced equal in all 5-colorings.
+
+Therefore do not write “Cycle 7 has no forcing pair” yet. The correct current status is:
+
+> **Cycle 7 top-200: D for direct non-5-colorability; B status untested on the final 9,115-vertex graph.**
+
+Also distinguish two geometry checks:
+
+- `hn_cycle7_top200_rebuild.py::induced_edges` uses a floating `|r^2-1|<1e-7` prefilter, then exact `unit_modulus` on every retained candidate and asserts no false positives;
+- it does not constitute a completely float-free enumeration of all ~41.5 million point pairs.
+
+Before theorem-level claims about the *full induced* 9,115-point unit-distance graph, perform one independent exact all-pairs audit or another argument that proves no unit edge can be missed by the floating prefilter. After that audit, gate future work by the audited graph SHA instead of repeating the expensive geometry check every scan.
+
+## Resume here — next computation
+
+### Step 1: recover and pin the successful artifact
+
+Download artifact `10315263782`. Verify:
+
+- `run/GRAPH.json` SHA-256 equals
+  `632ab11f24bf084221db31fec8e1eda522a18eba8d95dbd3bddf9cbcae1fe49d`;
+- `run/GRAPH.json` has 9,115 points and 81,068 edges;
+- `run/COLORING.txt` has exactly 9,115 color digits in `0..4`;
+- the coloring is proper on every saved edge.
+
+`COLORING.txt` is a raw digit string, not the JSON seed format expected by `hn_unconditional_scan.py`. If using that scanner, wrap it into a seed-model JSON such as
+
+```json
+{"models":{"cycle7_top200_sat":[0,1,1,4]}}
+```
+
+with the full 9,115-entry integer list substituted for the toy four-entry example.
+
+### Step 2: independently audit induced unit edges once
+
+Preferred: write/use an exact or rigorously bounded all-pairs checker over all
+
+`9115*9114/2 = 41,532,?`
+
+point pairs. Compute the exact count programmatically rather than copying this incomplete handwritten expression into a result file.
+
+Requirements:
+
+- exact point distinctness;
+- every saved edge has squared distance exactly 1;
+- no omitted pair has squared distance exactly 1;
+- save a compact geometry audit with graph SHA and exact pair count.
+
+Do this once. Subsequent coloring scans should trust only the audited graph SHA, not rerun the all-pairs geometry audit on every attempt.
+
+### Step 3: test target B on the 9,115-vertex graph
+
+Use only actual vertices and actual unit-distance edges. No C88, quotient, palette assumptions, or prescribed same-color relations.
+
+Recommended strategy:
+
+1. Start from the verified 5-coloring in the artifact.
+2. Generate diverse additional proper 5-colorings using SAT, Kempe exchanges, local repair, or a mixture.
+3. Maintain equality blocks/signatures: each new validated coloring splits vertices that receive different colors.
+4. If all blocks become singletons, every distinct vertex pair has a separating proper 5-coloring; record **D for B** as well.
+5. If a pair `(u,v)` survives, solve `G` with `c(u) != c(v)` using color-label symmetry only where logically valid.
+6. SAT gives another separating witness and refines the blocks.
+7. UNSAT gives only a **B candidate** until independently checked with another solver/certificate.
+8. Before promotion to B, verify ordinary `G` is SAT, `u != v` as exact points, and the Euclidean distance is strictly positive. Any positive distance is acceptable.
+
+Do not interpret timeout/UNKNOWN as forcing.
+
+### Step 4: branch on the outcome
+
+If all pairs are separated:
+
+- classify the Cycle 7 top-200 family as fully **D** for both A and B;
+- preserve the small separating coloring family;
+- stop adding more points by the same top-ranked contact heuristic unless a new mechanism is identified;
+- move to a genuinely different unconditional construction family.
+
+If a fixed pair is inequality-UNSAT:
+
+- save the pair and exact distance immediately;
+- independently verify graph SAT and pair-inequality UNSAT;
+- preserve proof/certificate artifacts;
+- this is the highest-priority lane because `PositiveDistance` turns any such `d>0` pair into a finite non-5-colorable unit-distance construction.
+
+## Closed / do-not-repeat lanes
+
+### Support-`<=4` port-free equality interface search
+
+For the pinned conditional A/B system, this lane is independently exhausted:
+
+- 7,011 validated A/B witness records;
+- 7,008 unique difference cuts;
+- 23,440 / 23,440 producing roots exhausted;
+- independent verifier exhausted 9,810,580 / 9,810,580 increasing first triples;
+- cut-library SHA-256:
+  `a58cb579f1fa725107ef10a776b290c089a8ff0cfc12dc4d75fa1fe82ba5ccfa`.
+
+Finite conditional conclusion:
+
+> For the pinned A/B system, no port-free equality semantic interface supported on at most four vertices exists.
+
+Do not restart this as unfinished work.
+
+### Old distance threshold
+
+Do not restore `d >= 1/2` as a search filter. `PositiveDistance` supersedes it. Any unconditional forced-equal pair at any `d>0` is enough.
+
+### Conditional palette/proof-compression queue
+
+The older q5/q6, q0/q10, q8/q9 palette/interface decomposition remains valid historical finite work, but it is not the active priority. Do not spend a cycle shrinking proof trees, adding palette clauses, increasing semantic support, or Lean-formalizing another conditional leaf unless it participates in a stated unconditional composition.
+
+## Historical conditional backbone — context only
+
+The repository inherited a conditional forcing system from `HeliCorgi/five-color-forcing-anatomy` at upstream commit
 
 `d1e80998bda337d9fa721f2e96d203ae54e97fc8`.
 
-The main conditional formulas are
+Its main formulas were
 
 - `A = H* ∧ C88`;
 - `B = H* ∧ (c(217) != c(490))`.
 
-`H*` is the first minimal core from `B5_MULTICORE.json`; `C88` is `C_min` from `B5_P2_LEMMA.json`.
+For the quotient `Q = H*/C88`:
 
-No result in this handoff is an unconditional finite unit-distance 6-chromatic graph. Nothing here changes the known Hadwiger–Nelson lower bound. Always distinguish conditional finite statements from genuine geometric statements.
-
-## Research-recording policy: preserve interesting mathematics, not only wins
-
-The user should not have to decide which computational observations are mathematically interesting. Future work must proactively preserve structures that look non-generic, concise, symmetric, extremal, unexpectedly rigid, recurrent, or informative as negative results.
-
-Use these evidence labels:
-
-1. **proved / independently verified finite statement**;
-2. **exact computational observation** not yet independently reimplemented;
-3. **empirical pattern** over a sample;
-4. **conjectural interpretation**.
-
-For each important observation record the precise claim, why it matters, generating code/results, solver/checker and exhaustive/sample scope, independent-verification status, and all conditionality. Prefer a human explanation over a raw SAT/UNSAT verdict whenever possible.
-
-For geometric observations, record exact coordinates/distances when practical and state explicitly whether the object is genuinely unit-distance or only abstract/conditional.
-
-## Closed lane — support `<=4` port-free equality interfaces
-
-**Evidence level: independently verified finite statement.**
-
-The port-free equality language observes only the equality partition of colors on a selected set of non-port vertices. There are 391 non-port vertices and 76,245 pair-atoms.
-
-The terminal producing computation, workflow run `34683854626`, ended with:
-
-- upstream seed fooling pairs: **872**;
-- lab-generated pairs: **6139**;
-- full validated A/B records: **7011**;
-- unique difference cuts: **7008**;
-- duplicate cuts: **3**;
-- completed fixed-pivot roots: **23,440 / 23,440**;
-- cut-library SHA-256: `a58cb579f1fa725107ef10a776b290c089a8ff0cfc12dc4d75fa1fe82ba5ccfa`.
-
-An independent reconstruction/checker workflow, run `34693564501`, rebuilt the 7011 witness pairs and the same 7008 unique cuts from saved colorings, reproduced the same SHA-256, and exhausted all **9,810,580 / 9,810,580** increasing first triples with a different C++ four-set decomposition. The verifier matched literal brute force on 600 randomized toy instances.
-
-Finite conclusion:
-
-> **For the pinned A/B system, no port-free equality semantic interface supported on at most four vertices exists.**
-
-Searching exactly four vertices is complete for support `<=4`, because a separator on fewer vertices remains a separator after adding arbitrary non-port vertices.
-
-Evidence:
-
-- `results/exact-cegis-loop/MASTER_FINAL.json`;
-- `results/independent-fourset-verify/RECONSTRUCTION.json`;
-- `results/independent-fourset-verify/VERIFICATION.json`;
-- `results/independent-fourset-verify/SUMMARY.md`;
-- `tools/reconstruct_fourset_cuts_independent.py`;
-- `tools/verify_fourset_exhaustion_independent.cpp`.
-
-This is conditional and non-geometric. Do **not** restart the support-4 master as unfinished work.
-
-Historical Run-4 counter correction: run `34562068005` added **2705** sound cuts and made **2705** oracle calls, while its checkpoint `fast_candidates` counter is **2702**. Do not identify those counters.
-
-## Verified structural backbone
-
-For `Q = H*/C88`:
-
-- 305 vertices / 1599 edges;
+- 305 vertices / 1,599 edges;
 - `Q` is 5-colorable;
 - `Q + pq` is not 5-colorable and is vertex-critical under single-vertex deletion;
 - no articulation point or 2-vertex cut;
-- `p`–`q` vertex connectivity in `Q` is 6.
+- `p`–`q` vertex connectivity is 6.
 
-Evidence: `results/quotient-critical/analysis.json`.
+A minimum six-vertex separator leaves exactly one globally compatible canonical boundary state, which forces the two conditional ports to the same color. The contradiction also has an independently checked LRAT proof.
 
-A minimum `p`–`q` separator is
-
-`S = {0, 6, 8, 9, 10, 266}`.
-
-Deleting it gives a 261-qnode `p` side and a 38-qnode `q` side. Of 202 canonical boundary equality states:
-
-- `p` side extends exactly `012202`, `012203`;
-- `q` side extends 81 states;
-- the intersection is exactly `012203`.
-
-For that unique global state both sides force their port to the same singleton boundary color. CaDiCaL discovery was independently re-enumerated with Glucose4.
-
-Evidence:
-
-- `results/separator-interface/analysis.json`;
-- `results/separator-verify/analysis.json`.
-
-The normalized SAT contradiction also has an independently checked LRAT proof; see `results/proof-lrat/`.
-
-## Current headline of the human-proof lane
-
-The large 261-qnode side is no longer best thought of as a 202-row SAT table. It now has a **hierarchical palette/interface explanation**.
-
-At the outer boundary, including the port `p=q5`, the 267-qnode left bag forces three equalities:
+The 261-qnode side was later compressed into a hierarchical palette/interface explanation through the forced equalities
 
 - `q5=q6`;
 - `q0=q10`;
 - `q8=q9`.
 
-After contracting them, the four tracked classes
-
-- `A={q5,q6}`;
-- `B={q0,q10}`;
-- `C={q8,q9}`;
-- `D={q266}`
-
-have an ordinary class graph equal to **`K4` minus exactly the edge `C-D`**. Therefore exactly two color-symmetric outer states remain: `C=D` gives `012202`; otherwise `D` takes a fourth color and gives `012203`.
-
-Evidence: `results/separator-left-compression/` and workflow run `34694157711`.
-
-The important update is that **all three forced equalities now have explicit recursive palette/interface explanations**. They are still finite computational proofs with exact SAT leaves, not purely hand-derived graph theorems, but they are substantially more human-readable than the original 267-node SAT statement.
-
-A consolidated narrative is in:
-
-- `results/separator-left-recursive-chain/HUMAN_NOTE.md`.
-
-## Equality 1 — `q5=q6`: local K4 plus a conditional missing-color gate
-
-**Evidence level: finite exact statement; key palette predicates checked independently with CaDiCaL195 and Glucose4.**
-
-First, there is a genuinely local graph lemma:
-
-`q5=q22`
-
-because their common neighbors
-
-`{q0,q4,q8,q21}`
-
-form a `K4`. If q5 and q22 had distinct colors, those four common neighbors would have only three colors available, impossible for a K4.
-
-Next consider the q6–q22 minimum separator
-
-`T4 = {q0,q4,q8,q17,q21,q30,q59,q68,q105,q223}`.
-
-Its minimum cut size is 10. Removing it isolates q22 as a singleton; moreover q22 has degree exactly 10 in the left bag and
-
-`N(q22)=T4`.
-
-The first attempted palette statement was too strong: q6's color is **not** absent from T4 in every q6-side coloring. Both solvers exhibit colorings where q6 shares a color with some boundary vertex. This failed hypothesis is preserved because it identifies the correct conditional statement.
-
-The exact condition actually needed is:
-
-> **If the T4 boundary uses at most four colors, then q6's color is absent from every T4 vertex.**
-
-Both CaDiCaL195 and Glucose4 independently found no counterexample to this condition. They also independently verify:
-
-> **Every q6-side boundary coloring uses at least four colors.**
-
-Now any coloring that also extends to singleton q22 must leave at least one color unused on `N(q22)=T4`, so T4 uses at most four colors. Combining the two q6-side facts:
-
-- T4 uses at least four colors;
-- global compatibility with q22 gives at most four colors;
-- hence T4 uses exactly four colors;
-- conditional q6-side lemma says q6 uses the unique missing fifth color;
-- q22, adjacent to all of T4, must also use that unique missing fifth color.
-
-Thus `q6=q22`; together with local `q5=q22`, this gives
-
-> **`q5=q6`.**
-
-This avoids enumerating all canonical color partitions of a ten-vertex separator.
-
-Evidence:
-
-- `results/separator-left-q5-q6-palette-proof/analysis.json`;
-- `results/separator-left-q5-q6-palette-proof/SUMMARY.md`;
-- `tools/separator_left_q5_q6_palette_proof.py`;
-- workflow run `34698930121` (final conditional version; earlier run recorded the intentionally overstrong failed hypothesis).
-
-## Equality 2 — `q0=q10`: two nested degree-5 palette gates
-
-**Evidence level: finite exact computation; state tables independently solver-rechecked.**
-
-A minimum q0–q10 separator is
-
-`T1 = {q14,q18,q54,q55,q256}`.
-
-Removing T1 isolates q10 as a singleton, with degree 5 and exactly
-
-`N(q10)=T1`.
-
-The large q0 side extends only three of the 52 canonical five-boundary states:
-
-- `01230`, q0 forced to color 4;
-- `01233`, q0 forced to color 4;
-- `01234`, q0 allowed colors 3 or 4.
-
-The singleton q10 side rejects only the all-five-colors state `01234`. The two globally viable states use four colors on T1, so q10 is forced to the missing fifth color, exactly q0's forced color. Hence `q0=q10`.
-
-Evidence:
-
-- `results/separator-left-q0-q10-compression/`;
-- corrected successful workflow run `34697626060`.
-
-### Why the three-state q0-side language is interesting
-
-Those three q0-side states are exactly captured by eight pairwise disequalities on T1. After replacing T1 vertices by their exact forced-equality classes, seven of the eight required disequalities are ordinary graph edges. The only residual relation is
-
-`q18 != q256`.
-
-Evidence: `results/separator-left-q0-side-relation/`, run `34697795357`.
-
-That residual forced disequality itself factors through another minimum five-vertex separator
-
-`T2 = {q23,q35,q57,q86,q159}`.
-
-Again q256 is a degree-5 singleton with
-
-`N(q256)=T2`.
-
-The q18 side extends eight states:
-
-`00121, 00123, 01121, 01123, 01212, 01213, 01231, 01234`.
-
-The q256 side removes exactly the all-five-colors state `01234`. On every one of the seven globally viable states:
-
-- every color available to q18 is already **used** on T2;
-- the colors available to q256 are exactly the colors **missing** from T2.
-
-Hence their option sets are disjoint and `q18!=q256`.
-
-CaDiCaL195 and Glucose4 enumerate the same interface table exactly.
-
-Evidence:
-
-- `results/separator-left-q18-q256-compression/`;
-- run `34698220055`.
-
-### The remaining non-pairwise content on the q18 side
-
-The eight q18-side states share five pairwise disequalities. Those five conditions alone admit exactly nine states: the eight real states plus one extra partition
-
-`01232`.
-
-Thus **all higher-order information at this five-boundary layer is concentrated in one forbidden state**.
-
-Equivalently, the residual rule can be written as the palette-containment implication
-
-> if `q57=q159`, then `c(q35)` belongs to `{c(q23),c(q57),c(q86)}`.
-
-Fixing `01232` is UNSAT in both CaDiCaL195 and Glucose4; nearby valid state `01231` is SAT in both. A direct induced-core explanation remains global: the best deletion-minimal core found has **236 vertices / 1263 edges**. A simple attempted local proof using two adjacent vertices each forced to the fifth color also fails: there are no such witness vertices even after expanding the four anchor colors to exact forced-equality classes.
-
-Evidence:
-
-- `results/separator-left-q18-forbidden-state-core/`;
-- `results/separator-left-q18-palette-witness/`;
-- runs `34698355290`, `34698438837`.
-
-This is an important negative result: the useful compression is the **single forbidden partition / palette implication**, not a hidden tiny induced subgraph or the simplest fifth-color collision gadget.
-
-## Equality 3 — `q8=q9`: a seven-boundary missing-color gate via q104
-
-**Evidence level: finite exact computation; full boundary enumeration agrees between CaDiCaL195 and Glucose4.**
-
-The direct q8–q9 minimum cut in the left bag is 14, but scanning intermediate vertices in their exact forced-equality class finds a much better route through q104.
-
-Both q8–q104 and q9–q104 have minimum cut 7, using the same separator
-
-`T3 = {q4,q5,q33,q62,q68,q78,q226}`.
-
-Removing T3 leaves q8 and q9 together in a 259-qnode component and isolates q104 as a singleton. Moreover
-
-- `deg(q104)=7`;
-- `N(q104)=T3`.
-
-Exact seven-boundary enumeration gives:
-
-- large q8/q9 side: 12 extendable states;
-- singleton q104 side: 81 states;
-- intersection: exactly 2 states.
-
-The two common states are
-
-- `0112323`;
-- `0112333`.
-
-Both use exactly four boundary colors. In each state q8, q9 and q104 are all forced to the same unique missing fifth color.
-
-The other ten large-side states use all five colors on T3 and are automatically rejected by singleton q104, because q104 is adjacent to every boundary vertex.
-
-Thus the human explanation is:
-
-> the large side permits 12 states; q104's full-neighborhood palette gate discards the ten five-color states; in the two surviving four-color states q8, q9 and q104 all equal the missing color.
-
-Therefore
-
-> **`q8=q9`.**
-
-Evidence:
-
-- `results/separator-left-equality-class-cut-routes/`;
-- `results/separator-left-q8-q9-via-q104/analysis.json`;
-- `results/separator-left-q8-q9-via-q104/SUMMARY.md`;
-- runs `34698593630`, `34698686504`.
-
-The cut-route scan also shows the contrast between the three target equality classes:
-
-- q0–q10 compresses directly to width 5;
-- q8–q9 compresses through q104 to width 7;
-- q5–q6 cannot be routed below width 10 even through its 13-member equality class, so its conditional palette proof above is the useful compression.
-
-## What has and has not been achieved
-
-The original large-side statement
-
-`202 canonical outer boundary states -> exactly 2`
-
-now has a hierarchical explanation:
-
-1. three forced equalities reduce the outer relation to `K4-e`;
-2. `q5=q6` follows from one local K4 equality plus a conditional four-color/missing-color gate on a ten-boundary separator;
-3. `q0=q10` follows from a five-boundary degree-5 missing-color gate, whose only non-edge residual relation recursively factors through another five-boundary degree-5 used-color/missing-color gate;
-4. `q8=q9` follows from a seven-boundary degree-7 singleton gate through q104.
-
-This is a substantial human-readable compression of the finite proof. However, it is **not yet a purely graph-theoretic hand proof**: several leaves are exact SAT-verified palette predicates or small boundary-state languages. Treat them as independently solver-crosschecked finite lemmas, not informal theorems proved without computation.
-
-No part of this section is geometric, and none implies `χ(R²)>=6`.
-
-## Current next work, in priority order
-
-1. **Turn the palette leaves into smaller/certificate-style lemmas.** The best targets are:
-   - q5/q6 large-side predicates: why T4 needs at least four colors, and why q6's color disappears whenever T4 uses at most four;
-   - q8/q9 large-side 12-state language: seek a small conjunction/disjunction or palette clause system explaining why only the two four-color states survive q104;
-   - q18-side forbidden partition `01232`: seek a structural proof of the palette-containment implication. The simplest adjacent-fifth-color witness has already been ruled out.
-2. **Build a standalone proof-tree checker/certificate** for the hierarchical left-side explanation. This would separate trust in the readable decomposition from trust in one SAT implementation and make the finite argument easier to audit.
-3. **Geometric bridge work.** Continue looking for a way to turn a conditional same-color relation into an unconditional unit-distance forcing pair, ideally at Euclidean distance at least `1/2` so the rotation-doubling bridge applies.
-4. **Richer semantic observables.** The support-4 equality-only language is exhausted; the palette implications above are evidence that richer observables can compress information differently.
-5. **Support-5 equality search only with an explanatory reason.** Do not increase support merely because five is the next integer.
-
-The eventual Hadwiger–Nelson objective remains geometric: an unconditional forced-mono pair at Euclidean distance at least `1/2`, or an equivalent finite 6-chromatic unit-distance construction.
+Detailed evidence remains under:
+
+- `results/quotient-critical/`;
+- `results/separator-interface/`;
+- `results/separator-verify/`;
+- `results/proof-lrat/`;
+- `results/separator-left-*`.
+
+These statements are conditional and non-geometric. They do not imply `chi(R^2) >= 6` by themselves.
 
 ## Evidence/checkpoint invariants
 
-Preserve these rules:
+Preserve these rules in every future cycle:
 
-- every A/B witness must validate against its defining formula;
-- oracle UNKNOWN never creates a blocking cut;
+- use actual points and actual unit-distance edges for unconditional claims;
+- save exact coordinates and graph hashes;
+- every saved coloring must be validated on every edge of the graph being claimed;
+- a small family of proper colorings separating every pair is a valid D certificate for fixed-pair forcing;
+- solver UNKNOWN/timeout is never forcing evidence;
 - heuristic failure is never proof;
-- terminal finite claims require independent reconstruction or certificate checking before theorem-level promotion;
-- conditional quotient/SAT statements must never be presented as unconditional geometric results;
-- when a proposed local explanation fails, record the failure if it rules out a natural proof shape;
-- proactively record mathematically interesting negative results and structural near-misses, not only wins.
+- a candidate inequality-UNSAT must be independently rechecked before B promotion;
+- if an unconditional graph itself is non-5-colorable, that is already an A candidate and is higher priority than extracting a forcing pair;
+- report the tested family precisely; do not generalize a finite sample D to an entire algebraic field or construction class;
+- preserve intermediate checkpoints frequently so a token/runtime cutoff does not erase progress.
 
-## Resume checklist
+## Workflow reliability notes
 
-1. Do **not** restart the support-4 equality CEGIS/master; that lane is closed and independently verified.
-2. Read `results/separator-left-recursive-chain/HUMAN_NOTE.md` and the three equality sections above before continuing the human-proof lane.
-3. Treat the outer three equalities as **explained by a hierarchical finite proof tree**, not as unresolved raw SAT statements.
-4. The cleanest remaining human-proof targets are the q5/q6 conditional palette predicates, the q8/q9 large-side 12-state language, and the q18-side forbidden state `01232`.
-5. Preserve the 7011-pair / 7008-cut checkpoint as evidence and structural data, not as unfinished search state.
-6. Prefer proof-tree/certificate work or geometric bridge work over blindly increasing semantic support.
-7. Continue documenting interesting mathematical/geometric structures with evidence level and conditional scope.
+Three Cycle 7 top-200 workflow attempts occurred:
+
+1. run `34749793473` failed before mathematics because `tools/hn_circle_closure.py` was missing from `main`;
+2. run `34749991118` successfully rebuilt the 760/4,280 Cycle 3 graph but failed an inappropriate whole-file JSON SHA check even though the semantic `{pts,edges}` graph matched;
+3. run `34750198928` replaced the byte hash with semantic graph hashing and completed successfully through the 9,115-vertex SAT test.
+
+Do not reintroduce whole-JSON byte identity as a graph-identity requirement when metadata or serialization can differ. Use canonical semantic hashes for mathematical objects.
