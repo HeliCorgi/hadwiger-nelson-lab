@@ -73,13 +73,12 @@ def main():
                 gi=idx.get(q)
                 if gi is None: gi=len(union); idx[q]=gi; union.append(q)
                 cmap.append(gi)
-            added,proposed=inter_edges(union,second,cmap,a.float_tolerance)
-            # Internal edges of B under cmap.
+            # Search only first-ring vs transformed-second-ring point pairs.
+            added,proposed=inter_edges(ring,second,cmap,a.float_tolerance)
             inherited=set(ring_edges)
             for u,v in ring_edges:
                 x,y=cmap[u],cmap[v]
                 if x!=y: inherited.add((min(x,y),max(x,y)))
-            # inter_edges may include edges already internal/shared; count only new union edges.
             cross=added-inherited
             rec={'dst_pivot':dst,'src_pivot':src,'dst_degree':deg[dst],'src_degree':deg[src],
                  'vertices':len(union),'inherited_edges':len(inherited),'added_cross_edges':len(cross),
