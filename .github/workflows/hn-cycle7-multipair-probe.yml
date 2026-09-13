@@ -1,0 +1,65 @@
+name: hn-cycle7-multipair-probe
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/hn-cycle7-multipair-probe.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  probe:
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        include:
+          - {tag: b01, u: 0, v: 433, third: 400}
+          - {tag: b02, u: 394, v: 426, third: 430}
+          - {tag: b03, u: 384, v: 389, third: 401}
+          - {tag: b04, u: 395, v: 429, third: none}
+          - {tag: b05, u: 410, v: 415, third: 440}
+          - {tag: b06, u: 392, v: 404, third: none}
+          - {tag: b07, u: 396, v: 401, third: 0}
+          - {tag: b08, u: 425, v: 435, third: none}
+          - {tag: b09, u: 375, v: 409, third: none}
+          - {tag: b10, u: 418, v: 481, third: none}
+          - {tag: b11, u: 436, v: 454, third: 395}
+          - {tag: b12, u: 400, v: 451, third: 399}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v5
+        with:
+          name: hn-cycle7-top200-v2-34750198928
+          path: input
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: HeliCorgi/hadwiger-nelson-lab
+          run-id: 34750198928
+      - name: Probe pair
+        shell: bash
+        run: |
+          EXTRA=()
+          if [ '${{ matrix.third }}' != 'none' ]; then EXTRA=(--third '${{ matrix.third }}'); fi
+          python tools/hn_cycle7_pair_probe.py \
+            --graph input/run/GRAPH.json \
+            --pair '${{ matrix.u }}' '${{ matrix.v }}' \
+            "${EXTRA[@]}" \
+            --solver cadical195 \
+            --out 'probe-${{ matrix.tag }}.json'
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: cycle7-multipair-${{ matrix.tag }}-${{ github.run_id }}
+          path: probe-${{ matrix.tag }}.json
+          if-no-files-found: warn
+          retention-days: 30
