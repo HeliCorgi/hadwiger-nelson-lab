@@ -44,7 +44,7 @@ jobs:
           mkdir -p "$OUT_DIR"
           PYTHONPATH=tools python tools/hn_linked_closed_orbits_fast.py \
             --graph upstream/handoff/data/g510_k2.json --out-dir "$OUT_DIR" \
-            --ring-order 3 --ring-anchor 95,101 --pivot-count 8 --seed 20260914
+            --ring-order 3 --ring-anchor 95,101 --pivot-count 4 --seed 20260914
       - name: Exact all-pairs completion
         run: |
           g++ -O3 -std=c++17 tools/hn_exact_completion.cpp -o /tmp/hn_exact_completion
@@ -74,7 +74,7 @@ jobs:
               if p.exists():
                   d=json.loads(p.read_text())
                   lines += [f'## {name}','```json',json.dumps({k:v for k,v in d.items() if k not in ('colors','records')},indent=2),'```','']
-          lines += ['This run selects by exact cross-orbit edge count only. It is a fast control, not the final portfolio objective. UNKNOWN/local-search failure is non-evidence.']
+          lines += ['This run screens only 16 pivot alignments and selects by exact cross-orbit edge count. It is a concrete fast control, not an exhaustive linker search or the final portfolio objective. UNKNOWN/local-search failure is non-evidence.']
           (root/'SUMMARY.md').write_text('\n'.join(lines)+'\n')
           print((root/'SUMMARY.md').read_text())
           PY
