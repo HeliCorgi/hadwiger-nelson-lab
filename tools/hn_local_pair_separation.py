@@ -21,6 +21,8 @@ import random
 import time
 from pathlib import Path
 
+import numpy as np
+
 from hn_exact import K2, unit_modulus
 from hn_unconditional_scan import valid_coloring, write_json
 
@@ -39,24 +41,41 @@ def pairs_left(blocks):
     return sum(len(b)*(len(b)-1)//2 for b in blocks)
 
 
+def _pair_count_from_labels(labels):
+    counts=np.bincount(labels)
+    return int(np.sum(counts*(counts-1)//2))
+
+
 def greedy_compress(witnesses, n):
-    """Retain a small subfamily that still separates every vertex pair."""
-    blocks=[list(range(n))]
+    """Retain a small subfamily that still separates every vertex pair.
+
+    Evaluation is vectorized: current block id and one candidate color form a
+    combined label. This is logically identical to repeated partition refinement
+    but avoids Python dict work over hundreds of generated witnesses.
+    """
+    W=np.asarray(witnesses,dtype=np.int8)
+    block=np.zeros(n,dtype=np.int32)
     remaining=list(range(len(witnesses)))
     chosen=[]
-    while pairs_left(blocks):
-        best_i=None; best_blocks=None; best_pairs=pairs_left(blocks)
+    current=n*(n-1)//2
+    while current:
+        base=block.astype(np.int64)*5
+        best_i=None; best_pairs=current
         for i in remaining:
-            candidate=refine(blocks,witnesses[i])
-            p=pairs_left(candidate)
+            labels=base+W[i]
+            p=_pair_count_from_labels(labels)
             if p<best_pairs:
-                best_i=i; best_blocks=candidate; best_pairs=p
+                best_i=i; best_pairs=p
                 if p==0: break
         if best_i is None:
             raise AssertionError('full witness family separates all pairs but greedy compression stalled')
-        chosen.append(best_i); remaining.remove(best_i); blocks=best_blocks
+        labels=base+W[best_i]
+        _,block=np.unique(labels,return_inverse=True)
+        block=block.astype(np.int32,copy=False)
+        current=_pair_count_from_labels(block)
+        assert current==best_pairs
+        chosen.append(best_i); remaining.remove(best_i)
     compact=[witnesses[i] for i in chosen]
-    assert not pairs_left(blocks)
     return compact,chosen
 
 
@@ -216,6 +235,9 @@ def main():
     if status=='NO_FORCED_EQUAL_PAIR':
         compact,indices=greedy_compress(witnesses,n)
         assert all(valid_coloring(c,n,edges) for c in compact)
+        # Independent signature check of the compressed family.
+        sigs=[tuple(c[v] for c in compact) for v in range(n)]
+        assert len(set(sigs))==n
         compact_count=len(compact); compact_indices=indices
         out=save(status,compact)
     else:
