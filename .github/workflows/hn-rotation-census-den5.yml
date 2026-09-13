@@ -1,0 +1,51 @@
+name: hn-rotation-census-den5
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-rotation-census-den5.yml'
+      - 'tools/hn_rotation_census.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  OUT_DIR: results/unconditional-2026-09-14/rotation-census-den5
+
+jobs:
+  census:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Run bounded exact census
+        run: |
+          PYTHONPATH=tools python tools/hn_rotation_census.py \
+            --out-dir "$OUT_DIR" \
+            --denominator 5 --max-support 4 --coeff-max 3 \
+            --float-tolerance 1e-9 --max-results 200
+      - name: Store census result
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$OUT_DIR/ROTATIONS.json" "$OUT_DIR/SUMMARY.md"
+          if git diff --cached --quiet; then
+            echo 'result already current'
+          else
+            git commit -m 'Store exact denominator-5 rotation census'
+            git push origin HEAD:main
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: hn-rotation-census-den5-${{ github.run_id }}
+          path: ${{ env.OUT_DIR }}
+          if-no-files-found: error
+          retention-days: 30
