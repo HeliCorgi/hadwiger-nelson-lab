@@ -1,0 +1,13 @@
+{
+  "status": "VERIFIED_PAIR_SEPARATION_CERTIFICATE",
+  "classification": "D_FOR_B",
+  "vertices": 2628,
+  "edges": 15708,
+  "witnesses": 205,
+  "distinct_vertex_signatures": 2628,
+  "remaining_unseparated_pairs": 0,
+  "graph_sha256": "2275306ce8ad3d5bdb7d6c514990f08c103fa2474bfdc36a954c8abcac902bcb",
+  "certificate_raw_sha256": "5e7db802b387d53e6fa8d2090202335727bcadbb8b799a75cc4d377ca3490775",
+  "certificate_xz_sha256": "dba0ad64c18297cb31a8eaba619a20e8719580a5cc7b7a81cc9d605ee2508d17",
+  "all_colorings_validated_on_all_edges": true
+}
