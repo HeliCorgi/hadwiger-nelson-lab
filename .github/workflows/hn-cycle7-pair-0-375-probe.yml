@@ -1,0 +1,53 @@
+name: hn-cycle7-pair-0-375-probe
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-cycle7-pair-0-375-probe.yml'
+      - 'tools/hn_cycle7_pair_probe.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  probe:
+    strategy:
+      fail-fast: false
+      matrix:
+        solver: [cadical195, glucose4, maplechrono, lingeling]
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install SAT dependency
+        run: python -m pip install -r requirements.txt
+      - name: Download Cycle 7 artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: hn-cycle7-top200-v2-34750198928
+          path: input
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: HeliCorgi/hadwiger-nelson-lab
+          run-id: 34750198928
+      - name: Probe c(0) != c(375) with symmetry breaking through common neighbor 393
+        run: |
+          python tools/hn_cycle7_pair_probe.py \
+            --graph input/run/GRAPH.json \
+            --pair 0 375 \
+            --third 393 \
+            --solver '${{ matrix.solver }}' \
+            --out 'probe-${{ matrix.solver }}.json'
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: cycle7-pair-0-375-${{ matrix.solver }}-${{ github.run_id }}
+          path: probe-${{ matrix.solver }}.json
+          if-no-files-found: warn
+          retention-days: 30
