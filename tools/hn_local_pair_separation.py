@@ -9,6 +9,8 @@ run a TabuCol-style repair with those two vertices frozen.
 
 A successful repair is a rigorous separation witness after full-edge validation.
 Failure/timeout is explicitly non-evidence and never establishes forced equality.
+After complete separation, the witness family is greedily compressed while retaining
+unique color signatures for every vertex.
 """
 from __future__ import annotations
 
@@ -37,6 +39,27 @@ def pairs_left(blocks):
     return sum(len(b)*(len(b)-1)//2 for b in blocks)
 
 
+def greedy_compress(witnesses, n):
+    """Retain a small subfamily that still separates every vertex pair."""
+    blocks=[list(range(n))]
+    remaining=list(range(len(witnesses)))
+    chosen=[]
+    while pairs_left(blocks):
+        best_i=None; best_blocks=None; best_pairs=pairs_left(blocks)
+        for i in remaining:
+            candidate=refine(blocks,witnesses[i])
+            p=pairs_left(candidate)
+            if p<best_pairs:
+                best_i=i; best_blocks=candidate; best_pairs=p
+                if p==0: break
+        if best_i is None:
+            raise AssertionError('full witness family separates all pairs but greedy compression stalled')
+        chosen.append(best_i); remaining.remove(best_i); blocks=best_blocks
+    compact=[witnesses[i] for i in chosen]
+    assert not pairs_left(blocks)
+    return compact,chosen
+
+
 def constrained_repair(base, edges, adj, u, v, seed, seconds, iterations, perturb):
     """Try to repair base after forcing u/v unequal. Failure has no meaning."""
     n=len(base); k=5; rng=random.Random(seed); deadline=time.monotonic()+seconds
@@ -48,7 +71,6 @@ def constrained_repair(base, edges, adj, u, v, seed, seconds, iterations, pertur
         if time.monotonic()>=deadline: break
         colors=list(base)
         colors[u]=cu; colors[v]=cv
-        # Later restarts diversify a small neighborhood/global sample while preserving fixed vertices.
         if restart:
             pool=[x for x in range(n) if x not in fixed]
             for x in rng.sample(pool,min(len(pool),perturb*(restart+1))):
@@ -101,7 +123,6 @@ def constrained_repair(base, edges, adj, u, v, seed, seconds, iterations, pertur
                     conflicts += counts[z][cz]-counts[z][oldz]
                     colors[z]=cz
                     for w in adj[z]: counts[w][oldz]-=1; counts[w][cz]+=1
-        # next restart
     return None,{'best_conflicts':best_seen}
 
 
@@ -140,12 +161,17 @@ def main():
     witnesses=[initial]
     blocks=refine([list(range(n))],initial)
     records=[]; failures=[]; started=time.monotonic(); rng=random.Random(a.seed)
+    compact_count=None; compact_indices=None
 
-    def save(status):
+    def save(status, models=None):
+        saved_models=witnesses if models is None else models
         payload={
             'status':status,
             'classification':'D' if status=='NO_FORCED_EQUAL_PAIR' else None,
-            'vertices':n,'edges':len(edges),'witness_count':len(witnesses),
+            'vertices':n,'edges':len(edges),'generated_witness_count':len(witnesses),
+            'saved_witness_count':len(saved_models),
+            'compressed_witness_count':compact_count,
+            'compressed_source_indices':compact_indices,
             'remaining_pairs':pairs_left(blocks),
             'remaining_blocks':[b for b in blocks if len(b)>1],
             'records':records,'failures':failures,
@@ -154,22 +180,16 @@ def main():
             'elapsed_seconds':round(time.monotonic()-started,3),
         }
         write_json(a.out_dir/'SEPARATION.json',payload)
-        write_json(a.out_dir/'WITNESSES.json',{'models':witnesses})
+        write_json(a.out_dir/'WITNESSES.json',{'models':saved_models})
         return payload
 
     save('ACTIVE')
     while pairs_left(blocks) and time.monotonic()-started<a.seconds:
         candidates=sorted((b for b in blocks if len(b)>1), key=len, reverse=True)
         progressed=False
-        # Try several residual blocks rather than getting trapped on one hard pair.
         for block in candidates[:min(12,len(candidates))]:
             if time.monotonic()-started>=a.seconds: break
-            u=block[0]
-            # choose a partner far into the block to avoid repeatedly testing near-identical local structure
-            v=block[-1]
-            base=witnesses[-1]
-            # Every vertex in this residual block has the same color in every retained witness,
-            # so base[u]==base[v]. Global color permutation makes the chosen unequal target WLOG.
+            u=block[0]; v=block[-1]; base=witnesses[-1]
             assert all(c[u]==c[v] for c in witnesses)
             color,meta=constrained_repair(base,edges,adj,u,v,rng.randrange(1<<62),
                                           min(a.pair_seconds,max(0.1,a.seconds-(time.monotonic()-started))),
@@ -186,15 +206,20 @@ def main():
             blocks=new; witnesses.append(color)
             rec={'target':[u,v],'before':before,'after':after,
                  'max_block':max(map(len,blocks)),'repair':meta}
-            records.append(rec); save('ACTIVE')
+            records.append(rec)
             print(json.dumps(rec),flush=True)
             progressed=True
             break
-        if not progressed and failures:
-            break
+        if not progressed and failures: break
 
     status='NO_FORCED_EQUAL_PAIR' if not pairs_left(blocks) else 'RESIDUAL_UNKNOWN'
-    out=save(status)
+    if status=='NO_FORCED_EQUAL_PAIR':
+        compact,indices=greedy_compress(witnesses,n)
+        assert all(valid_coloring(c,n,edges) for c in compact)
+        compact_count=len(compact); compact_indices=indices
+        out=save(status,compact)
+    else:
+        out=save(status)
     print(json.dumps({k:v for k,v in out.items() if k not in ('remaining_blocks','records')},indent=2))
 
 if __name__=='__main__': main()
