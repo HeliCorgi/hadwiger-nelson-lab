@@ -1,0 +1,15 @@
+{
+  "graph_sha256": "29c047daa1da5f52ad4bde52cea63104a94229fe7bf946189c30f34f1b4b52ac",
+  "vertices": 1192,
+  "edges": 7008,
+  "all_saved_edges_exact_unit": true,
+  "no_conditional_constraints": true,
+  "cadical195": "SAT",
+  "classification": "D",
+  "status": "SAT_NO_FORCED_EQUAL_PAIR",
+  "proper_5color_witnesses": 14,
+  "remaining_unseparated_pairs": 0,
+  "remaining_blocks": [],
+  "pair_queries": [],
+  "seconds": 5.316
+}
