@@ -1,0 +1,90 @@
+name: hn-cycle7-top200
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-cycle7-top200.yml'
+      - 'tools/hn_cycle7_top200_rebuild.py'
+      - 'tools/hn_exact.py'
+      - 'results/unconditional-2026-09-13/cycle7-rebuild/cycle3_graph.json.xz.b64'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hn-cycle7-top200
+  cancel-in-progress: false
+
+jobs:
+  rebuild-and-solve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install scipy==1.14.1 sympy==1.13.3
+
+      - name: Restore pinned Cycle 3 graph
+        shell: bash
+        run: |
+          mkdir -p results/unconditional-2026-09-13/cycle7-top200/input
+          base64 -d results/unconditional-2026-09-13/cycle7-rebuild/cycle3_graph.json.xz.b64 \
+            > results/unconditional-2026-09-13/cycle7-top200/input/GRAPH.json.xz
+          echo 'bf8c9d2480c0baf7b27462c3c21f0231e4e4ed924b95510055eba6aa792ea128  results/unconditional-2026-09-13/cycle7-top200/input/GRAPH.json.xz' | sha256sum -c -
+          xz -dc results/unconditional-2026-09-13/cycle7-top200/input/GRAPH.json.xz \
+            > results/unconditional-2026-09-13/cycle7-top200/input/GRAPH.json
+          echo 'a5e329e1a1e89c6b627630eda821f3402fe07578eaef5ffa9c675bd0da6313e4  results/unconditional-2026-09-13/cycle7-top200/input/GRAPH.json' | sha256sum -c -
+
+      - name: Rebuild full family and solve 5-colorability
+        run: |
+          PYTHONPATH=tools python tools/hn_cycle7_top200_rebuild.py \
+            --cycle3 results/unconditional-2026-09-13/cycle7-top200/input/GRAPH.json \
+            --out-dir results/unconditional-2026-09-13/cycle7-top200/run
+
+      - name: Write summary
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('results/unconditional-2026-09-13/cycle7-top200/run')
+          r=root/'REBUILD.json'; v=root/'VERDICT.json'
+          lines=['# Cycle 7 top-200 closure check','']
+          if r.exists():
+              d=json.loads(r.read_text())
+              lines += [f"- reconstructed Cycle 4: **{d['cycle4_vertices']} vertices**",
+                        f"- reconstructed Cycle 6: **{d['cycle6_vertices']} vertices / {d['cycle6_edges']} edges**",
+                        f"- Cycle 7 exact candidate pool: **{d['cycle7_candidates']['exact_candidates']} points**",
+                        f"- tested graph: **{d['top200_vertices']} vertices / {d['top200_edges']} edges**",'']
+          if v.exists():
+              d=json.loads(v.read_text())
+              lines += [f"- CaDiCaL195: **{d['cadical195']}**",
+                        f"- classification: **{d['classification']}**",
+                        f"- conclusion: {d['conclusion']}",
+                        f"- graph SHA-256: `{d['graph_sha256']}`"]
+          else:
+              lines += ['Run did not reach VERDICT.json; inspect logs.']
+          lines += ['','All retained graph edges are exact unit-distance edges. No C88, quotient, palette, or forced-color assumption is imposed.']
+          Path('results/unconditional-2026-09-13/cycle7-top200/SUMMARY.md').write_text('\n'.join(lines)+'\n')
+          print('\n'.join(lines))
+          PY
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: hn-cycle7-top200-${{ github.run_id }}
+          path: results/unconditional-2026-09-13/cycle7-top200
+          if-no-files-found: error
+          retention-days: 30
