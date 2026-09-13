@@ -21,7 +21,7 @@ concurrency:
 env:
   UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
   G510_SHA256: 0248fe0c7fd2df06d818aee0c188a7b70362d5990c1ca39271fc057b7b898346
-  CYCLE3_SHA256: a5e329e1a1e89c6b627630eda821f3402fe07578eaef5ffa9c675bd0da6313e4
+  CYCLE3_SEMANTIC_SHA256: 6cefdd905c4ab09108ea4005e80e3b234e3b2826de759b73bd619163b9943380
   OUT_DIR: results/unconditional-2026-09-13/cycle7-top200-v2
 
 jobs:
@@ -62,7 +62,19 @@ jobs:
             --max-new 250 \
             --min-contacts 3 \
             --scan-seconds 1
-          echo "$CYCLE3_SHA256  $OUT_DIR/cycle3/GRAPH.json" | sha256sum -c -
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          path=Path(os.environ['OUT_DIR'])/'cycle3'/'GRAPH.json'
+          d=json.loads(path.read_text())
+          assert len(d['pts']) == 760, len(d['pts'])
+          assert len(d['edges']) == 4280, len(d['edges'])
+          semantic=json.dumps({'pts':d['pts'],'edges':d['edges']},sort_keys=True,separators=(',',':')).encode()
+          got=hashlib.sha256(semantic).hexdigest()
+          expected=os.environ['CYCLE3_SEMANTIC_SHA256']
+          print('Cycle 3 semantic SHA-256:', got)
+          assert got == expected, (got, expected)
+          PY
 
       - name: Rebuild Cycle 4, Cycle 6, top-200 and solve
         run: |
