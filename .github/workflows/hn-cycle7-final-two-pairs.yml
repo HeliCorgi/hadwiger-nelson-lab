@@ -1,0 +1,95 @@
+name: hn-cycle7-final-two-pairs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-cycle7-final-two-pairs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+          path: upstream
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: |
+          python -m pip install -r requirements.txt
+          python -m pip install scipy==1.14.1 sympy==1.13.3
+      - name: Rebuild exact top-200 graph
+        run: |
+          mkdir -p prep/cycle3 prep/run
+          PYTHONPATH=tools python tools/hn_circle_closure.py --graph upstream/handoff/data/g510_k2.json --out-dir prep/cycle3 --max-new 250 --min-contacts 3 --scan-seconds 1
+          PYTHONPATH=tools python tools/hn_cycle7_top200_rebuild.py --cycle3 prep/cycle3/GRAPH.json --out-dir prep/run
+          echo '632ab11f24bf084221db31fec8e1eda522a18eba8d95dbd3bddf9cbcae1fe49d  prep/run/GRAPH.json' | sha256sum -c -
+      - uses: actions/upload-artifact@v7
+        with:
+          name: final-two-graph
+          path: prep/run/GRAPH.json
+          retention-days: 2
+
+  probe:
+    needs: prepare
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: p09_2282_cadical
+            u: 9
+            v: 2282
+            third: none
+            solver: cadical195
+          - name: p09_2282_glucose
+            u: 9
+            v: 2282
+            third: none
+            solver: glucose4
+          - name: p395_1098_cadical
+            u: 395
+            v: 1098
+            third: 424
+            solver: cadical195
+          - name: p395_1098_glucose
+            u: 395
+            v: 1098
+            third: 424
+            solver: glucose4
+    name: probe (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v5
+        with:
+          name: final-two-graph
+          path: input
+      - name: Probe pair
+        shell: bash
+        run: |
+          EXTRA=()
+          if [ '${{ matrix.third }}' != 'none' ]; then EXTRA=(--third '${{ matrix.third }}'); fi
+          python tools/hn_cycle7_pair_probe.py --graph input/GRAPH.json --pair '${{ matrix.u }}' '${{ matrix.v }}' "${EXTRA[@]}" --solver '${{ matrix.solver }}' --out 'probe-${{ matrix.name }}.json'
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: cycle7-final-${{ matrix.name }}
+          path: probe-${{ matrix.name }}.json
+          if-no-files-found: warn
+          retention-days: 30
