@@ -1,0 +1,13 @@
+{
+  "vertices": 1192,
+  "screen_edges": 7008,
+  "exact_induced_edges": 7008,
+  "new_edges_from_exact_completion": 0,
+  "all_pairs_exactly_checked": 709836,
+  "float_prefilter_used_for_final_completion": false,
+  "screen_edges_subset_of_exact_completion": true,
+  "semantic_graph_sha256": "35898dab08d69084b0ac6323e3fccfadbcfa63d62d4cccf38fc8a430f42e28f4",
+  "artifact_graph_sha256": "5bf5f6d01f865e472944a560436e5e2fb2f0c593f12b254a547bac99a0d65ed4",
+  "actions_run": 34783221549,
+  "artifact_id": 10324734261
+}
