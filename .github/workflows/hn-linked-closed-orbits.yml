@@ -1,0 +1,102 @@
+name: hn-linked-closed-orbits
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-linked-closed-orbits.yml'
+      - 'tools/hn_linked_closed_orbits.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  G510_SHA256: 0248fe0c7fd2df06d818aee0c188a7b70362d5990c1ca39271fc057b7b898346
+  OUT_DIR: results/unconditional-2026-09-14/linked-closed-orbits
+
+jobs:
+  linked-orbits:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install scipy==1.14.1
+      - name: Verify pinned G510
+        run: echo "$G510_SHA256  upstream/handoff/data/g510_k2.json" | sha256sum -c -
+      - name: Screen asymmetric linked closed orbits
+        run: |
+          mkdir -p "$OUT_DIR"
+          PYTHONPATH=tools python tools/hn_linked_closed_orbits.py \
+            --graph upstream/handoff/data/g510_k2.json \
+            --out-dir "$OUT_DIR" \
+            --ring-order 3 --ring-anchor 95,101 \
+            --pivot-count 8 --geometry-keep 4 \
+            --sample-models 8 --conflicts 800000 --seed 20260914
+      - name: Exact all-pairs completion of selected union
+        run: |
+          g++ -O3 -std=c++17 tools/hn_exact_completion.cpp -o /tmp/hn_exact_completion
+          python tools/hn_exact_complete_io.py prepare --graph "$OUT_DIR/SELECTED_GRAPH.json" --out "$OUT_DIR/POINTS.txt"
+          /tmp/hn_exact_completion < "$OUT_DIR/POINTS.txt" > "$OUT_DIR/EXACT_EDGES.txt" 2> "$OUT_DIR/EXACT_COMPLETION.log"
+          python tools/hn_exact_complete_io.py finish --graph "$OUT_DIR/SELECTED_GRAPH.json" --edges "$OUT_DIR/EXACT_EDGES.txt" --out-dir "$OUT_DIR"
+      - name: Sound symmetry-broken ordinary 5-color probe
+        run: |
+          PYTHONPATH=tools python tools/hn_symmetry_sat_probe.py \
+            --graph "$OUT_DIR/COMPLETED_GRAPH.json" --out-dir "$OUT_DIR/symmetry" \
+            --conflicts 2500000 --attempts 8 --seed 2026091403
+      - name: Independent validated local coloring attempt
+        run: |
+          PYTHONPATH=tools python tools/hn_tabucol.py \
+            --graph "$OUT_DIR/COMPLETED_GRAPH.json" --out-dir "$OUT_DIR/tabucol" \
+            --seconds 900 --restarts 16 --iterations 1200000 --seed 2026091404 || true
+      - name: Write compact summary
+        if: always()
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root=Path(os.environ['OUT_DIR'])
+          lines=['# Asymmetric linked closed orbits — 2026-09-14','',
+                 'Two closed order-3 G510 rings are linked by the exact non-root rotation `(-1+3*sqrt(-11))/10`. Only exact unit edges reach SAT; the selected union is all-pairs exact-completed before classification.','']
+          for label,name in [('selection','SELECTED.json'),('geometry','GEOMETRY.json'),('symmetry','symmetry/SYMMETRY_SAT.json'),('tabucol','tabucol/TABUCOL.json')]:
+              p=root/name
+              if p.exists():
+                  d=json.loads(p.read_text())
+                  lines += [f'## {label}', '```json', json.dumps({k:v for k,v in d.items() if k not in ('colors','records')},indent=2), '```','']
+          lines += ['Safety boundary: UNKNOWN/local-search failure is non-evidence. Any whole-graph dual-UNSAT is only an A candidate until independently certified.']
+          (root/'SUMMARY.md').write_text('\n'.join(lines)+'\n')
+          print((root/'SUMMARY.md').read_text())
+          PY
+      - name: Commit compact checkpoint
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$OUT_DIR/SUMMARY.md" "$OUT_DIR/ROTATION.json" "$OUT_DIR/SELECTED.json" "$OUT_DIR/GEOMETRY.json" "$OUT_DIR/symmetry/SYMMETRY_SAT.json" "$OUT_DIR/tabucol/TABUCOL.json" 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo 'no compact result to commit'
+          else
+            git commit -m 'Store asymmetric linked-orbit checkpoint'
+            git push origin HEAD:main
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: hn-linked-closed-orbits-${{ github.run_id }}
+          path: ${{ env.OUT_DIR }}
+          if-no-files-found: error
+          retention-days: 30
