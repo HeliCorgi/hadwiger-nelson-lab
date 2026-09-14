@@ -1,0 +1,82 @@
+name: hn-palette-two-center-cases
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-palette-two-center-cases.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  case-sat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        solver: [cadical195, glucose4]
+        case: [same, diff]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-two-center-input-34858780616
+          path: /tmp/two
+          run-id: 34858780616
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Solve center color-orbit case
+        env:
+          SOLVER: ${{ matrix.solver }}
+          CASE: ${{ matrix.case }}
+        run: |
+          mkdir -p /tmp/out
+          PYTHONPATH=tools python - <<'PY'
+          import json,os,hashlib
+          from pathlib import Path
+          from pysat.solvers import Cadical195,Glucose4
+          from hn_exact import K2,unit_modulus
+          from hn_unconditional_scan import color_cnf,valid_coloring
+          from hn_symmetry_sat_probe import extract
+          d=json.loads(Path('/tmp/two/TWO_CENTER_GRAPH.json').read_text())
+          pts=[K2(p['a'],p['b'],p['den']) for p in d['pts']]
+          edges=sorted({tuple(map(int,e)) for e in d['edges']})
+          n=len(pts); assert n==9371
+          assert all(unit_modulus(pts[u]-pts[v]) for u,v in edges)
+          c1,c2=9369,9370
+          case=os.environ['CASE']; solver_name=os.environ['SOLVER']
+          # Complete color-orbit split: by global color permutation, any coloring has
+          # either c1=c2, represented by (0,0), or c1!=c2, represented by (0,1).
+          assumptions=[c1*5+1, c2*5+(1 if case=='same' else 2)]
+          cls={'cadical195':Cadical195,'glucose4':Glucose4}[solver_name]
+          with cls(bootstrap_with=color_cnf(n,edges)) as s:
+              sat=s.solve(assumptions=assumptions); model=s.get_model() if sat else None
+          out={'solver':solver_name,'case':case,'vertices':n,'edges':len(edges),
+               'center_vertices':[c1,c2],
+               'wlog':'same -> colors (0,0); diff -> colors (0,1) by global S5 permutation',
+               'symmetry_sound':True,'status':'SAT' if sat else 'UNSAT'}
+          if sat:
+              colors=extract(model,n); assert valid_coloring(colors,n,edges)
+              if case=='same': assert colors[c1]==0 and colors[c2]==0
+              else: assert colors[c1]==0 and colors[c2]==1
+              out['center_colors']=[colors[c1],colors[c2]]; out['all_edges_validated']=True
+              Path('/tmp/out/COLORING.txt').write_text(''.join(map(str,colors))+'\n')
+          Path('/tmp/out/CASE.json').write_text(json.dumps(out,indent=2)+'\n')
+          print(json.dumps(out,indent=2))
+          PY
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-two-center-${{ matrix.case }}-${{ matrix.solver }}-${{ github.run_id }}
+          path: /tmp/out
+          retention-days: 30
