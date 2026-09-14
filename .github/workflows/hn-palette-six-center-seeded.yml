@@ -1,0 +1,98 @@
+name: hn-palette-six-center-seeded
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-palette-six-center-seeded.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  seeded-repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-six-center-input-34881051704
+          path: /tmp/six
+          run-id: 34881051704
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-two-center-seeded-34859692911
+          path: /tmp/twoseed
+          run-id: 34859692911
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Choose best validated near-coloring seed
+        run: |
+          python - <<'PY'
+          import json,glob
+          from pathlib import Path
+          g=json.loads(Path('/tmp/six/SIX_CENTER_GRAPH.json').read_text())
+          cinfo=json.loads(Path('/tmp/six/CENTERS.json').read_text())['centers']
+          base_n=9369; base_edges=[tuple(e) for e in g['edges'] if e[0]<base_n and e[1]<base_n]
+          models=[]; origins=[]
+          p=Path('results/unconditional-2026-09-14/commuting-cube-p1q7/WITNESSES.json')
+          if p.exists():
+              d=json.loads(p.read_text())
+              for c in d.get('models',d.get('colorings',[])):
+                  models.append(list(map(int,c))); origins.append('committed_witness')
+          # Project the validated two-center repair coloring back to the p1q7 base.
+          fs=glob.glob('/tmp/twoseed/**/COLORING.txt',recursive=True)
+          assert fs,glob.glob('/tmp/twoseed/**/*',recursive=True)
+          s=Path(fs[0]).read_text().strip(); assert len(s)>=base_n
+          models.append([int(x) for x in s[:base_n]]); origins.append('two_center_repair_projection')
+          def valid(c):
+              return len(c)==base_n and all(0<=x<5 for x in c) and all(c[u]!=c[v] for u,v in base_edges)
+          assert all(valid(c) for c in models)
+          best=None
+          for origin,c in zip(origins,models):
+              center_colors=[]; conflicts=0; detail=[]
+              for ci in cinfo:
+                  counts=[0]*5
+                  for v in ci['neighbors']: counts[c[v]]+=1
+                  color=min(range(5),key=lambda z:(counts[z],z))
+                  center_colors.append(color); conflicts+=counts[color]; detail.append(counts)
+              key=(conflicts,origin)
+              if best is None or key<best[0]: best=(key,c,center_colors,detail,origin)
+          _,base,cc,detail,origin=best
+          full=base+cc
+          edges=[tuple(e) for e in g['edges']]
+          bad=[(u,v) for u,v in edges if full[u]==full[v]]
+          assert len(bad)==best[0][0]
+          Path('/tmp/SEED.txt').write_text(''.join(map(str,full))+'\n')
+          Path('/tmp/SEED_INFO.json').write_text(json.dumps({'models_considered':len(models),'origin':origin,'seed_conflicts':len(bad),'center_colors':cc,'neighbor_color_counts':detail,'conflict_edges':[list(e) for e in bad]},indent=2)+'\n')
+          print(Path('/tmp/SEED_INFO.json').read_text())
+          PY
+      - name: Unrestricted seeded TabuCol repair
+        run: |
+          mkdir -p /tmp/out
+          PYTHONPATH=tools python tools/hn_seeded_tabucol.py \
+            --graph /tmp/six/SIX_CENTER_GRAPH.json \
+            --seed-coloring /tmp/SEED.txt \
+            --seconds 6000 \
+            --restarts 40 \
+            --iterations 3000000 \
+            --perturb 35 \
+            --seed 2026091501 \
+            --out-dir /tmp/out
+          cp /tmp/SEED_INFO.json /tmp/out/
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-six-center-seeded-${{ github.run_id }}
+          path: /tmp/out
+          retention-days: 30
