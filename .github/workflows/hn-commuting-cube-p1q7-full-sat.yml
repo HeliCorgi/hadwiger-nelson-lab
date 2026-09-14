@@ -1,0 +1,59 @@
+name: hn-commuting-cube-p1q7-full-sat
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-commuting-cube-p1q7-full-sat.yml'
+  workflow_dispatch:
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  G510_SHA256: 0248fe0c7fd2df06d818aee0c188a7b70362d5990c1ca39271fc057b7b898346
+
+jobs:
+  solve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        solver: [cadical195, glucose4]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install scipy==1.14.1
+      - name: Verify pinned G510
+        run: echo "$G510_SHA256  upstream/handoff/data/g510_k2.json" | sha256sum -c -
+      - name: Build and exact-complete p1q7 cube
+        run: |
+          OUT="results/unconditional-2026-09-14/commuting-cube-p1q7-full-${{ matrix.solver }}"
+          mkdir -p "$OUT"
+          PYTHONPATH=tools python tools/hn_commuting_cube_geometry.py --graph upstream/handoff/data/g510_k2.json --out-dir "$OUT" --p 1 --q 7
+          g++ -O3 -std=c++17 tools/hn_exact_completion.cpp -o /tmp/hn_exact_completion
+          python tools/hn_exact_complete_io.py prepare --graph "$OUT/SELECTED_GRAPH.json" --out "$OUT/POINTS.txt"
+          /tmp/hn_exact_completion < "$OUT/POINTS.txt" > "$OUT/EXACT_EDGES.txt" 2> "$OUT/EXACT_COMPLETION.log"
+          python tools/hn_exact_complete_io.py finish --graph "$OUT/SELECTED_GRAPH.json" --edges "$OUT/EXACT_EDGES.txt" --out-dir "$OUT"
+      - name: Full unbudgeted solve
+        run: |
+          OUT="results/unconditional-2026-09-14/commuting-cube-p1q7-full-${{ matrix.solver }}"
+          PYTHONPATH=tools python tools/hn_full_sat_probe.py --graph "$OUT/COMPLETED_GRAPH.json" --out-dir "$OUT/solve" --solver "${{ matrix.solver }}"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: hn-cube-p1q7-full-${{ matrix.solver }}-${{ github.run_id }}
+          path: results/unconditional-2026-09-14/commuting-cube-p1q7-full-${{ matrix.solver }}
+          retention-days: 30
