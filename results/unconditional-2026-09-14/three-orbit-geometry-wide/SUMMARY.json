@@ -1,0 +1,42 @@
+{
+  "placements": 288,
+  "two_sided_placements": 60,
+  "selected": {
+    "dst_pivot": 607,
+    "dst_owner": "A",
+    "src_pivot": 34,
+    "vertices": 3564,
+    "inherited_edges": 21186,
+    "added_cross_edges": 48,
+    "c_to_a_edges": 46,
+    "c_to_b_edges": 3,
+    "couples_to_both": true,
+    "exact_proposals_checked": 121,
+    "shift": {
+      "a": [
+        8,
+        0,
+        0,
+        0,
+        0,
+        -23,
+        0,
+        0
+      ],
+      "b": [
+        -26,
+        0,
+        0,
+        0,
+        0,
+        41,
+        0,
+        0
+      ],
+      "den": 90
+    }
+  },
+  "max_added_cross_edges": 72,
+  "max_min_two_sided_coupling": 3,
+  "max_total_two_sided_coupling": 70
+}

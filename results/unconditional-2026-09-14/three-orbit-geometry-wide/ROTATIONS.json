@@ -1,0 +1,58 @@
+{
+  "B": {
+    "rotation": {
+      "a": [
+        -1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "b": [
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "den": 10
+    },
+    "parameter": "1/3",
+    "exact_unit_modulus": true,
+    "zeta30_root": false
+  },
+  "C": {
+    "rotation": {
+      "a": [
+        -7,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "b": [
+        4,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "den": 15
+    },
+    "parameter": "1/2",
+    "exact_unit_modulus": true,
+    "zeta30_root": false
+  }
+}
