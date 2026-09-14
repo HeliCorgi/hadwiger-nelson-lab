@@ -1,0 +1,105 @@
+name: hn-three-orbit-p1q5
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/hn-three-orbit-p1q5.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  G510_SHA256: 0248fe0c7fd2df06d818aee0c188a7b70362d5990c1ca39271fc057b7b898346
+  OUT_DIR: results/unconditional-2026-09-14/three-orbit-p1q5
+
+jobs:
+  classify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v7
+        with: {ref: main}
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+      - uses: actions/setup-python@v7
+        with: {python-version: '3.11', cache: pip}
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install scipy==1.14.1
+      - name: Verify pinned G510
+        run: echo "$G510_SHA256  upstream/handoff/data/g510_k2.json" | sha256sum -c -
+      - name: Rebuild selected p1q5 candidate
+        run: |
+          mkdir -p "$OUT_DIR"
+          PYTHONPATH=tools python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from hn_exact import K2, unit_modulus
+          from hn_closed_copy_assembly import build_ring, discover_exact_cross_edges
+          from hn_linked_closed_orbits import merge_transformed, pack
+          from hn_three_orbit_network import rational_unit_rotation, merge_copy, inter_edges, owner_counts
+          from hn_unconditional_scan import write_json
+          root=Path(os.environ['OUT_DIR']); d=json.loads(Path('upstream/handoff/data/g510_k2.json').read_text())
+          bp=[K2(p['a'],p['b'],p['den']) for p in d['pts']]; be=sorted({tuple(map(int,e)) for e in d['edges']})
+          ring,inh,_=build_ring(bp,be,(95,101),3); ring_edges,_,_=discover_exact_cross_edges(ring,inh,3e-7); ring_edges=sorted(ring_edges)
+          r1=rational_unit_rotation(1,3); r2=rational_unit_rotation(1,5)
+          ab,abinh,bmap,bshift=merge_transformed(ring,ring_edges,r1,0,911); ab_edges,_,_=discover_exact_cross_edges(ab,abinh,3e-7); ab_edges=set(ab_edges)
+          union,tr,cmap,cinh,cshift=merge_copy(ab,ring,ring_edges,r2,583,553); cross,prop=inter_edges(ab,tr,cmap,3e-7)
+          inherited=ab_edges|cinh; new=cross-inherited; ca,cb=owner_counts(new,set(cmap),set(range(len(ring))),set(bmap)); edges=sorted(inherited|new)
+          assert len(union)==3562 and len(new)==28 and ca==23 and cb==7
+          assert all(unit_modulus(union[u]-union[v]) for u,v in edges)
+          sel={'c_parameter':[1,5],'c_rotation':pack(r2),'dst_pivot':583,'src_pivot':553,'vertices':len(union),'inherited_edges':len(inherited),'added_cross_edges':len(new),'c_to_a_edges':ca,'c_to_b_edges':cb,'exact_proposals_checked':prop,'c_shift':pack(cshift)}
+          graph={'pts':[pack(p) for p in union],'edges':[list(e) for e in edges],'construction':'three closed G510 orbits; fixed p1q5 portfolio winner','b_rotation':pack(r1),'b_dst_pivot':0,'b_src_pivot':911,'b_shift':pack(bshift),'c_parameter':[1,5],'c_rotation':pack(r2),'c_dst_pivot':583,'c_src_pivot':553,'c_shift':pack(cshift),'all_saved_edges_exact_unit':True,'induced_unit_edge_completion_pending':True}
+          write_json(root/'SELECTED.json',{'selection':sel}); write_json(root/'SELECTED_GRAPH.json',graph); print(json.dumps(sel,indent=2))
+          PY
+      - name: Exact all-pairs completion
+        run: |
+          g++ -O3 -std=c++17 tools/hn_exact_completion.cpp -o /tmp/hn_exact_completion
+          python tools/hn_exact_complete_io.py prepare --graph "$OUT_DIR/SELECTED_GRAPH.json" --out "$OUT_DIR/POINTS.txt"
+          /tmp/hn_exact_completion < "$OUT_DIR/POINTS.txt" > "$OUT_DIR/EXACT_EDGES.txt" 2> "$OUT_DIR/EXACT_COMPLETION.log"
+          python tools/hn_exact_complete_io.py finish --graph "$OUT_DIR/SELECTED_GRAPH.json" --edges "$OUT_DIR/EXACT_EDGES.txt" --out-dir "$OUT_DIR"
+      - name: Obtain validated 5-color seed
+        run: |
+          PYTHONPATH=tools python tools/hn_symmetry_sat_probe.py --graph "$OUT_DIR/COMPLETED_GRAPH.json" --out-dir "$OUT_DIR/seed" --conflicts 4000000 --attempts 8 --seed 2026091461
+      - name: Pair separation if SAT
+        run: |
+          python - <<'PY'
+          import json,os,subprocess,sys
+          from pathlib import Path
+          root=Path(os.environ['OUT_DIR']); seed=root/'seed/SYMMETRY_SAT.json'; d=json.loads(seed.read_text())
+          if d.get('status')!='SAT': print('no SAT seed; skip'); sys.exit(0)
+          cmd=[sys.executable,'tools/hn_local_pair_separation.py','--graph',str(root/'COMPLETED_GRAPH.json'),'--seed-coloring',str(seed),'--out-dir',str(root/'separation'),'--seconds','1800','--pair-seconds','12','--iterations','600000','--perturb','32','--max-failures','30','--seed','2026091462']
+          env=dict(os.environ); env['PYTHONPATH']='tools'; subprocess.run(cmd,check=True,env=env)
+          PY
+      - name: Summarize
+        if: always()
+        run: |
+          cp "$OUT_DIR/separation/SEPARATION.json" "$OUT_DIR/SEPARATION.json" 2>/dev/null || true
+          cp "$OUT_DIR/separation/WITNESSES.json" "$OUT_DIR/WITNESSES.json" 2>/dev/null || true
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ['OUT_DIR']); lines=['# Three-orbit p1q5 portfolio winner — 2026-09-14','']
+          for label,name in [('selection','SELECTED.json'),('geometry','GEOMETRY.json'),('seed','seed/SYMMETRY_SAT.json'),('separation','SEPARATION.json')]:
+              p=root/name
+              if p.exists():
+                  d=json.loads(p.read_text()); slim={k:v for k,v in d.items() if k not in ('colors','records','remaining_blocks','compressed_source_indices')}; lines += [f'## {label}','```json',json.dumps(slim,indent=2),'```','']
+          lines += ['Every saved coloring is validated on every exact edge. UNKNOWN, timeout, or repair failure is non-evidence.']
+          (root/'SUMMARY.md').write_text('\n'.join(lines)+'\n'); print((root/'SUMMARY.md').read_text())
+          PY
+      - name: Commit compact checkpoint
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'; git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase origin main
+          git add "$OUT_DIR/SUMMARY.md" "$OUT_DIR/SELECTED.json" "$OUT_DIR/GEOMETRY.json" "$OUT_DIR/seed/SYMMETRY_SAT.json" "$OUT_DIR/SEPARATION.json" "$OUT_DIR/WITNESSES.json" 2>/dev/null || true
+          if ! git diff --cached --quiet; then git commit -m 'Store three-orbit p1q5 classification'; git push origin HEAD:main; fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with: {name: hn-three-orbit-p1q5-${{ github.run_id }}, path: '${{ env.OUT_DIR }}', retention-days: 30}
