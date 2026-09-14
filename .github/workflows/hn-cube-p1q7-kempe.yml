@@ -1,0 +1,64 @@
+name: hn-cube-p1q7-kempe
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-cube-p1q7-kempe.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  G510_SHA256: 0248fe0c7fd2df06d818aee0c188a7b70362d5990c1ca39271fc057b7b898346
+
+jobs:
+  kempe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install scipy==1.14.1
+      - name: Verify pinned G510
+        run: echo "$G510_SHA256  upstream/handoff/data/g510_k2.json" | sha256sum -c -
+      - name: Download validated coloring
+        uses: actions/download-artifact@v7
+        with:
+          name: p1q7-interface-maxsat-34832204007
+          path: seed-artifact
+          github-token: ${{ github.token }}
+          run-id: 34832204007
+      - name: Build and exact-complete cube
+        run: |
+          mkdir -p work/cube out
+          PYTHONPATH=tools python tools/hn_commuting_cube_geometry.py --graph upstream/handoff/data/g510_k2.json --out-dir work/cube --p 1 --q 7
+          g++ -O3 -std=c++17 tools/hn_exact_completion.cpp -o /tmp/hn_exact_completion
+          python tools/hn_exact_complete_io.py prepare --graph work/cube/SELECTED_GRAPH.json --out work/cube/POINTS.txt
+          /tmp/hn_exact_completion < work/cube/POINTS.txt > work/cube/EXACT_EDGES.txt 2> work/cube/EXACT_COMPLETION.log
+          python tools/hn_exact_complete_io.py finish --graph work/cube/SELECTED_GRAPH.json --edges work/cube/EXACT_EDGES.txt --out-dir work/cube
+      - name: Kempe separation
+        run: |
+          PYTHONPATH=tools python tools/hn_kempe_pair_separation.py \
+            --graph work/cube/COMPLETED_GRAPH.json \
+            --seed-coloring seed-artifact/repair/COLORING.txt \
+            --out-dir out --max-models 600 --max-bases 300 --seconds 3000
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: p1q7-kempe-${{ github.run_id }}
+          path: out
+          retention-days: 30
