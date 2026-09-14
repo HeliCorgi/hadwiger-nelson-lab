@@ -1,0 +1,62 @@
+{
+  "selection": {
+    "c_parameter": [
+      1,
+      5
+    ],
+    "c_rotation": {
+      "a": [
+        7,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "b": [
+        5,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "den": 18
+    },
+    "dst_pivot": 583,
+    "src_pivot": 553,
+    "vertices": 3562,
+    "inherited_edges": 21183,
+    "added_cross_edges": 28,
+    "c_to_a_edges": 23,
+    "c_to_b_edges": 7,
+    "exact_proposals_checked": 84,
+    "c_shift": {
+      "a": [
+        -24,
+        0,
+        0,
+        0,
+        0,
+        95,
+        0,
+        0
+      ],
+      "b": [
+        6,
+        0,
+        0,
+        0,
+        0,
+        19,
+        0,
+        0
+      ],
+      "den": 54
+    }
+  }
+}
