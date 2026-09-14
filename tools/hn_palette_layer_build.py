@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 """Build coupled palette-center layers and optimize fixed-base center colors.
 
-The base graph is assumed induced-complete.  A CENTER_LIBRARY from
+The base graph is assumed induced-complete. A CENTER_LIBRARY from
 hn_palette_center_geometry supplies exact center points and screened base
-neighborhoods.  For a selected center set, this tool recomputes every
+neighborhoods. For a selected center set, this tool recomputes every
 center-to-base and center-to-center unit relation exactly, so the resulting
 point set is induced-complete whenever the base input is.
 
 For each supplied proper base coloring, the center-color subproblem is solved
 exactly as weighted MaxSAT: center-center unit edges are hard inequalities;
 assigning center i color c costs the number of its base neighbors already using
-c.  The optimum gives the minimum possible number of added-edge conflicts for
-that fixed base coloring.  The best optimum is emitted as a seed for unrestricted
-repair.  Positive optimum is NOT evidence of non-5-colorability.
+c. The optimum gives the minimum possible number of added-edge conflicts for
+that fixed base coloring. The best optimum is emitted as a seed for unrestricted
+repair. Positive optimum is NOT evidence of non-5-colorability.
 """
 from __future__ import annotations
 import argparse,hashlib,json
@@ -48,8 +48,7 @@ def load_base_models(path,n,edges,seed_path=None):
     return out,orig
 
 def choose(tag,cands,cedges):
-    deg=[0]*len(cands)
-    adj=[set() for _ in cands]
+    deg=[0]*len(cands);adj=[set() for _ in cands]
     for u,v in cedges: deg[u]+=1;deg[v]+=1;adj[u].add(v);adj[v].add(u)
     seen=set();comps=[]
     for s in range(len(cands)):
@@ -63,22 +62,17 @@ def choose(tag,cands,cedges):
         comps.append((es,len(vs),set(vs)))
     largest=max(comps,key=lambda x:(x[0],x[1]))[2]
     cegis6={0,1,2,6,25,79}
-    if tag=='largest16': S=set(largest)
+    if tag in ('largest16','largest_component'): S=set(largest)
     elif tag in ('hybrid25','adaptive47'):
         S=set(largest)|cegis6
         for i in list(cegis6):S|=adj[i]
         if tag=='adaptive47':
-            # Exact killers of the validated hybrid25 counterexample within the
-            # pinned top-160 library, plus every immediate center-edge partner.
-            # Source: palette-layer-hybrid25 run 34882221538.  All indices are
-            # deterministic library indices; this is a counterexample-guided
-            # extension, not an a-priori chromatic claim.
             killers={4,5,7,9,13,15,18,20,21,36,63,65,75,127}
+            assert max(killers)<len(cands)
             S|=killers
             for i in list(killers):S|=adj[i]
-    elif tag=='nonisolated':
-        S={i for i,d in enumerate(deg) if d>0}
-    elif tag=='all160': S=set(range(len(cands)))
+    elif tag=='nonisolated': S={i for i,d in enumerate(deg) if d>0}
+    elif tag in ('all160','all'): S=set(range(len(cands)))
     else: raise ValueError(tag)
     return sorted(S),deg
 
@@ -99,8 +93,7 @@ def optimize_centers(base, neighborhoods, center_edges):
         costs.append(row)
     with RC2(w,solver='g4') as rc2:
         model=rc2.compute(); opt=rc2.cost
-    pos=set(x for x in model if x>0)
-    cc=[]
+    pos=set(x for x in model if x>0);cc=[]
     for i in range(m):
         vals=[c for c in range(5) if var(i,c) in pos];assert len(vals)==1;cc.append(vals[0])
     calc=sum(costs[i][cc[i]] for i in range(m));assert calc==opt
@@ -110,7 +103,7 @@ def optimize_centers(base, neighborhoods, center_edges):
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument('--graph',type=Path,required=True);ap.add_argument('--library',type=Path,required=True)
-    ap.add_argument('--tag',choices=['largest16','hybrid25','adaptive47','nonisolated','all160'],required=True)
+    ap.add_argument('--tag',choices=['largest16','largest_component','hybrid25','adaptive47','nonisolated','all160','all'],required=True)
     ap.add_argument('--witnesses',type=Path,default=None);ap.add_argument('--seed-coloring',type=Path,default=None)
     ap.add_argument('--out-dir',type=Path,required=True)
     a=ap.parse_args();a.out_dir.mkdir(parents=True,exist_ok=True)
@@ -142,20 +135,17 @@ def main():
     trials=[];best=None
     for c,origin in zip(base_models,origins):
         opt,cc,costs=optimize_centers(c,neigh,sel_center_edges)
-        rec={'origin':origin,'fixed_base_min_conflicts':opt,'center_colors':cc}
-        trials.append(rec)
+        rec={'origin':origin,'fixed_base_min_conflicts':opt,'center_colors':cc};trials.append(rec)
         key=(opt,origin)
         if best is None or key<best[0]:best=(key,c,cc,costs,origin)
     _,base,cc,costs,origin=best
     seed=base+cc
-    bad=[(u,v) for u,v in fulledges if seed[u]==seed[v]]
-    assert len(bad)==best[0][0]
+    bad=[(u,v) for u,v in fulledges if seed[u]==seed[v]];assert len(bad)==best[0][0]
     outgraph={'pts':[pack(p) for p in fullpts],'edges':[list(e) for e in sorted(fulledges)],
               'construction':'coupled palette center layer '+a.tag,'selected_center_indices':selected,
               'all_saved_edges_exact_unit':True,'induced_unit_edge_completion_pending':False,
               'base_graph_induced_complete':True,'all_added_center_pairs_exactly_checked':True}
-    write_json(a.out_dir/'GRAPH.json',outgraph)
-    (a.out_dir/'SEED.txt').write_text(''.join(map(str,seed))+'\n')
+    write_json(a.out_dir/'GRAPH.json',outgraph);(a.out_dir/'SEED.txt').write_text(''.join(map(str,seed))+'\n')
     out={'tag':a.tag,'vertices':len(fullpts),'edges':len(fulledges),'base_vertices':n,'selected_centers':len(selected),
          'selected_center_indices':selected,'center_center_edges':len(sel_center_edges),
          'center_degrees':dict(Counter(sum(([i,j] for i,j in sel_center_edges),[]))),
