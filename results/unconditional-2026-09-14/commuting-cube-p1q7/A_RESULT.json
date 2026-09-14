@@ -1,0 +1,16 @@
+{
+  "status": "VALIDATED_PROPER_5_COLORING",
+  "classification": "NOT_A",
+  "vertices": 9369,
+  "edges": 57488,
+  "all_pairs_exactly_checked": 43884396,
+  "new_edges_from_exact_completion": 0,
+  "graph_sha256": "ad64815368d7556141787c49133a532c960a03bfe248f0f8ea342dd05751a697",
+  "coloring_sha256": "a7124d31de62f7acfa587c8f5a4aadc1a78ae89b4d7d8ffddde6e57699119da2",
+  "source_run": 34832204007,
+  "source_method": "fixed lower witness 89 exact MaxSAT optimum 19, then seeded TabuCol",
+  "seed_conflicts_before_repair": 19,
+  "tabucol_restart": 0,
+  "tabucol_iterations": 38915,
+  "all_edges_validated": true
+}
