@@ -1,0 +1,82 @@
+name: hn-commuting-square-local
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-commuting-square-local.yml'
+  workflow_dispatch:
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  G510_SHA256: 0248fe0c7fd2df06d818aee0c188a7b70362d5990c1ca39271fc057b7b898346
+  OUT_DIR: results/unconditional-2026-09-14/commuting-square-local
+
+jobs:
+  local:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install scipy==1.14.1
+      - name: Verify pinned G510
+        run: echo "$G510_SHA256  upstream/handoff/data/g510_k2.json" | sha256sum -c -
+      - name: Rebuild commuting square
+        run: |
+          mkdir -p "$OUT_DIR"
+          PYTHONPATH=tools python - <<'PY'
+          import json,os
+          from pathlib import Path
+          from hn_exact import K2,ONE,Z0,unit_modulus
+          from hn_closed_copy_assembly import build_ring,discover_exact_cross_edges
+          from hn_linked_closed_orbits import pack
+          from hn_three_orbit_network import rational_unit_rotation
+          from hn_unconditional_scan import write_json
+          root=Path(os.environ['OUT_DIR']); d=json.loads(Path('upstream/handoff/data/g510_k2.json').read_text())
+          bp=[K2(p['a'],p['b'],p['den']) for p in d['pts']]; be=sorted({tuple(map(int,e)) for e in d['edges']})
+          ring,inh,_=build_ring(bp,be,(95,101),3); re,_,_=discover_exact_cross_edges(ring,inh,3e-7); re=sorted(re)
+          r1=rational_unit_rotation(1,3); r2=rational_unit_rotation(1,5); s1=ring[0]-r1*ring[911]
+          x=ONE-r1; aa=x.a[0]; bb=x.b[0]; ia=Z0[:]; ib=Z0[:]; ia[0]=x.den*aa; ib[0]=-x.den*bb; inv=K2(ia,ib,aa*aa+11*bb*bb); s2=(ONE-r2)*inv*s1
+          A=list(ring); B=[r1*p+s1 for p in ring]; C=[r2*p+s2 for p in ring]; D=[r1*(r2*p+s2)+s1 for p in ring]
+          index={}; pts=[]; inherited=set()
+          for cp in (A,B,C,D):
+              m=[]
+              for p in cp:
+                  j=index.get(p)
+                  if j is None: j=len(pts); index[p]=j; pts.append(p)
+                  m.append(j)
+              for u,v in re:
+                  x0,y0=m[u],m[v]
+                  if x0!=y0: inherited.add((min(x0,y0),max(x0,y0)))
+          edges,_,_=discover_exact_cross_edges(pts,inherited,3e-7); assert all(unit_modulus(pts[u]-pts[v]) for u,v in edges)
+          write_json(root/'SELECTED_GRAPH.json',{'pts':[pack(p) for p in pts],'edges':[list(e) for e in sorted(edges)]})
+          PY
+      - name: Exact all-pairs completion
+        run: |
+          g++ -O3 -std=c++17 tools/hn_exact_completion.cpp -o /tmp/hn_exact_completion
+          python tools/hn_exact_complete_io.py prepare --graph "$OUT_DIR/SELECTED_GRAPH.json" --out "$OUT_DIR/POINTS.txt"
+          /tmp/hn_exact_completion < "$OUT_DIR/POINTS.txt" > "$OUT_DIR/EXACT_EDGES.txt" 2> "$OUT_DIR/EXACT_COMPLETION.log"
+          python tools/hn_exact_complete_io.py finish --graph "$OUT_DIR/SELECTED_GRAPH.json" --edges "$OUT_DIR/EXACT_EDGES.txt" --out-dir "$OUT_DIR"
+      - name: Independent validated local coloring
+        run: |
+          PYTHONPATH=tools python tools/hn_tabucol.py --graph "$OUT_DIR/COMPLETED_GRAPH.json" --out-dir "$OUT_DIR/tabucol" --seconds 1200 --restarts 20 --iterations 1500000 --seed 2026091483 || true
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: hn-commuting-square-local-${{ github.run_id }}
+          path: ${{ env.OUT_DIR }}
+          retention-days: 30
