@@ -68,11 +68,12 @@ jobs:
           (root/'GEOMETRY.json').write_text(json.dumps(d,indent=2)+'\n')
           print('pinned semantic graph verified',semantic)
           PY
-      - name: Generate diverse validated colorings
+      - name: Reproduce original validated coloring family
         run: |
           PYTHONPATH=tools python tools/hn_sample_colorings.py \
             --graph "$OUT_DIR/COMPLETED_GRAPH.json" --out-dir "$OUT_DIR/models" \
-            --models 16 --conflicts 800000 --seed 2026091410
+            --models 8 --conflicts 400000 --seed 20261914 \
+            --first-model-conflicts 800000 --first-model-seed 20260914
       - name: Close residual same-signature pairs
         run: |
           PYTHONPATH=tools python tools/hn_pair_separation_from_models.py \
