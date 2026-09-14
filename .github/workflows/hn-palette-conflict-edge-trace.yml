@@ -1,0 +1,119 @@
+name: hn-palette-conflict-edge-trace
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-palette-conflict-edge-trace.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  trace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-conflict-edge-frontier-input-34895023197
+          path: /tmp/start
+          run-id: 34895023197
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-conflict-edge-frontier-repair-34895023197
+          path: /tmp/start-repair
+          run-id: 34895023197
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Iterate coupled conflict-edge frontier
+        shell: bash
+        run: |
+          set -u
+          mkdir -p /tmp/trace
+          cur_graph=/tmp/start/GRAPH.json
+          cur_color=/tmp/start-repair/COLORING.txt
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          Path('/tmp/trace/TRACE.json').write_text(json.dumps({'rounds':[],'status':'RUNNING'},indent=2)+'\n')
+          PY
+          for r in $(seq 1 8); do
+            echo "=== coupled round $r ==="
+            b=/tmp/trace/round-${r}-build
+            o=/tmp/trace/round-${r}-repair
+            mkdir -p "$b" "$o"
+            set +e
+            PYTHONPATH=tools python tools/hn_palette_conflict_edge_frontier.py \
+              --graph "$cur_graph" \
+              --coloring "$cur_color" \
+              --base-vertices 9369 \
+              --direction-vertices 1192 \
+              --max-conflict-edges 2 \
+              --out-dir "$b"
+            rc=$?
+            set -e
+            if [ "$rc" -ne 0 ]; then
+              echo "NO_FRESH_CONFLICT_EDGE_OR_BUILD_FAILURE" > /tmp/trace/STOP.txt
+              break
+            fi
+            PYTHONPATH=tools python tools/hn_seeded_tabucol.py \
+              --graph "$b/GRAPH.json" \
+              --seed-coloring "$b/SEED.txt" \
+              --seconds 1800 \
+              --restarts 30 \
+              --iterations 3000000 \
+              --perturb 60 \
+              --seed $((202609151000 + r)) \
+              --out-dir "$o"
+            status=$(python - <<PY
+          import json
+          print(json.load(open('$o/SEEDED_TABUCOL.json'))['status'])
+          PY
+            )
+            python - <<PY
+          import json
+          from pathlib import Path
+          p=Path('/tmp/trace/TRACE.json'); d=json.loads(p.read_text())
+          f=json.load(open('$b/FRONTIER.json')); q=json.load(open('$o/SEEDED_TABUCOL.json'))
+          d['rounds'].append({'round':$r,'vertices':f['vertices'],'edges':f['edges'],
+            'fresh_conflict_edges_found':f['fresh_conflict_edges_found'],
+            'selected_fresh_endpoints':f['selected_fresh_endpoints'],
+            'seed_conflicts':f['fixed_input_coloring_min_extension_conflicts'],
+            'semantic_pts_edges_sha256':f['semantic_pts_edges_sha256'],
+            'repair_status':q['status'],'repair_records':q.get('records',[])})
+          d['status']='RUNNING'; p.write_text(json.dumps(d,indent=2)+'\n')
+          PY
+            if [ "$status" != "VALIDATED_PROPER_5_COLORING" ]; then
+              echo "REPAIR_UNKNOWN" > /tmp/trace/STOP.txt
+              break
+            fi
+            cur_graph="$b/GRAPH.json"
+            cur_color="$o/COLORING.txt"
+          done
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('/tmp/trace/TRACE.json'); d=json.loads(p.read_text())
+          stop=Path('/tmp/trace/STOP.txt')
+          d['status']=stop.read_text().strip() if stop.exists() else 'ROUND_LIMIT'
+          d['heuristic_failure_or_no_frontier_is_evidence']=False
+          p.write_text(json.dumps(d,indent=2)+'\n')
+          print(json.dumps(d,indent=2))
+          PY
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-conflict-edge-trace-${{ github.run_id }}
+          path: /tmp/trace
+          retention-days: 30
