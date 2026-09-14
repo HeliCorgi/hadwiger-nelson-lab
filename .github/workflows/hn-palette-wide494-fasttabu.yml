@@ -1,0 +1,60 @@
+name: hn-palette-wide494-fasttabu
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-palette-wide494-fasttabu.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        seed: [20260915496, 20260915497, 20260915498]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-wide494-input-34895797863
+          path: /tmp/wide
+          run-id: 34895797863
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-wide494-maxsat-34896629593
+          path: /tmp/maxsat
+          run-id: 34896629593
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Fast incremental-conflict repair
+        run: |
+          mkdir -p /tmp/out
+          PYTHONPATH=tools python tools/hn_fast_seeded_tabucol.py \
+            --graph /tmp/wide/GRAPH.json \
+            --seed-coloring /tmp/maxsat/SEED.txt \
+            --seconds 7200 \
+            --restarts 60 \
+            --iterations 20000000 \
+            --perturb 90 \
+            --seed '${{ matrix.seed }}' \
+            --out-dir /tmp/out
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-wide494-fasttabu-${{ matrix.seed }}-${{ github.run_id }}
+          path: /tmp/out
+          retention-days: 30
