@@ -51,7 +51,6 @@ def choose(tag,cands,cedges):
     deg=[0]*len(cands)
     adj=[set() for _ in cands]
     for u,v in cedges: deg[u]+=1;deg[v]+=1;adj[u].add(v);adj[v].add(u)
-    # Largest center-edge connected component.
     seen=set();comps=[]
     for s in range(len(cands)):
         if s in seen:continue
@@ -65,11 +64,18 @@ def choose(tag,cands,cedges):
     largest=max(comps,key=lambda x:(x[0],x[1]))[2]
     cegis6={0,1,2,6,25,79}
     if tag=='largest16': S=set(largest)
-    elif tag=='hybrid25':
-        # Largest coupled component + the six observed CEGIS centers + immediate
-        # coupling partners of those six.
+    elif tag in ('hybrid25','adaptive47'):
         S=set(largest)|cegis6
         for i in list(cegis6):S|=adj[i]
+        if tag=='adaptive47':
+            # Exact killers of the validated hybrid25 counterexample within the
+            # pinned top-160 library, plus every immediate center-edge partner.
+            # Source: palette-layer-hybrid25 run 34882221538.  All indices are
+            # deterministic library indices; this is a counterexample-guided
+            # extension, not an a-priori chromatic claim.
+            killers={4,5,7,9,13,15,18,20,21,36,63,65,75,127}
+            S|=killers
+            for i in list(killers):S|=adj[i]
     elif tag=='nonisolated':
         S={i for i,d in enumerate(deg) if d>0}
     elif tag=='all160': S=set(range(len(cands)))
@@ -104,7 +110,7 @@ def optimize_centers(base, neighborhoods, center_edges):
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument('--graph',type=Path,required=True);ap.add_argument('--library',type=Path,required=True)
-    ap.add_argument('--tag',choices=['largest16','hybrid25','nonisolated','all160'],required=True)
+    ap.add_argument('--tag',choices=['largest16','hybrid25','adaptive47','nonisolated','all160'],required=True)
     ap.add_argument('--witnesses',type=Path,default=None);ap.add_argument('--seed-coloring',type=Path,default=None)
     ap.add_argument('--out-dir',type=Path,required=True)
     a=ap.parse_args();a.out_dir.mkdir(parents=True,exist_ok=True)
@@ -120,11 +126,9 @@ def main():
         assert ns==list(map(int,cands[idx]['base_neighbors']))
         selpts.append(x);neigh.append(ns)
     assert len(set(selpts))==len(selpts)
-    # Recompute exact center graph for selected points.
     sel_center_edges=[]
     for i,j in combinations(range(len(selpts)),2):
         if unit_modulus(selpts[i]-selpts[j]):sel_center_edges.append((i,j))
-    # Map library edges to selected-local indices and cross-check exact census.
     loc={g:i for i,g in enumerate(selected)}
     expected=sorted((loc[u],loc[v]) for u,v in cedges if u in loc and v in loc)
     assert sorted(sel_center_edges)==expected
@@ -134,8 +138,6 @@ def main():
         for v in ns:fulledges.add((min(v,cv),max(v,cv)))
     for i,j in sel_center_edges:fulledges.add((n+i,n+j))
     assert all(unit_modulus(fullpts[u]-fullpts[v]) for u,v in fulledges)
-    # Since every selected center was checked against all base vertices and every
-    # selected-center pair was checked exactly, this completes all new pairs.
     base_models,origins=load_base_models(a.witnesses,n,sorted(edges),a.seed_coloring)
     trials=[];best=None
     for c,origin in zip(base_models,origins):
