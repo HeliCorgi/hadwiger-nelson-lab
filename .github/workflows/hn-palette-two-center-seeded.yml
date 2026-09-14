@@ -1,0 +1,77 @@
+name: hn-palette-two-center-seeded
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-palette-two-center-seeded.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  seeded-repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-two-center-input-34858780616
+          path: /tmp/two
+          run-id: 34858780616
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: p1q7-wave5-0-34855054562
+          path: /tmp/basecolor
+          run-id: 34855054562
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build validated conflict-one seed
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          g=json.loads(Path('/tmp/two/TWO_CENTER_GRAPH.json').read_text())
+          s=Path('/tmp/basecolor/COLORING.txt').read_text().strip()
+          assert len(s)==9369 and all(ch in '01234' for ch in s)
+          # This exact pair-SAT coloring is the unique escape from center 1 in the
+          # 649-model local family: N(center1) omits color 4.  Center2's rarest
+          # neighbor color is 3, occurring once, so append 4,3.
+          t=s+'43'
+          assert len(t)==9371
+          colors=list(map(int,t)); edges=[tuple(e) for e in g['edges']]
+          conflicts=[(u,v) for u,v in edges if colors[u]==colors[v]]
+          assert len(conflicts)==1, conflicts[:10]
+          Path('/tmp/SEED.txt').write_text(t+'\n')
+          Path('/tmp/SEED_INFO.json').write_text(json.dumps({'seed_conflicts':1,'conflict_edge':list(conflicts[0]),'center_colors':[4,3]},indent=2)+'\n')
+          print(Path('/tmp/SEED_INFO.json').read_text())
+          PY
+      - name: Unrestricted seeded TabuCol repair
+        run: |
+          mkdir -p /tmp/out
+          PYTHONPATH=tools python tools/hn_seeded_tabucol.py \
+            --graph /tmp/two/TWO_CENTER_GRAPH.json \
+            --seed-coloring /tmp/SEED.txt \
+            --seconds 4200 \
+            --restarts 30 \
+            --iterations 2500000 \
+            --perturb 35 \
+            --seed 2026091407 \
+            --out-dir /tmp/out
+          cp /tmp/SEED_INFO.json /tmp/out/
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-two-center-seeded-${{ github.run_id }}
+          path: /tmp/out
+          retention-days: 30
