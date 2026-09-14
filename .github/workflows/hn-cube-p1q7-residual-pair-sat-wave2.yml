@@ -1,0 +1,53 @@
+name: hn-cube-p1q7-residual-pair-sat-wave2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-cube-p1q7-residual-pair-sat-wave2.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  pair-sat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        pair: ['6,9169','39,9175','110,9209']
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: p1q7-residual-sat-input-34853416283
+          path: /tmp/input
+          run-id: 34853416283
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Exact pair inequality SAT
+        run: |
+          tag=$(echo '${{ matrix.pair }}' | tr ',' '-')
+          mkdir -p "/tmp/out-$tag"
+          PYTHONPATH=tools python tools/hn_full_sat_probe.py \
+            --graph /tmp/input/COMPLETED_GRAPH.json \
+            --seed-coloring /tmp/input/SEED_COLORING.txt \
+            --neq-pair '${{ matrix.pair }}' \
+            --solver cadical195 \
+            --out-dir "/tmp/out-$tag"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: p1q7-wave2-${{ strategy.job-index }}-${{ github.run_id }}
+          path: /tmp/out-*
+          retention-days: 30
