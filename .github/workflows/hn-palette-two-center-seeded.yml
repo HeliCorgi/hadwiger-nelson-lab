@@ -42,10 +42,12 @@ jobs:
           import json
           from pathlib import Path
           g=json.loads(Path('/tmp/two/TWO_CENTER_GRAPH.json').read_text())
-          s=Path('/tmp/basecolor/COLORING.txt').read_text().strip()
+          matches=list(Path('/tmp/basecolor').rglob('COLORING.txt'))
+          assert len(matches)==1, matches
+          s=matches[0].read_text().strip()
           assert len(s)==9369 and all(ch in '01234' for ch in s)
           # This exact pair-SAT coloring is the unique escape from center 1 in the
-          # 649-model local family: N(center1) omits color 4.  Center2's rarest
+          # 649-model local family: N(center1) omits color 4. Center2's rarest
           # neighbor color is 3, occurring once, so append 4,3.
           t=s+'43'
           assert len(t)==9371
@@ -53,7 +55,7 @@ jobs:
           conflicts=[(u,v) for u,v in edges if colors[u]==colors[v]]
           assert len(conflicts)==1, conflicts[:10]
           Path('/tmp/SEED.txt').write_text(t+'\n')
-          Path('/tmp/SEED_INFO.json').write_text(json.dumps({'seed_conflicts':1,'conflict_edge':list(conflicts[0]),'center_colors':[4,3]},indent=2)+'\n')
+          Path('/tmp/SEED_INFO.json').write_text(json.dumps({'seed_conflicts':1,'conflict_edge':list(conflicts[0]),'center_colors':[4,3],'source_coloring':str(matches[0])},indent=2)+'\n')
           print(Path('/tmp/SEED_INFO.json').read_text())
           PY
       - name: Unrestricted seeded TabuCol repair
