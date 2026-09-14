@@ -1,0 +1,98 @@
+name: hn-cube-p1q7-residual-pair-sat
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-cube-p1q7-residual-pair-sat.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  G510_SHA256: 0248fe0c7fd2df06d818aee0c188a7b70362d5990c1ca39271fc057b7b898346
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install scipy==1.14.1
+      - name: Verify pinned G510
+        run: echo "$G510_SHA256  upstream/handoff/data/g510_k2.json" | sha256sum -c -
+      - name: Rebuild p1q7 cube
+        run: |
+          mkdir -p /tmp/p1q7
+          PYTHONPATH=tools python tools/hn_commuting_cube_geometry.py \
+            --graph upstream/handoff/data/g510_k2.json --out-dir /tmp/p1q7 --p 1 --q 7
+      - name: Exact all-pairs completion
+        run: |
+          g++ -O3 -std=c++17 tools/hn_exact_completion.cpp -o /tmp/hn_exact_completion
+          python tools/hn_exact_complete_io.py prepare --graph /tmp/p1q7/SELECTED_GRAPH.json --out /tmp/p1q7/POINTS.txt
+          /tmp/hn_exact_completion < /tmp/p1q7/POINTS.txt > /tmp/p1q7/EXACT_EDGES.txt 2> /tmp/p1q7/EXACT_COMPLETION.log
+          python tools/hn_exact_complete_io.py finish --graph /tmp/p1q7/SELECTED_GRAPH.json --edges /tmp/p1q7/EXACT_EDGES.txt --out-dir /tmp/p1q7
+          cp results/unconditional-2026-09-14/commuting-cube-p1q7/COLORING.txt /tmp/p1q7/SEED_COLORING.txt
+      - uses: actions/upload-artifact@v7
+        with:
+          name: p1q7-residual-sat-input-${{ github.run_id }}
+          path: |
+            /tmp/p1q7/COMPLETED_GRAPH.json
+            /tmp/p1q7/SEED_COLORING.txt
+          retention-days: 30
+
+  pair-sat:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        pair: ['4,9169','26,9175','2,9134','3,9209','0,9195']
+        solver: [cadical195, glucose4]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: p1q7-residual-sat-input-${{ github.run_id }}
+          path: /tmp/input
+      - name: Exact pair inequality SAT
+        run: |
+          tag=$(echo '${{ matrix.pair }}' | tr ',' '-')
+          mkdir -p "/tmp/out-$tag-${{ matrix.solver }}"
+          PYTHONPATH=tools python tools/hn_full_sat_probe.py \
+            --graph /tmp/input/COMPLETED_GRAPH.json \
+            --seed-coloring /tmp/input/SEED_COLORING.txt \
+            --neq-pair '${{ matrix.pair }}' \
+            --solver '${{ matrix.solver }}' \
+            --out-dir "/tmp/out-$tag-${{ matrix.solver }}"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: p1q7-pair-${{ strategy.job-index }}-${{ matrix.solver }}-${{ github.run_id }}
+          path: /tmp/out-*
+          retention-days: 30
