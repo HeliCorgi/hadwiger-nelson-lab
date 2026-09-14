@@ -1,0 +1,77 @@
+name: hn-palette-center-geometry-1200
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-palette-center-geometry-1200.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  geometry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: p1q7-residual-sat-input-34853416283
+          path: /tmp/input
+          run-id: 34853416283
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-adaptive95-34883148365
+          path: /tmp/ad95
+          run-id: 34883148365
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-layer400-all-34882939861
+          path: /tmp/all400
+          run-id: 34882939861
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build witness family with current escape colorings
+        run: |
+          python - <<'PY'
+          import glob,json
+          from pathlib import Path
+          d=json.loads(Path('results/unconditional-2026-09-14/commuting-cube-p1q7/WITNESSES.json').read_text())
+          ms=[list(map(int,c)) for c in d.get('models',d.get('colorings',[]))]
+          for root,label in [('/tmp/ad95','adaptive95'),('/tmp/all400','all400')]:
+              fs=glob.glob(root+'/**/COLORING.txt',recursive=True); assert fs,(root,label)
+              s=Path(fs[0]).read_text().strip(); assert len(s)>=9369
+              ms.append([int(x) for x in s[:9369]])
+          out=[];seen=set()
+          for c in ms:
+              t=tuple(c)
+              if t not in seen:seen.add(t);out.append(c)
+          Path('/tmp/WITNESSES.json').write_text(json.dumps({'models':out},separators=(',',':'))+'\n')
+          print({'models':len(out),'adaptive95_and_all400_projections_included':True})
+          PY
+      - name: Coupled center geometry census top1200
+        run: |
+          mkdir -p /tmp/out
+          PYTHONPATH=tools python tools/hn_palette_center_geometry.py \
+            --graph /tmp/input/COMPLETED_GRAPH.json \
+            --witnesses /tmp/WITNESSES.json \
+            --direction-vertices 1192 \
+            --candidate-count 1200 \
+            --out-dir /tmp/out
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-center-geometry1200-${{ github.run_id }}
+          path: /tmp/out
+          retention-days: 30
