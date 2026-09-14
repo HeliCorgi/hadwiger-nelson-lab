@@ -13,11 +13,91 @@ Seek only unconditional finite planar unit-distance constructions aimed at:
 
 The Lean-checked `PositiveDistance` reduction means any B pair at any positive distance is enough. UNKNOWN, timeout, heuristic failure, solver difficulty, or failure of a restricted coloring family is never evidence.
 
-## Current checkpoint — commuting four-orbit square is closed D
+## Current checkpoint — p1q7 commuting cube is NOT_A; B is active
 
-The current construction family starts from the exact 1,192-vertex / 7,008-edge order-3 G510 closed ring and applies exact non-root unit rotations from
+The current construction starts from the exact 1,192-vertex / 7,008-edge order-3 G510 closed ring and exact non-root unit rotations
 
 `r(t) = (1 - 11 t^2 + 2 t sqrt(-11)) / (1 + 11 t^2)`.
+
+Use one exact common center and three commuting affine generators:
+
+- `T1 = r(1/3) = (-1+3 sqrt(-11))/10`;
+- `T2 = r(1/5) = (7+5 sqrt(-11))/18`;
+- `T3 = r(1/7) = (19+7 sqrt(-11))/30`.
+
+A 10-rotation geometry portfolio selected `T3=r(1/7)`: base↔T3(base) had 50 exact unit edges and the 8-copy Boolean cube had 1,703 newly discovered exact cross edges, best on both ranking measures in that portfolio.
+
+### Exact p1q7 cube
+
+The selected 8-orbit cube was all-pairs exact-completed:
+
+- **9,369 vertices**;
+- **57,488 exact induced unit-distance edges**;
+- **43,884,396 unordered pairs checked exactly**;
+- exact completion added **0** missed unit edges.
+
+The cube decomposes as a lower commuting square and its `T3` image:
+
+- each square: 4,742 vertices / 28,459 exact edges;
+- the two squares share **115 exact geometric vertices**;
+- union of the two square-internal edge sets: 56,602 edges;
+- remaining exact inter-layer edges: **886**.
+
+Dropping the 886 inter-layer edges gives an overlap-only two-square graph that is 5-colorable. Among the previously saved 223 validated square witnesses, lower witness 89 admits an upper-square coloring agreeing on all 115 shared vertices; that merged overlap-only coloring has 106 conflicts when all 886 inter-layer edges are restored.
+
+### A is closed negatively: validated proper 5-coloring exists
+
+For fixed lower witness 89, exact weighted MaxSAT over the upper square found that the **minimum possible number of full-cube conflicts is 19** under that fixed lower coloring.
+
+Starting from that exact-optimal 19-conflict seed, `tools/hn_seeded_tabucol.py` reached conflict 0 at:
+
+- restart 0;
+- iteration **38,915**.
+
+The resulting 9,369-entry coloring was validated on **all 57,488 exact edges**. Therefore the p1q7 cube is definitively **NOT_A**.
+
+Source Actions run: `34832204007`, artifact `p1q7-interface-maxsat-34832204007`. The durable B workflow re-imports and independently revalidates this coloring against a freshly rebuilt/all-pairs-completed graph before using it. Coloring text SHA-256 observed from the artifact:
+
+`a7124d31de62f7acfa587c8f5a4aadc1a78ae89b4d7d8ffddde6e57699119da2`.
+
+### Finite interface rigidity results — not whole-graph UNSAT evidence
+
+The square's 223 compressed validated witnesses were tested as possible lower-layer colorings. For each fixed lower witness, the upper square was solved with:
+
+- all 115 shared-vertex color equalities;
+- all 886 inter-layer edges, which become unary forbidden colors when the lower coloring is fixed.
+
+All **223/223** constrained upper-square instances were UNSAT. This proves only that the saved finite lower-witness family contains no full-cube coloring; it does **not** prove whole-cube UNSAT, and indeed the separate 19-conflict repair above found a full proper coloring outside that finite family.
+
+Additional restricted tests also failed (e.g. simple lifted witness/permutation families). Keep them only as structural diagnostics.
+
+### B classification is currently active
+
+A proper coloring exists, so the only remaining question for this fixed p1q7 cube is B.
+
+Primary run:
+
+- Actions `34833122000` — direct targeted pair separation from the validated full-cube coloring; rebuilds and exact-completes the cube again, revalidates the imported coloring on all edges, then runs `hn_local_pair_separation.py`.
+
+Parallel rigorous/heuristic-positive lanes:
+
+- Actions `34833385320` — Kempe-swap separation. Every accepted coloring is automatically proper and is still revalidated on all exact edges; if signatures become unique, this is a direct D certificate for B.
+- Actions `34833276186` — perturb-and-repair diversification followed by targeted residual pair separation.
+
+Classify B as D **only** when a validated coloring family has `remaining_pairs=0`. Any residual/timeout/failure is non-evidence and may instead motivate exact SAT checks on remaining candidate pairs.
+
+### Useful failed/diagnostic p1q7 searches
+
+- independent random TabuCol before a proper seed was known: no witness within budget; best conflict 71. Non-evidence.
+- frozen-boundary LNS from the older 106-conflict interface seed:
+  - radius 0: 186 free vertices, CaDiCaL + Glucose local UNSAT;
+  - radius 1: 1,881 free vertices, CaDiCaL + Glucose local UNSAT;
+  these are only local frozen-boundary statements.
+- core-guided relaxation from the same seed produced 40 consecutive assumption-UNSAT cores, releasing 186 → 5,786 vertices, then stopped at its round limit with status UNKNOWN. Non-evidence globally.
+
+These diagnostics are superseded for A by the validated proper coloring but remain useful for understanding the cube's unusually constrained 5-coloring space.
+
+## Previous checkpoint — commuting four-orbit square is closed D
 
 ### Three-orbit controls are closed
 
@@ -103,27 +183,7 @@ Evidence:
 - `results/unconditional-2026-09-14/commuting-square-control/SEPARATION.json`
 - Actions artifact `10340406367`.
 
-A restricted compatibility test was nevertheless significantly harder than previous controls: all **119** compressed A+B witnesses times all **120** global color permutations on the exact `T2` image C+D were tested (14,280 assignments total), and none colored the completed square. This is **not** an UNSAT proof; it only shows that the simple two-block lifted witness family is exhausted.
-
-Evidence: `results/unconditional-2026-09-14/commuting-square-lifted-color/SUMMARY.md`, run `34825370811`.
-
 **The fixed commuting square is D for both A and B. Do not rerun it unchanged.**
-
-## Resume here — commuting cube / center portfolio
-
-The next mechanism should preserve the square's structural replication but add a third independent exact rotation around the same center, producing up to **8 commuting orbit copies**.
-
-Preferred progression:
-
-1. keep `T1=r(1/3)` and the exact center fixed by the established `(0,911)` A->B placement;
-2. keep `T2=r(1/5)` as the second generator;
-3. geometry-scan a portfolio of distinct `r(t)` values for a third generator `T3`, using the same center so all three affine maps commute exactly;
-4. rank `T3` by literal exact unit coupling between the base ring and `T3(base)`, plus extra diagonal couplings to `T1(base)` / `T2(base)`; do not rank by float contacts alone;
-5. build the full Boolean orbit cube `{T1^e1 T2^e2 T3^e3(A): ei in {0,1}}`, deduplicate exact points, and discover only exact unit edges;
-6. all-pairs exact-complete the selected cube once before any D/B conclusion;
-7. test ordinary 5-colorability; if SAT, run pair separation; if UNSAT/UNKNOWN, obtain independent evidence before classification.
-
-If the 8-orbit cube is still D, vary the common center (derived from alternative exact T1 pivot alignments) before adding more dimensions. The lesson from the three-orbit lane is that weak one-sided attachments do not sufficiently constrain global color compatibility.
 
 ## Earlier closed controls — do not repeat unchanged
 
