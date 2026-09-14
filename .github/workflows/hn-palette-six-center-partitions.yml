@@ -1,0 +1,122 @@
+name: hn-palette-six-center-partitions
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-palette-six-center-partitions.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: p1q7-residual-sat-input-34853416283
+          path: /tmp/input
+          run-id: 34853416283
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Reconstruct six exact CEGIS centers
+        run: |
+          mkdir -p /tmp/six
+          PYTHONPATH=tools python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          from tools.hn_exact import K2,unit_modulus
+          d=json.loads(Path('/tmp/input/COMPLETED_GRAPH.json').read_text())
+          pts=[K2(p['a'],p['b'],p['den']) for p in d['pts']]
+          base_n=len(pts); edges={tuple(map(int,e)) for e in d['edges']}
+          centers=[
+            K2([-1,0,0,0,0,4,0,0],[1,0,0,0,0,-2,0,0],6),
+            K2([5,0,0,0,0,-11,0,0],[1,0,0,0,0,1,0,0],6),
+            K2([8,0,0,0,0,-11,0,0],[-2,0,0,0,0,1,0,0],6),
+            K2([3,0,0,0,0,2,0,0],[3,0,0,0,0,0,0,0],6),
+            K2([-5,0,0,0,0,9,0,0],[-1,0,0,0,0,-1,0,0],6),
+            K2([-2,0,0,0,0,9,0,0],[2,0,0,0,0,-1,0,0],6),
+          ]
+          assert len(set(centers))==6 and all(x not in set(pts) for x in centers)
+          assert all(not unit_modulus(centers[i]-centers[j]) for i in range(6) for j in range(i+1,6))
+          rec=[]
+          expected=[26,16,15,14,16,15]
+          for ci,x in enumerate(centers):
+              ns=[i for i,p in enumerate(pts) if unit_modulus(p-x)]
+              assert len(ns)==expected[ci],(ci,len(ns))
+              rec.append({'index':ci,'point':{'a':x.a,'b':x.b,'den':x.den},'neighbors':ns,'degree':len(ns)})
+          # Build the full six-center graph only for an exact durable checkpoint/hash.
+          fullpts=list(pts); fulledges=set(edges)
+          for ci,x in enumerate(centers):
+              v=len(fullpts)
+              for u in rec[ci]['neighbors']: fulledges.add((min(u,v),max(u,v)))
+              fullpts.append(x)
+          assert len(fulledges)==len(edges)+sum(expected)
+          assert all(unit_modulus(fullpts[u]-fullpts[v]) for u,v in fulledges)
+          pobj=[{'a':p.a,'b':p.b,'den':p.den} for p in fullpts]; eobj=[list(e) for e in sorted(fulledges)]
+          sem=hashlib.sha256(json.dumps({'pts':pobj,'edges':eobj},sort_keys=True,separators=(',',':')).encode()).hexdigest()
+          Path('/tmp/six/CENTERS.json').write_text(json.dumps({'base_vertices':base_n,'centers':rec,'pairwise_center_unit_edges':0},indent=2)+'\n')
+          Path('/tmp/six/SIX_CENTER_GRAPH.json').write_text(json.dumps({'pts':pobj,'edges':eobj,'construction':'p1q7 plus first six palette-center CEGIS points','all_saved_edges_exact_unit':True,'induced_unit_edge_completion_pending':False,'all_pairs_exactly_checked':len(fullpts)*(len(fullpts)-1)//2},separators=(',',':'),sort_keys=True)+'\n')
+          Path('/tmp/six/BUILD.json').write_text(json.dumps({'vertices':len(fullpts),'edges':len(fulledges),'added_centers':6,'center_degrees':expected,'center_center_unit_edges':0,'semantic_pts_edges_sha256':sem},indent=2)+'\n')
+          print(Path('/tmp/six/BUILD.json').read_text())
+          PY
+      - uses: actions/upload-artifact@v7
+        with:
+          name: palette-six-center-input-${{ github.run_id }}
+          path: /tmp/six
+          retention-days: 30
+
+  partition-sat:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        blocks: [5,4,3,2,1]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: p1q7-residual-sat-input-34853416283
+          path: /tmp/input
+          run-id: 34853416283
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-six-center-input-${{ github.run_id }}
+          path: /tmp/six
+      - name: Exact center partition SAT
+        run: |
+          mkdir -p /tmp/out
+          PYTHONPATH=tools python tools/hn_palette_partition_probe.py \
+            --graph /tmp/input/COMPLETED_GRAPH.json \
+            --centers /tmp/six/CENTERS.json \
+            --blocks '${{ matrix.blocks }}' \
+            --solver cadical195 \
+            --seed-coloring /tmp/input/SEED_COLORING.txt \
+            --out-dir /tmp/out
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-six-k${{ matrix.blocks }}-${{ github.run_id }}
+          path: /tmp/out
+          retention-days: 30
