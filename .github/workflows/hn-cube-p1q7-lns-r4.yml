@@ -1,0 +1,81 @@
+name: hn-cube-p1q7-lns-r4
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-cube-p1q7-lns-r4.yml'
+  workflow_dispatch:
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  G510_SHA256: 0248fe0c7fd2df06d818aee0c188a7b70362d5990c1ca39271fc057b7b898346
+
+jobs:
+  r4:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install scipy==1.14.1
+      - name: Verify pinned G510
+        run: echo "$G510_SHA256  upstream/handoff/data/g510_k2.json" | sha256sum -c -
+      - name: Build cube square map and interface seed
+        run: |
+          mkdir -p work/cube work/probe out
+          PYTHONPATH=tools python tools/hn_commuting_cube_geometry.py --graph upstream/handoff/data/g510_k2.json --out-dir work/cube --p 1 --q 7
+          PYTHONPATH=tools python - <<'PY'
+          import json
+          from pathlib import Path
+          from hn_exact import K2,ONE,unit_modulus
+          from hn_closed_copy_assembly import build_ring,discover_exact_cross_edges
+          from hn_three_orbit_network import rational_unit_rotation
+          from hn_commuting_cube_geometry import inv_subfield,transform
+          from hn_linked_closed_orbits import pack
+          from hn_unconditional_scan import write_json
+          d=json.loads(Path('upstream/handoff/data/g510_k2.json').read_text())
+          bp=[K2(x['a'],x['b'],x['den']) for x in d['pts']]; be=sorted({tuple(map(int,e)) for e in d['edges']})
+          ring,inh,_=build_ring(bp,be,(95,101),3); re,_,_=discover_exact_cross_edges(ring,inh,3e-7); re=sorted(re)
+          r1=rational_unit_rotation(1,3); r2=rational_unit_rotation(1,5); r3=rational_unit_rotation(1,7); center=inv_subfield(ONE-r1)*(ring[0]-r1*ring[911])
+          idx={}; pts=[]; inherited=set()
+          for r in [ONE,r1,r2,r1*r2]:
+              m=[]
+              for p in transform(ring,r,center):
+                  j=idx.get(p)
+                  if j is None: j=len(pts); idx[p]=j; pts.append(p)
+                  m.append(j)
+              for u,v in re:
+                  x,y=m[u],m[v]
+                  if x!=y: inherited.add((min(x,y),max(x,y)))
+          edges,_,_=discover_exact_cross_edges(pts,inherited,3e-7); assert len(pts)==4742 and len(edges)==28459 and all(unit_modulus(pts[u]-pts[v]) for u,v in edges)
+          write_json(Path('work/SQUARE.json'),{'pts':[pack(p) for p in pts],'edges':[list(e) for e in sorted(edges)]})
+          cube=json.loads(Path('work/cube/SELECTED_GRAPH.json').read_text()); cpts=[K2(p['a'],p['b'],p['den']) for p in cube['pts']]; ci={p:i for i,p in enumerate(cpts)}
+          tm=[ci[r3*p+(ONE-r3)*center] for p in pts]; assert sum(1 for j in tm if j<4742)==115
+          write_json(Path('work/LAYER_MAP.json'),{'lower_n':4742,'t3map':tm,'shared_vertices':115})
+          PY
+          g++ -O3 -std=c++17 tools/hn_exact_completion.cpp -o /tmp/hn_exact_completion
+          python tools/hn_exact_complete_io.py prepare --graph work/cube/SELECTED_GRAPH.json --out work/cube/POINTS.txt
+          /tmp/hn_exact_completion < work/cube/POINTS.txt > work/cube/EXACT_EDGES.txt 2> work/cube/EXACT_COMPLETION.log
+          python tools/hn_exact_complete_io.py finish --graph work/cube/SELECTED_GRAPH.json --edges work/cube/EXACT_EDGES.txt --out-dir work/cube
+          PYTHONPATH=tools python tools/hn_square_interface_probe.py --square work/SQUARE.json --cube work/cube/COMPLETED_GRAPH.json --layer-map work/LAYER_MAP.json --witnesses results/unconditional-2026-09-14/commuting-square-control/WITNESSES.json --out-dir work/probe
+      - name: Radius-4 SAT repair
+        run: |
+          PYTHONPATH=tools python tools/hn_lns_sat_repair.py --graph work/cube/COMPLETED_GRAPH.json --seed-coloring work/probe/COLORING_SEED.txt --out-dir out --radius 4 --conflicts 12000000 --attempts 3 --seed 2026091499
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: p1q7-lns-r4-${{ github.run_id }}
+          path: out
+          retention-days: 30
