@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        pair: ['6,9169','39,9175','110,9209']
+        pair: ['14,9169','41,9175','0,9183']
     steps:
       - uses: actions/checkout@v7
         with:
