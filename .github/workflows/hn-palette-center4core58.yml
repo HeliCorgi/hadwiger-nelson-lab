@@ -1,0 +1,161 @@
+name: hn-palette-center4core58
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-palette-center4core58.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: p1q7-residual-sat-input-34853416283
+          path: /tmp/input
+          run-id: 34853416283
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-center-geometry1200-34885574185
+          path: /tmp/geom
+          run-id: 34885574185
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-layer400-all-34882939861
+          path: /tmp/all400
+          run-id: 34882939861
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract exact 58-center vertex-critical subset
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          S=[47,56,71,86,97,259,264,276,299,307,313,360,399,412,417,426,470,486,488,492,494,495,573,587,596,599,737,749,758,760,785,786,799,802,881,885,916,926,931,938,939,947,967,983,1002,1028,1036,1057,1060,1085,1093,1126,1127,1129,1130,1146,1170,1180]
+          assert len(S)==58 and len(set(S))==58
+          d=json.loads(Path('/tmp/geom/CENTER_LIBRARY.json').read_text())
+          loc={g:i for i,g in enumerate(S)}
+          edges=[[loc[u],loc[v]] for u,v in d['center_edges'] if u in loc and v in loc]
+          assert len(edges)==127
+          sub={'candidates':[d['candidates'][i] for i in S],'center_edges':edges,'source_indices':S,
+               'construction':'greedy vertex-minimal 3-color obstruction from top1200 center graph'}
+          Path('/tmp/CORE_LIBRARY.json').write_text(json.dumps(sub,separators=(',',':'))+'\n')
+          s=Path('/tmp/all400/repair/COLORING.txt').read_text().strip(); assert len(s)>=9369
+          Path('/tmp/WITNESSES.json').write_text(json.dumps({'models':[[int(x) for x in s[:9369]]]},separators=(',',':'))+'\n')
+          print({'centers':len(S),'center_edges':len(edges)})
+          PY
+      - name: Confirm core center chromatic number
+        run: |
+          mkdir -p /tmp/chrom
+          PYTHONPATH=tools python tools/hn_center_graph_chromatic.py \
+            --library /tmp/CORE_LIBRARY.json \
+            --out /tmp/chrom/CHROMATIC.json
+          python - <<'PY'
+          import json
+          d=json.load(open('/tmp/chrom/CHROMATIC.json'))
+          assert d['chromatic_lower_bound']==4 and d['chromatic_upper_bound']==4,d
+          PY
+      - name: Build exact p1q7 plus core58 graph
+        run: |
+          mkdir -p /tmp/build
+          PYTHONPATH=tools python tools/hn_palette_layer_build.py \
+            --graph /tmp/input/COMPLETED_GRAPH.json \
+            --library /tmp/CORE_LIBRARY.json \
+            --tag all \
+            --witnesses /tmp/WITNESSES.json \
+            --out-dir /tmp/build
+      - uses: actions/upload-artifact@v7
+        with:
+          name: palette-center4core58-input-${{ github.run_id }}
+          path: |
+            /tmp/CORE_LIBRARY.json
+            /tmp/chrom
+            /tmp/build
+          retention-days: 30
+
+  repair:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-center4core58-input-${{ github.run_id }}
+          path: /tmp/run
+      - name: Unrestricted repair
+        run: |
+          mkdir -p /tmp/out
+          PYTHONPATH=tools python tools/hn_seeded_tabucol.py \
+            --graph /tmp/run/build/GRAPH.json \
+            --seed-coloring /tmp/run/build/SEED.txt \
+            --seconds 6000 \
+            --restarts 60 \
+            --iterations 5000000 \
+            --perturb 55 \
+            --seed 2026091558 \
+            --out-dir /tmp/out
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-center4core58-repair-${{ github.run_id }}
+          path: /tmp/out
+          retention-days: 30
+
+  sat:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      matrix:
+        solver: [cadical195, glucose4]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-center4core58-input-${{ github.run_id }}
+          path: /tmp/run
+      - name: Full exact 5-color SAT
+        run: |
+          mkdir -p /tmp/out
+          PYTHONPATH=tools python tools/hn_full_sat_probe.py \
+            --graph /tmp/run/build/GRAPH.json \
+            --solver '${{ matrix.solver }}' \
+            --out-dir /tmp/out
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-center4core58-${{ matrix.solver }}-${{ github.run_id }}
+          path: /tmp/out
+          retention-days: 30
