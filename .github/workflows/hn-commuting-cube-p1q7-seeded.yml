@@ -80,7 +80,7 @@ jobs:
           python tools/hn_exact_complete_io.py prepare --graph "$OUT_DIR/SELECTED_GRAPH.json" --out "$OUT_DIR/POINTS.txt"
           /tmp/hn_exact_completion < "$OUT_DIR/POINTS.txt" > "$OUT_DIR/EXACT_EDGES.txt" 2> "$OUT_DIR/EXACT_COMPLETION.log"
           python tools/hn_exact_complete_io.py finish --graph "$OUT_DIR/SELECTED_GRAPH.json" --edges "$OUT_DIR/EXACT_EDGES.txt" --out-dir "$OUT_DIR"
-      - name: Find minimum-conflict lifted square assignment
+      - name: Find minimum-conflict relaxed lifted square assignment
         run: |
           python - <<'PY'
           import itertools,json,os
@@ -89,20 +89,23 @@ jobs:
           n=len(g['pts']); edges=[tuple(e) for e in g['edges']]; ln=m['lower_n']; tmap=m['t3map']; best=None; tested=0
           for wi,c in enumerate(ws):
               for perm in itertools.permutations(range(5)):
-                  tested+=1; colors=[-1]*n; ok=True
+                  tested+=1; colors=[-1]*n; mismatches=0
                   for i,x in enumerate(c): colors[i]=x
                   for i,x in enumerate(c):
                       j=tmap[i]; y=perm[x]
-                      if colors[j]>=0 and colors[j]!=y: ok=False; break
-                      colors[j]=y
-                  if not ok or any(x<0 for x in colors): continue
+                      if colors[j]>=0:
+                          if colors[j]!=y: mismatches+=1
+                      else:
+                          colors[j]=y
+                  assert all(x>=0 for x in colors)
                   conf=sum(1 for u,v in edges if colors[u]==colors[v])
-                  if best is None or conf<best[0]:
-                      best=(conf,wi,list(perm),colors); print(json.dumps({'tested':tested,'best_conflicts':conf,'witness_index':wi,'permutation':list(perm)}),flush=True)
+                  key=(conf,mismatches)
+                  if best is None or key<(best[0],best[1]):
+                      best=(conf,mismatches,wi,list(perm),colors); print(json.dumps({'tested':tested,'best_conflicts':conf,'overlap_mismatches':mismatches,'witness_index':wi,'permutation':list(perm)}),flush=True)
                       if conf==0: break
               if best and best[0]==0: break
           assert best is not None
-          conf,wi,perm,colors=best; (root/'BEST_LIFTED_COLORING.txt').write_text(''.join(map(str,colors))+'\n'); (root/'BEST_LIFTED.json').write_text(json.dumps({'tested':tested,'best_conflicts':conf,'witness_index':wi,'permutation':perm},indent=2)+'\n')
+          conf,mismatches,wi,perm,colors=best; (root/'BEST_LIFTED_COLORING.txt').write_text(''.join(map(str,colors))+'\n'); (root/'BEST_LIFTED.json').write_text(json.dumps({'tested':tested,'best_conflicts':conf,'overlap_mismatches':mismatches,'witness_index':wi,'permutation':perm,'relaxed_shared_vertices':True},indent=2)+'\n')
           PY
       - name: Repair best lifted assignment
         run: |
@@ -133,7 +136,7 @@ jobs:
               p=root/name
               if p.exists():
                   d=json.loads(p.read_text()); slim={k:v for k,v in d.items() if k not in ('colors','records','remaining_blocks','compressed_source_indices')}; lines += [f'## {label}','```json',json.dumps(slim,indent=2),'```','']
-          lines += ['Failure of the lifted family or heuristic repair is non-evidence; any successful coloring is fully edge-validated.']
+          lines += ['Shared-vertex disagreements are allowed only in the near-coloring seed. Failure of heuristic repair is non-evidence; any successful coloring is fully edge-validated.']
           (root/'REPORT.md').write_text('\n'.join(lines)+'\n'); print((root/'REPORT.md').read_text())
           PY
       - name: Commit compact checkpoint
