@@ -37,7 +37,7 @@ jobs:
             --graph /tmp/input/COMPLETED_GRAPH.json \
             --witnesses results/unconditional-2026-09-14/commuting-cube-p1q7/WITNESSES.json \
             --direction-vertices 1192 \
-            --candidate-count 400 \
+            --candidate-count 160 \
             --out-dir /tmp/out
       - uses: actions/upload-artifact@v7
         if: always()
