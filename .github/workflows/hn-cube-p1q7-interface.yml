@@ -9,7 +9,7 @@ on:
 
 env:
   UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
-  G510_SHA256: 0248fe0c7fd06d818aee0c188a7b70362d5990c1ca39271fc057b7b898346
+  G510_SHA256: 0248fe0c7fd2df06d818aee0c188a7b70362d5990c1ca39271fc057b7b898346
   OUT_DIR: results/unconditional-2026-09-14/cube-p1q7-interface
 
 jobs:
