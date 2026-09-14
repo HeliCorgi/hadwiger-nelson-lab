@@ -1,0 +1,143 @@
+name: hn-cube-p1q7-b-separation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-cube-p1q7-b-separation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  G510_SHA256: 0248fe0c7fd2df06d818aee0c188a7b70362d5990c1ca39271fc057b7b898346
+  OUT_DIR: results/unconditional-2026-09-14/commuting-cube-p1q7
+
+jobs:
+  separate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install scipy==1.14.1
+      - name: Verify pinned G510
+        run: echo "$G510_SHA256  upstream/handoff/data/g510_k2.json" | sha256sum -c -
+      - name: Download validated p1q7 coloring artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: p1q7-interface-maxsat-34832204007
+          path: seed-artifact
+          github-token: ${{ github.token }}
+          run-id: 34832204007
+      - name: Verify seed artifact
+        run: |
+          test -f seed-artifact/repair/SEEDED_TABUCOL.json
+          test -f seed-artifact/repair/COLORING.txt
+          python - <<'PY'
+          import hashlib,json
+          d=json.load(open('seed-artifact/repair/SEEDED_TABUCOL.json'))
+          assert d['status']=='VALIDATED_PROPER_5_COLORING'
+          assert d['classification']=='NOT_A'
+          assert d['vertices']==9369 and d['edges']==57488
+          assert d['all_edges_validated'] is True
+          assert d['records'][0]['best_conflicts']==0
+          raw=open('seed-artifact/repair/COLORING.txt','rb').read()
+          assert len(raw.strip())==9369
+          print('coloring_sha256',hashlib.sha256(raw).hexdigest())
+          print({k:v for k,v in d.items() if k!='colors'})
+          PY
+      - name: Rebuild p1q7 cube
+        run: |
+          mkdir -p "$OUT_DIR"
+          PYTHONPATH=tools python tools/hn_commuting_cube_geometry.py \
+            --graph upstream/handoff/data/g510_k2.json --out-dir "$OUT_DIR/build" --p 1 --q 7
+      - name: Exact all-pairs completion
+        run: |
+          g++ -O3 -std=c++17 tools/hn_exact_completion.cpp -o /tmp/hn_exact_completion
+          python tools/hn_exact_complete_io.py prepare --graph "$OUT_DIR/build/SELECTED_GRAPH.json" --out "$OUT_DIR/build/POINTS.txt"
+          /tmp/hn_exact_completion < "$OUT_DIR/build/POINTS.txt" > "$OUT_DIR/build/EXACT_EDGES.txt" 2> "$OUT_DIR/build/EXACT_COMPLETION.log"
+          python tools/hn_exact_complete_io.py finish --graph "$OUT_DIR/build/SELECTED_GRAPH.json" --edges "$OUT_DIR/build/EXACT_EDGES.txt" --out-dir "$OUT_DIR/build"
+      - name: Revalidate imported proper coloring
+        run: |
+          PYTHONPATH=tools python - <<'PY'
+          import hashlib,json,shutil
+          from pathlib import Path
+          from hn_unconditional_scan import valid_coloring
+          root=Path('results/unconditional-2026-09-14/commuting-cube-p1q7')
+          g=json.load(open(root/'build/COMPLETED_GRAPH.json')); edges=[tuple(map(int,e)) for e in g['edges']]; n=len(g['pts'])
+          s=Path('seed-artifact/repair/COLORING.txt').read_text().strip(); colors=list(map(int,s))
+          assert n==9369 and len(edges)==57488 and len(colors)==n and valid_coloring(colors,n,edges)
+          shutil.copy('seed-artifact/repair/COLORING.txt',root/'COLORING.txt')
+          geo=json.load(open(root/'build/GEOMETRY.json'))
+          out={
+            'status':'VALIDATED_PROPER_5_COLORING','classification':'NOT_A','vertices':n,'edges':len(edges),
+            'all_pairs_exactly_checked':geo['all_pairs_exactly_checked'],
+            'new_edges_from_exact_completion':geo['new_edges_from_exact_completion'],
+            'graph_sha256':geo['graph_sha256'],
+            'coloring_sha256':hashlib.sha256((root/'COLORING.txt').read_bytes()).hexdigest(),
+            'source_run':34832204007,'source_method':'fixed lower witness 89 exact MaxSAT optimum 19, then seeded TabuCol',
+            'seed_conflicts_before_repair':19,'tabucol_restart':0,'tabucol_iterations':38915,
+            'all_edges_validated':True
+          }
+          (root/'A_RESULT.json').write_text(json.dumps(out,indent=2)+'\n'); print(json.dumps(out,indent=2))
+          PY
+      - name: Separate all vertex pairs
+        run: |
+          PYTHONPATH=tools python tools/hn_local_pair_separation.py \
+            --graph "$OUT_DIR/build/COMPLETED_GRAPH.json" \
+            --seed-coloring "$OUT_DIR/COLORING.txt" \
+            --out-dir "$OUT_DIR/separation" \
+            --seconds 5400 --pair-seconds 25 --iterations 1000000 \
+            --perturb 48 --max-failures 80 --seed 2026091521 || true
+      - name: Summarize
+        if: always()
+        run: |
+          cp "$OUT_DIR/separation/SEPARATION.json" "$OUT_DIR/SEPARATION.json" 2>/dev/null || true
+          cp "$OUT_DIR/separation/WITNESSES.json" "$OUT_DIR/WITNESSES.json" 2>/dev/null || true
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('results/unconditional-2026-09-14/commuting-cube-p1q7')
+          lines=['# p1q7 commuting cube — exact A/B checkpoint','']
+          for label,name in [('A result','A_RESULT.json'),('geometry','build/GEOMETRY.json'),('B separation','SEPARATION.json')]:
+              p=root/name
+              if p.exists():
+                  d=json.loads(p.read_text()); slim={k:v for k,v in d.items() if k not in ('colors','records','remaining_blocks','compressed_source_indices')}
+                  lines += [f'## {label}','```json',json.dumps(slim,indent=2),'```','']
+          lines += ['A is closed as NOT_A by a validated proper 5-coloring. B is D only if separation status is NO_FORCED_EQUAL_PAIR with remaining_pairs=0. Repair failure/timeout is non-evidence.']
+          (root/'SUMMARY.md').write_text('\n'.join(lines)+'\n'); print((root/'SUMMARY.md').read_text())
+          PY
+      - name: Commit durable checkpoint
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase origin main
+          git add "$OUT_DIR/A_RESULT.json" "$OUT_DIR/COLORING.txt" "$OUT_DIR/SUMMARY.md" "$OUT_DIR/SEPARATION.json" "$OUT_DIR/WITNESSES.json" "$OUT_DIR/build/GEOMETRY.json" 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m 'Store p1q7 cube A and B checkpoint'
+            git push origin HEAD:main
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: p1q7-b-separation-${{ github.run_id }}
+          path: ${{ env.OUT_DIR }}
+          retention-days: 30
