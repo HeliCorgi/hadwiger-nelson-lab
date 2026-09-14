@@ -16,7 +16,7 @@ permissions:
 env:
   UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
   G510_SHA256: 0248fe0c7fd2df06d818aee0c188a7b70362d5990c1ca39271fc057b7b898346
-  EXPECTED_GRAPH_SHA256: 043b40b3a322f99829a9799210eeb42db4f5db8157655586b71fc2efd8d041fd
+  EXPECTED_SEMANTIC_SHA256: 866590e7d7b61e10fd59d551dfa98ce73c98532c79364068ee073ce3d947fc06
   OUT_DIR: results/unconditional-2026-09-14/linked-closed-orbits-pair-separation
 
 jobs:
@@ -55,13 +55,18 @@ jobs:
           /tmp/hn_exact_completion < "$OUT_DIR/POINTS.txt" > "$OUT_DIR/EXACT_EDGES.txt" 2> "$OUT_DIR/EXACT_COMPLETION.log"
           python tools/hn_exact_complete_io.py finish --graph "$OUT_DIR/SELECTED_GRAPH.json" --edges "$OUT_DIR/EXACT_EDGES.txt" --out-dir "$OUT_DIR"
           python - <<'PY'
-          import json, os
+          import hashlib, json, os
           from pathlib import Path
-          d=json.loads((Path(os.environ['OUT_DIR'])/'GEOMETRY.json').read_text())
-          assert d['graph_sha256']==os.environ['EXPECTED_GRAPH_SHA256'], d
+          root=Path(os.environ['OUT_DIR'])
+          d=json.loads((root/'GEOMETRY.json').read_text())
+          g=json.loads((root/'COMPLETED_GRAPH.json').read_text())
+          semantic=hashlib.sha256(json.dumps({'pts':g['pts'],'edges':g['edges']},separators=(',',':')).encode()).hexdigest()
+          assert semantic==os.environ['EXPECTED_SEMANTIC_SHA256'], (semantic,d)
           assert d['vertices']==2373 and d['exact_induced_edges']==14178
           assert d['new_edges_from_exact_completion']==0
-          print('pinned completed graph verified',d['graph_sha256'])
+          d['semantic_pts_edges_sha256']=semantic
+          (root/'GEOMETRY.json').write_text(json.dumps(d,indent=2)+'\n')
+          print('pinned semantic graph verified',semantic)
           PY
       - name: Generate diverse validated colorings
         run: |
