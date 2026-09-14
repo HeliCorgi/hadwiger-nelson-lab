@@ -1,0 +1,113 @@
+name: hn-commuting-cube-p1q7
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-commuting-cube-p1q7.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  G510_SHA256: 0248fe0c7fd2df06d818aee0c188a7b70362d5990c1ca39271fc057b7b898346
+  OUT_DIR: results/unconditional-2026-09-14/commuting-cube-p1q7
+
+jobs:
+  classify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install scipy==1.14.1
+      - name: Verify pinned G510
+        run: echo "$G510_SHA256  upstream/handoff/data/g510_k2.json" | sha256sum -c -
+      - name: Rebuild p1q7 commuting cube
+        run: |
+          mkdir -p "$OUT_DIR"
+          PYTHONPATH=tools python tools/hn_commuting_cube_geometry.py \
+            --graph upstream/handoff/data/g510_k2.json --out-dir "$OUT_DIR" --p 1 --q 7
+      - name: Exact all-pairs completion
+        run: |
+          g++ -O3 -std=c++17 tools/hn_exact_completion.cpp -o /tmp/hn_exact_completion
+          python tools/hn_exact_complete_io.py prepare --graph "$OUT_DIR/SELECTED_GRAPH.json" --out "$OUT_DIR/POINTS.txt"
+          /tmp/hn_exact_completion < "$OUT_DIR/POINTS.txt" > "$OUT_DIR/EXACT_EDGES.txt" 2> "$OUT_DIR/EXACT_COMPLETION.log"
+          python tools/hn_exact_complete_io.py finish --graph "$OUT_DIR/SELECTED_GRAPH.json" --edges "$OUT_DIR/EXACT_EDGES.txt" --out-dir "$OUT_DIR"
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path(os.environ['OUT_DIR']); g=json.loads((root/'COMPLETED_GRAPH.json').read_text()); d=json.loads((root/'GEOMETRY.json').read_text())
+          d['semantic_pts_edges_sha256']=hashlib.sha256(json.dumps({'pts':g['pts'],'edges':g['edges']},separators=(',',':')).encode()).hexdigest()
+          (root/'GEOMETRY.json').write_text(json.dumps(d,indent=2)+'\n')
+          print(json.dumps(d,indent=2))
+          PY
+      - name: Validated 5-color SAT probe
+        run: |
+          PYTHONPATH=tools python tools/hn_symmetry_sat_probe.py \
+            --graph "$OUT_DIR/COMPLETED_GRAPH.json" --out-dir "$OUT_DIR/seed" \
+            --conflicts 8000000 --attempts 12 --seed 2026091491
+      - name: Pair separation if SAT
+        run: |
+          python - <<'PY'
+          import json,os,subprocess,sys
+          from pathlib import Path
+          root=Path(os.environ['OUT_DIR']); seed=root/'seed/SYMMETRY_SAT.json'; d=json.loads(seed.read_text())
+          if d.get('status')!='SAT':
+              print('no SAT seed; B scan skipped'); sys.exit(0)
+          cmd=[sys.executable,'tools/hn_local_pair_separation.py','--graph',str(root/'COMPLETED_GRAPH.json'),
+               '--seed-coloring',str(seed),'--out-dir',str(root/'separation'),
+               '--seconds','3600','--pair-seconds','20','--iterations','850000',
+               '--perturb','44','--max-failures','48','--seed','2026091492']
+          env=dict(os.environ); env['PYTHONPATH']='tools'; subprocess.run(cmd,check=True,env=env)
+          PY
+      - name: Summarize
+        if: always()
+        run: |
+          cp "$OUT_DIR/separation/SEPARATION.json" "$OUT_DIR/SEPARATION.json" 2>/dev/null || true
+          cp "$OUT_DIR/separation/WITNESSES.json" "$OUT_DIR/WITNESSES.json" 2>/dev/null || true
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ['OUT_DIR']); lines=['# Commuting eight-orbit cube p1q7 — 2026-09-14','']
+          for label,name in [('screen','SUMMARY.json'),('geometry','GEOMETRY.json'),('seed','seed/SYMMETRY_SAT.json'),('separation','SEPARATION.json')]:
+              p=root/name
+              if p.exists():
+                  d=json.loads(p.read_text()); slim={k:v for k,v in d.items() if k not in ('colors','records','remaining_blocks','compressed_source_indices')}
+                  lines += [f'## {label}','```json',json.dumps(slim,indent=2),'```','']
+          lines += ['T1=r(1/3), T2=r(1/5), T3=r(1/7) act about one exact common center. Final classification uses only the all-pairs exact-completed graph. UNKNOWN/timeout/repair failure is non-evidence.']
+          (root/'REPORT.md').write_text('\n'.join(lines)+'\n'); print((root/'REPORT.md').read_text())
+          PY
+      - name: Commit compact checkpoint
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase origin main
+          git add "$OUT_DIR/REPORT.md" "$OUT_DIR/SUMMARY.json" "$OUT_DIR/GEOMETRY.json" \
+                  "$OUT_DIR/seed/SYMMETRY_SAT.json" "$OUT_DIR/SEPARATION.json" "$OUT_DIR/WITNESSES.json" 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m 'Store commuting-cube p1q7 classification'
+            git push origin HEAD:main
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: hn-commuting-cube-p1q7-${{ github.run_id }}
+          path: ${{ env.OUT_DIR }}
+          retention-days: 30
