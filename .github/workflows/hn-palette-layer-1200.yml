@@ -1,0 +1,135 @@
+name: hn-palette-layer-1200
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-palette-layer-1200.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: p1q7-residual-sat-input-34853416283
+          path: /tmp/input
+          run-id: 34853416283
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-center-geometry1200-34885574185
+          path: /tmp/geom
+          run-id: 34885574185
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-layer400-all-34882939861
+          path: /tmp/all400
+          run-id: 34882939861
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build exact all1200 layer from validated all400 escape projection
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=Path('/tmp/all400/repair/COLORING.txt').read_text().strip(); assert len(s)>=9369
+          Path('/tmp/WITNESSES.json').write_text(json.dumps({'models':[[int(x) for x in s[:9369]]]},separators=(',',':'))+'\n')
+          PY
+          mkdir -p /tmp/build
+          PYTHONPATH=tools python tools/hn_palette_layer_build.py \
+            --graph /tmp/input/COMPLETED_GRAPH.json \
+            --library /tmp/geom/CENTER_LIBRARY.json \
+            --tag all \
+            --witnesses /tmp/WITNESSES.json \
+            --out-dir /tmp/build
+      - uses: actions/upload-artifact@v7
+        with:
+          name: palette-layer1200-input-${{ github.run_id }}
+          path: /tmp/build
+          retention-days: 30
+
+  repair:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-layer1200-input-${{ github.run_id }}
+          path: /tmp/build
+      - name: Unrestricted seeded repair
+        run: |
+          mkdir -p /tmp/out
+          PYTHONPATH=tools python tools/hn_seeded_tabucol.py \
+            --graph /tmp/build/GRAPH.json \
+            --seed-coloring /tmp/build/SEED.txt \
+            --seconds 12000 \
+            --restarts 80 \
+            --iterations 10000000 \
+            --perturb 70 \
+            --seed 202609151200 \
+            --out-dir /tmp/out
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-layer1200-repair-${{ github.run_id }}
+          path: /tmp/out
+          retention-days: 30
+
+  sat:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        solver: [cadical195, glucose4]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-layer1200-input-${{ github.run_id }}
+          path: /tmp/build
+      - name: Full exact 5-color SAT
+        run: |
+          mkdir -p /tmp/out
+          PYTHONPATH=tools python tools/hn_full_sat_probe.py \
+            --graph /tmp/build/GRAPH.json \
+            --solver '${{ matrix.solver }}' \
+            --out-dir /tmp/out
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-layer1200-${{ matrix.solver }}-${{ github.run_id }}
+          path: /tmp/out
+          retention-days: 30
