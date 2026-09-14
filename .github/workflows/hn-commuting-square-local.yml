@@ -7,6 +7,9 @@ on:
       - '.github/workflows/hn-commuting-square-local.yml'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 env:
   UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
   G510_SHA256: 0248fe0c7fd2df06d818aee0c188a7b70362d5990c1ca39271fc057b7b898346
@@ -15,7 +18,7 @@ env:
 jobs:
   local:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
         with:
@@ -74,6 +77,43 @@ jobs:
       - name: Independent validated local coloring
         run: |
           PYTHONPATH=tools python tools/hn_tabucol.py --graph "$OUT_DIR/COMPLETED_GRAPH.json" --out-dir "$OUT_DIR/tabucol" --seconds 1200 --restarts 20 --iterations 1500000 --seed 2026091483 || true
+      - name: Separate all vertex pairs if coloring exists
+        run: |
+          python - <<'PY'
+          import json,os,subprocess,sys
+          from pathlib import Path
+          root=Path(os.environ['OUT_DIR']); seed=root/'tabucol/TABUCOL.json'; d=json.loads(seed.read_text())
+          if d.get('status')!='VALIDATED_PROPER_5_COLORING':
+              print('no validated local coloring; skip B separation'); sys.exit(0)
+          cmd=[sys.executable,'tools/hn_local_pair_separation.py','--graph',str(root/'COMPLETED_GRAPH.json'),'--seed-coloring',str(seed),'--out-dir',str(root/'separation'),'--seconds','2400','--pair-seconds','15','--iterations','700000','--perturb','36','--max-failures','40','--seed','2026091484']
+          env=dict(os.environ); env['PYTHONPATH']='tools'; subprocess.run(cmd,check=True,env=env)
+          PY
+      - name: Summarize
+        if: always()
+        run: |
+          cp "$OUT_DIR/separation/SEPARATION.json" "$OUT_DIR/SEPARATION.json" 2>/dev/null || true
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ['OUT_DIR']); lines=['# Commuting four-orbit square — independent local route','']
+          for label,name in [('geometry','GEOMETRY.json'),('tabucol','tabucol/TABUCOL.json'),('separation','SEPARATION.json')]:
+              p=root/name
+              if p.exists():
+                  d=json.loads(p.read_text()); slim={k:v for k,v in d.items() if k not in ('colors','records','remaining_blocks','compressed_source_indices')}; lines += [f'## {label}','```json',json.dumps(slim,indent=2),'```','']
+          lines += ['Every successful coloring/repair witness is validated on every exact edge. Local failure or timeout is non-evidence.']
+          (root/'SUMMARY.md').write_text('\n'.join(lines)+'\n'); print((root/'SUMMARY.md').read_text())
+          PY
+      - name: Commit compact checkpoint
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase origin main
+          git add "$OUT_DIR/SUMMARY.md" "$OUT_DIR/GEOMETRY.json" "$OUT_DIR/tabucol/TABUCOL.json" "$OUT_DIR/SEPARATION.json" 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m 'Store commuting-square local classification'
+            git push origin HEAD:main
+          fi
       - uses: actions/upload-artifact@v7
         if: always()
         with:
