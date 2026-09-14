@@ -1,0 +1,98 @@
+name: hn-palette-conflict-edge-cover4
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-palette-conflict-edge-cover4.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: p1q7-residual-sat-input-34853416283
+          path: /tmp/input
+          run-id: 34853416283
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-center-geometry1200-34885574185
+          path: /tmp/geom
+          run-id: 34885574185
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-layer400-all-34882939861
+          path: /tmp/all400
+          run-id: 34882939861
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract exact four-center conflict-edge cover
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          S=[8,847,167,169]
+          d=json.loads(Path('/tmp/geom/CENTER_LIBRARY.json').read_text())
+          loc={g:i for i,g in enumerate(S)}
+          edges=[[loc[u],loc[v]] for u,v in d['center_edges'] if u in loc and v in loc]
+          assert sorted(map(tuple,edges))==[(0,1),(2,3)],edges
+          sub={'candidates':[d['candidates'][i] for i in S],'center_edges':edges,'source_indices':S,
+               'construction':'two forced-missing-color conflict edges covering seven observed escape base colorings'}
+          Path('/tmp/LIB.json').write_text(json.dumps(sub,separators=(',',':'))+'\n')
+          s=Path('/tmp/all400/repair/COLORING.txt').read_text().strip(); assert len(s)>=9369
+          Path('/tmp/W.json').write_text(json.dumps({'models':[[int(x) for x in s[:9369]]]},separators=(',',':'))+'\n')
+          PY
+      - name: Build exact graph and seed
+        run: |
+          mkdir -p /tmp/build
+          PYTHONPATH=tools python tools/hn_palette_layer_build.py \
+            --graph /tmp/input/COMPLETED_GRAPH.json \
+            --library /tmp/LIB.json \
+            --tag all \
+            --witnesses /tmp/W.json \
+            --out-dir /tmp/build
+      - name: Unrestricted repair
+        run: |
+          mkdir -p /tmp/repair
+          PYTHONPATH=tools python tools/hn_seeded_tabucol.py \
+            --graph /tmp/build/GRAPH.json \
+            --seed-coloring /tmp/build/SEED.txt \
+            --seconds 5000 \
+            --restarts 50 \
+            --iterations 4000000 \
+            --perturb 50 \
+            --seed 202609154 \
+            --out-dir /tmp/repair
+      - name: Exact SAT confirmation
+        run: |
+          mkdir -p /tmp/sat
+          PYTHONPATH=tools python tools/hn_full_sat_probe.py \
+            --graph /tmp/build/GRAPH.json \
+            --solver cadical195 \
+            --out-dir /tmp/sat
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-conflict-edge-cover4-${{ github.run_id }}
+          path: |
+            /tmp/LIB.json
+            /tmp/build
+            /tmp/repair
+            /tmp/sat
+          retention-days: 30
