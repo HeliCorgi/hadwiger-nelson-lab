@@ -1,0 +1,95 @@
+name: hn-palette-layer-400
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-palette-layer-400.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 210
+    strategy:
+      fail-fast: false
+      matrix:
+        tag: [largest_component, all]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: p1q7-residual-sat-input-34853416283
+          path: /tmp/input
+          run-id: 34853416283
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-center-geometry-34881521569
+          path: /tmp/geom
+          run-id: 34881521569
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-layer-all160-34882221538
+          path: /tmp/all160
+          run-id: 34882221538
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Add all160 escape coloring to base witness family
+        run: |
+          python - <<'PY'
+          import glob,json
+          from pathlib import Path
+          d=json.loads(Path('results/unconditional-2026-09-14/commuting-cube-p1q7/WITNESSES.json').read_text())
+          ms=[list(map(int,c)) for c in d.get('models',d.get('colorings',[]))]
+          fs=glob.glob('/tmp/all160/**/COLORING.txt',recursive=True); assert fs
+          s=Path(fs[0]).read_text().strip(); assert len(s)>=9369
+          ms.append([int(x) for x in s[:9369]])
+          out=[];seen=set()
+          for c in ms:
+              t=tuple(c)
+              if t not in seen:seen.add(t);out.append(c)
+          Path('/tmp/WITNESSES.json').write_text(json.dumps({'models':out},separators=(',',':'))+'\n')
+          print({'models':len(out),'all160_projection_included':True})
+          PY
+      - name: Build exact coupled palette layer and fixed-base optimum
+        run: |
+          mkdir -p /tmp/build
+          PYTHONPATH=tools python tools/hn_palette_layer_build.py \
+            --graph /tmp/input/COMPLETED_GRAPH.json \
+            --library /tmp/geom/CENTER_LIBRARY.json \
+            --tag '${{ matrix.tag }}' \
+            --witnesses /tmp/WITNESSES.json \
+            --seed-coloring /tmp/input/SEED_COLORING.txt \
+            --out-dir /tmp/build
+      - name: Unrestricted repair
+        run: |
+          mkdir -p /tmp/repair
+          PYTHONPATH=tools python tools/hn_seeded_tabucol.py \
+            --graph /tmp/build/GRAPH.json \
+            --seed-coloring /tmp/build/SEED.txt \
+            --seconds 9000 \
+            --restarts 50 \
+            --iterations 5000000 \
+            --perturb 55 \
+            --seed 2026091540 \
+            --out-dir /tmp/repair
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-layer400-${{ matrix.tag }}-${{ github.run_id }}
+          path: |
+            /tmp/build
+            /tmp/repair
+          retention-days: 30
