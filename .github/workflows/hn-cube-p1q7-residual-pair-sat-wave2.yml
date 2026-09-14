@@ -12,9 +12,13 @@ permissions:
   contents: read
 
 jobs:
-  rich-incremental:
+  pair-sat:
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        pair: ['20,9169','53,9175','16,9134','110,9150','0,9178']
     steps:
       - uses: actions/checkout@v7
         with:
@@ -31,71 +35,19 @@ jobs:
           path: /tmp/input
           run-id: 34853416283
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/download-artifact@v7
-        with:
-          name: p1q7-b-diversify-34833276186
-          path: /tmp/diverse
-          run-id: 34833276186
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/download-artifact@v7
-        with:
-          name: p1q7-kempe-code-34833595953
-          path: /tmp/kempe
-          run-id: 34833595953
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/download-artifact@v7
-        with:
-          pattern: p1q7-pair-*-cadical195-34853416283
-          path: /tmp/wave1
-          merge-multiple: true
-          run-id: 34853416283
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/download-artifact@v7
-        with:
-          pattern: p1q7-wave2-*-34853818487
-          path: /tmp/wave2a
-          merge-multiple: true
-          run-id: 34853818487
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/download-artifact@v7
-        with:
-          pattern: p1q7-wave2-*-34854152531
-          path: /tmp/wave2b
-          merge-multiple: true
-          run-id: 34854152531
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Merge validated witness sources
+      - name: Exact pair inequality SAT
         run: |
-          python - <<'PY'
-          import glob,json
-          from pathlib import Path
-          models=[]; seen=set(); n=9369
-          def add(c):
-              c=list(map(int,c))
-              assert len(c)==n and all(0<=x<5 for x in c)
-              t=tuple(c)
-              if t not in seen: seen.add(t); models.append(c)
-          for p in [Path('results/unconditional-2026-09-14/commuting-cube-p1q7/WITNESSES.json'), Path('/tmp/diverse/separation/WITNESSES.json'), Path('/tmp/kempe/WITNESSES.json')]:
-              d=json.loads(p.read_text())
-              for c in d['models']: add(c)
-          for p in glob.glob('/tmp/wave1/**/COLORING.txt',recursive=True)+glob.glob('/tmp/wave2a/**/COLORING.txt',recursive=True)+glob.glob('/tmp/wave2b/**/COLORING.txt',recursive=True):
-              s=Path(p).read_text().strip(); add([int(x) for x in s])
-          Path('/tmp/RICH_WITNESSES.json').write_text(json.dumps({'models':models},separators=(',',':'))+'\n')
-          print({'unique_models':len(models)})
-          PY
-      - name: Rich-family incremental exact residual separation
-        run: |
-          mkdir -p /tmp/incremental
+          tag=$(echo '${{ matrix.pair }}' | tr ',' '-')
+          mkdir -p "/tmp/out-$tag"
           PYTHONPATH=tools python tools/hn_full_sat_probe.py \
             --graph /tmp/input/COMPLETED_GRAPH.json \
             --seed-coloring /tmp/input/SEED_COLORING.txt \
-            --witnesses /tmp/RICH_WITNESSES.json \
-            --iterate-pairs 30 \
+            --neq-pair '${{ matrix.pair }}' \
             --solver cadical195 \
-            --out-dir /tmp/incremental
+            --out-dir "/tmp/out-$tag"
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: p1q7-rich-incremental-${{ github.run_id }}
-          path: /tmp/incremental
+          name: p1q7-wave5-${{ strategy.job-index }}-${{ github.run_id }}
+          path: /tmp/out-*
           retention-days: 30
