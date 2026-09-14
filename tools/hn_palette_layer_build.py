@@ -71,6 +71,13 @@ def choose(tag,cands,cedges):
             assert max(killers)<len(cands)
             S|=killers
             for i in list(killers):S|=adj[i]
+    elif tag=='adaptive95':
+        # CEGIS extension of the validated adaptive47 escape coloring, now in
+        # the top-400 library.  Includes the 18 exact rainbow killers of that
+        # counterexample and every immediate center-edge partner.  This list is
+        # the resulting exact closure, pinned for reproducibility.
+        S={0,1,2,4,5,6,7,9,10,11,13,15,16,17,18,20,21,22,24,25,27,32,36,37,39,41,43,45,49,53,56,59,63,65,71,73,75,79,84,86,88,89,91,96,99,100,101,102,103,105,107,109,111,113,116,118,120,121,127,128,134,135,138,139,146,149,150,151,163,165,168,172,176,178,184,207,244,255,256,262,268,269,282,283,294,302,305,314,316,328,339,341,352,364,386}
+        assert max(S)<len(cands) and len(S)==95
     elif tag=='nonisolated': S={i for i,d in enumerate(deg) if d>0}
     elif tag in ('all160','all'): S=set(range(len(cands)))
     else: raise ValueError(tag)
@@ -103,7 +110,7 @@ def optimize_centers(base, neighborhoods, center_edges):
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument('--graph',type=Path,required=True);ap.add_argument('--library',type=Path,required=True)
-    ap.add_argument('--tag',choices=['largest16','largest_component','hybrid25','adaptive47','nonisolated','all160','all'],required=True)
+    ap.add_argument('--tag',choices=['largest16','largest_component','hybrid25','adaptive47','adaptive95','nonisolated','all160','all'],required=True)
     ap.add_argument('--witnesses',type=Path,default=None);ap.add_argument('--seed-coloring',type=Path,default=None)
     ap.add_argument('--out-dir',type=Path,required=True)
     a=ap.parse_args();a.out_dir.mkdir(parents=True,exist_ok=True)
