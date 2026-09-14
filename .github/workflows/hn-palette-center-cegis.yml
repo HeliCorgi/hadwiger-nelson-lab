@@ -1,0 +1,51 @@
+name: hn-palette-center-cegis
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/hn_palette_center_cegis.py'
+      - '.github/workflows/hn-palette-center-cegis.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  palette-cegis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: p1q7-residual-sat-input-34853416283
+          path: /tmp/input
+          run-id: 34853416283
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Palette-exhaustion center CEGIS
+        run: |
+          mkdir -p /tmp/palette
+          PYTHONPATH=tools python tools/hn_palette_center_cegis.py \
+            --graph /tmp/input/COMPLETED_GRAPH.json \
+            --seed-coloring /tmp/input/SEED_COLORING.txt \
+            --witnesses results/unconditional-2026-09-14/commuting-cube-p1q7/WITNESSES.json \
+            --direction-vertices 1192 \
+            --candidate-count 160 \
+            --max-additions 20 \
+            --out-dir /tmp/palette
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-center-cegis-${{ github.run_id }}
+          path: /tmp/palette
+          retention-days: 30
