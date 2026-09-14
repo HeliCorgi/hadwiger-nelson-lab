@@ -1,0 +1,91 @@
+name: hn-palette-adaptive47
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-palette-adaptive47.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: p1q7-residual-sat-input-34853416283
+          path: /tmp/input
+          run-id: 34853416283
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-center-geometry-34881700970
+          path: /tmp/geom
+          run-id: 34881700970
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-layer-hybrid25-34882221538
+          path: /tmp/hybrid
+          run-id: 34882221538
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build base witness family including hybrid25 counterexample
+        run: |
+          python - <<'PY'
+          import json,glob
+          from pathlib import Path
+          src=Path('results/unconditional-2026-09-14/commuting-cube-p1q7/WITNESSES.json')
+          d=json.loads(src.read_text()); models=[list(map(int,c)) for c in d.get('models',d.get('colorings',[]))]
+          fs=glob.glob('/tmp/hybrid/**/COLORING.txt',recursive=True); assert fs,glob.glob('/tmp/hybrid/**/*',recursive=True)
+          s=Path(fs[0]).read_text().strip(); assert len(s)>=9369
+          models.append([int(x) for x in s[:9369]])
+          seen=[]; st=set()
+          for c in models:
+              t=tuple(c)
+              if t not in st:st.add(t);seen.append(c)
+          Path('/tmp/WITNESSES.json').write_text(json.dumps({'models':seen},separators=(',',':'))+'\n')
+          print({'base_models':len(seen),'hybrid_projection_included':True})
+          PY
+      - name: Build adaptive47 and exact-optimize center colors
+        run: |
+          mkdir -p /tmp/build
+          PYTHONPATH=tools python tools/hn_palette_layer_build.py \
+            --graph /tmp/input/COMPLETED_GRAPH.json \
+            --library /tmp/geom/CENTER_LIBRARY.json \
+            --tag adaptive47 \
+            --witnesses /tmp/WITNESSES.json \
+            --seed-coloring /tmp/input/SEED_COLORING.txt \
+            --out-dir /tmp/build
+      - name: Unrestricted repair
+        run: |
+          mkdir -p /tmp/repair
+          PYTHONPATH=tools python tools/hn_seeded_tabucol.py \
+            --graph /tmp/build/GRAPH.json \
+            --seed-coloring /tmp/build/SEED.txt \
+            --seconds 7200 \
+            --restarts 40 \
+            --iterations 4000000 \
+            --perturb 45 \
+            --seed 2026091523 \
+            --out-dir /tmp/repair
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-adaptive47-${{ github.run_id }}
+          path: |
+            /tmp/build
+            /tmp/repair
+          retention-days: 30
