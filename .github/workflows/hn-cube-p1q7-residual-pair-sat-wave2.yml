@@ -12,13 +12,9 @@ permissions:
   contents: read
 
 jobs:
-  pair-sat:
+  incremental:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
-    strategy:
-      fail-fast: false
-      matrix:
-        pair: ['14,9169','41,9175','0,9183']
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v7
         with:
@@ -35,19 +31,19 @@ jobs:
           path: /tmp/input
           run-id: 34853416283
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Exact pair inequality SAT
+      - name: Incremental exact residual separation
         run: |
-          tag=$(echo '${{ matrix.pair }}' | tr ',' '-')
-          mkdir -p "/tmp/out-$tag"
+          mkdir -p /tmp/incremental
           PYTHONPATH=tools python tools/hn_full_sat_probe.py \
             --graph /tmp/input/COMPLETED_GRAPH.json \
             --seed-coloring /tmp/input/SEED_COLORING.txt \
-            --neq-pair '${{ matrix.pair }}' \
+            --witnesses results/unconditional-2026-09-14/commuting-cube-p1q7/WITNESSES.json \
+            --iterate-pairs 20 \
             --solver cadical195 \
-            --out-dir "/tmp/out-$tag"
+            --out-dir /tmp/incremental
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: p1q7-wave2-${{ strategy.job-index }}-${{ github.run_id }}
-          path: /tmp/out-*
+          name: p1q7-incremental-${{ github.run_id }}
+          path: /tmp/incremental
           retention-days: 30
