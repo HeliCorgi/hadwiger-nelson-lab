@@ -1,0 +1,36 @@
+{
+  "selection": {
+    "dst_pivot": 0,
+    "src_pivot": 911,
+    "vertices": 2373,
+    "inherited_edges": 14016,
+    "added_cross_edges": 162,
+    "screen_edges": 14178,
+    "shift": {
+      "a": [
+        -2,
+        0,
+        0,
+        0,
+        0,
+        15,
+        0,
+        0
+      ],
+      "b": [
+        -4,
+        0,
+        0,
+        0,
+        0,
+        5,
+        0,
+        0
+      ],
+      "den": 30
+    },
+    "float_near_pairs": 14178,
+    "exact_checked_proposals": 14178,
+    "all_screen_edges_exact_unit": true
+  }
+}

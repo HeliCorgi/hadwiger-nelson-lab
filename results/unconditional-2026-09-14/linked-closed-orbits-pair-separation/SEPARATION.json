@@ -1,0 +1,172 @@
+{
+  "status": "NO_FORCED_EQUAL_PAIR",
+  "classification": "D",
+  "vertices": 2373,
+  "edges": 14178,
+  "initial_model_count": 8,
+  "initial_remaining_pairs": 19,
+  "generated_witness_count": 18,
+  "saved_witness_count": 11,
+  "compressed_witness_count": 11,
+  "compressed_source_indices": [
+    0,
+    2,
+    6,
+    1,
+    5,
+    17,
+    3,
+    4,
+    7,
+    9,
+    13
+  ],
+  "remaining_pairs": 0,
+  "remaining_blocks": [],
+  "records": [
+    {
+      "target": [
+        1247,
+        1897
+      ],
+      "before": 19,
+      "after": 11,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 21833,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        304,
+        969
+      ],
+      "before": 11,
+      "after": 10,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        54,
+        2001
+      ],
+      "before": 10,
+      "after": 9,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 20,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        129,
+        592
+      ],
+      "before": 9,
+      "after": 8,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 942,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        490,
+        2206
+      ],
+      "before": 8,
+      "after": 6,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 624,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        951,
+        1302
+      ],
+      "before": 6,
+      "after": 5,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 557,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        35,
+        1280
+      ],
+      "before": 5,
+      "after": 3,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 2920,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        1489,
+        1852
+      ],
+      "before": 3,
+      "after": 2,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        783,
+        2150
+      ],
+      "before": 2,
+      "after": 1,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        382,
+        1567
+      ],
+      "before": 1,
+      "after": 0,
+      "max_block": 1,
+      "repair": {
+        "restart": 0,
+        "iterations": 179,
+        "best_conflicts": 0
+      }
+    }
+  ],
+  "failures": [],
+  "timeout_or_repair_failure_is_evidence": false,
+  "all_witnesses_validated_on_all_edges": true,
+  "elapsed_seconds": 4.114
+}

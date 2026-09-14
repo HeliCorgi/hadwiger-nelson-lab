@@ -1,0 +1,18 @@
+{
+  "status": "VALIDATED_COLORING_FAMILY",
+  "vertices": 2373,
+  "edges": 14178,
+  "graph_sha256": "ffbe6d46def8ac5b6a0081279f56a2b91f1cad84a59a689a90252057a6fa6f41",
+  "models": 8,
+  "signature_stats": {
+    "models": 8,
+    "distinct_signatures": 2354,
+    "remaining_unseparated_pairs": 19,
+    "remaining_pair_ratio": 6.751047656000722e-06,
+    "max_signature_block": 2
+  },
+  "all_models_validated_on_all_edges": true,
+  "first_model_seeded": true,
+  "first_model_conflicts": 800000,
+  "first_model_seed": 20260914
+}
