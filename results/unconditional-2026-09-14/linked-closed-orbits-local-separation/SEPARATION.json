@@ -1,0 +1,5452 @@
+{
+  "status": "NO_FORCED_EQUAL_PAIR",
+  "classification": "D",
+  "vertices": 2373,
+  "edges": 14178,
+  "generated_witness_count": 380,
+  "saved_witness_count": 119,
+  "compressed_witness_count": 119,
+  "compressed_source_indices": [
+    18,
+    298,
+    67,
+    200,
+    27,
+    351,
+    150,
+    101,
+    236,
+    3,
+    28,
+    379,
+    25,
+    189,
+    107,
+    267,
+    41,
+    255,
+    83,
+    324,
+    125,
+    56,
+    278,
+    217,
+    143,
+    309,
+    112,
+    36,
+    157,
+    301,
+    115,
+    170,
+    244,
+    29,
+    261,
+    59,
+    359,
+    295,
+    167,
+    185,
+    73,
+    206,
+    177,
+    57,
+    147,
+    49,
+    8,
+    306,
+    241,
+    23,
+    119,
+    339,
+    154,
+    174,
+    271,
+    98,
+    126,
+    71,
+    22,
+    276,
+    285,
+    338,
+    13,
+    79,
+    103,
+    220,
+    299,
+    342,
+    191,
+    347,
+    204,
+    268,
+    97,
+    221,
+    16,
+    94,
+    114,
+    273,
+    135,
+    148,
+    372,
+    32,
+    60,
+    139,
+    159,
+    353,
+    61,
+    151,
+    168,
+    303,
+    68,
+    165,
+    207,
+    308,
+    52,
+    116,
+    117,
+    179,
+    228,
+    243,
+    266,
+    307,
+    314,
+    15,
+    37,
+    105,
+    108,
+    127,
+    141,
+    172,
+    186,
+    247,
+    310,
+    313,
+    317,
+    333,
+    344,
+    354,
+    355
+  ],
+  "remaining_pairs": 0,
+  "remaining_blocks": [],
+  "records": [
+    {
+      "target": [
+        0,
+        2372
+      ],
+      "before": 562448,
+      "after": 557199,
+      "max_block": 486,
+      "repair": {
+        "restart": 0,
+        "iterations": 54,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        0,
+        2368
+      ],
+      "before": 557199,
+      "after": 552025,
+      "max_block": 485,
+      "repair": {
+        "restart": 0,
+        "iterations": 20,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        0,
+        2367
+      ],
+      "before": 552025,
+      "after": 542725,
+      "max_block": 481,
+      "repair": {
+        "restart": 0,
+        "iterations": 57,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        0,
+        2364
+      ],
+      "before": 542725,
+      "after": 533524,
+      "max_block": 478,
+      "repair": {
+        "restart": 0,
+        "iterations": 104,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        0,
+        2360
+      ],
+      "before": 533524,
+      "after": 528894,
+      "max_block": 476,
+      "repair": {
+        "restart": 0,
+        "iterations": 76,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        0,
+        2349
+      ],
+      "before": 528894,
+      "after": 521022,
+      "max_block": 472,
+      "repair": {
+        "restart": 0,
+        "iterations": 78,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        0,
+        2341
+      ],
+      "before": 521022,
+      "after": 520097,
+      "max_block": 471,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        0,
+        2339
+      ],
+      "before": 520097,
+      "after": 507082,
+      "max_block": 465,
+      "repair": {
+        "restart": 0,
+        "iterations": 130,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2357
+      ],
+      "before": 507082,
+      "after": 495910,
+      "max_block": 462,
+      "repair": {
+        "restart": 0,
+        "iterations": 100,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2342
+      ],
+      "before": 495910,
+      "after": 495449,
+      "max_block": 461,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2336
+      ],
+      "before": 495449,
+      "after": 492786,
+      "max_block": 460,
+      "repair": {
+        "restart": 0,
+        "iterations": 7,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2328
+      ],
+      "before": 492786,
+      "after": 490979,
+      "max_block": 459,
+      "repair": {
+        "restart": 0,
+        "iterations": 10,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2321
+      ],
+      "before": 490979,
+      "after": 487876,
+      "max_block": 456,
+      "repair": {
+        "restart": 0,
+        "iterations": 13,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2317
+      ],
+      "before": 487876,
+      "after": 486971,
+      "max_block": 455,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2314
+      ],
+      "before": 486971,
+      "after": 483855,
+      "max_block": 453,
+      "repair": {
+        "restart": 0,
+        "iterations": 25,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2312
+      ],
+      "before": 483855,
+      "after": 458745,
+      "max_block": 440,
+      "repair": {
+        "restart": 0,
+        "iterations": 518,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2294
+      ],
+      "before": 458745,
+      "after": 457446,
+      "max_block": 439,
+      "repair": {
+        "restart": 0,
+        "iterations": 2,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2265
+      ],
+      "before": 457446,
+      "after": 455708,
+      "max_block": 438,
+      "repair": {
+        "restart": 0,
+        "iterations": 23,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2263
+      ],
+      "before": 455708,
+      "after": 455271,
+      "max_block": 437,
+      "repair": {
+        "restart": 0,
+        "iterations": 6,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        2,
+        2370
+      ],
+      "before": 455271,
+      "after": 450625,
+      "max_block": 435,
+      "repair": {
+        "restart": 0,
+        "iterations": 40,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2251
+      ],
+      "before": 450625,
+      "after": 447193,
+      "max_block": 432,
+      "repair": {
+        "restart": 0,
+        "iterations": 12,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        0,
+        2301
+      ],
+      "before": 447193,
+      "after": 445478,
+      "max_block": 432,
+      "repair": {
+        "restart": 0,
+        "iterations": 9,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        2,
+        2366
+      ],
+      "before": 445478,
+      "after": 437186,
+      "max_block": 428,
+      "repair": {
+        "restart": 0,
+        "iterations": 186,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        2,
+        2363
+      ],
+      "before": 437186,
+      "after": 436759,
+      "max_block": 428,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        0,
+        2229
+      ],
+      "before": 436759,
+      "after": 272744,
+      "max_block": 351,
+      "repair": {
+        "restart": 0,
+        "iterations": 17128,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2250
+      ],
+      "before": 272744,
+      "after": 271002,
+      "max_block": 350,
+      "repair": {
+        "restart": 0,
+        "iterations": 204,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2236
+      ],
+      "before": 271002,
+      "after": 184054,
+      "max_block": 299,
+      "repair": {
+        "restart": 0,
+        "iterations": 16310,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2233
+      ],
+      "before": 184054,
+      "after": 115966,
+      "max_block": 250,
+      "repair": {
+        "restart": 0,
+        "iterations": 13705,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2212
+      ],
+      "before": 115966,
+      "after": 103238,
+      "max_block": 234,
+      "repair": {
+        "restart": 0,
+        "iterations": 1891,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2195
+      ],
+      "before": 103238,
+      "after": 102426,
+      "max_block": 233,
+      "repair": {
+        "restart": 0,
+        "iterations": 104,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2181
+      ],
+      "before": 102426,
+      "after": 101802,
+      "max_block": 232,
+      "repair": {
+        "restart": 0,
+        "iterations": 5,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2172
+      ],
+      "before": 101802,
+      "after": 100390,
+      "max_block": 228,
+      "repair": {
+        "restart": 0,
+        "iterations": 60,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2171
+      ],
+      "before": 100390,
+      "after": 92571,
+      "max_block": 225,
+      "repair": {
+        "restart": 0,
+        "iterations": 1707,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2170
+      ],
+      "before": 92571,
+      "after": 89792,
+      "max_block": 219,
+      "repair": {
+        "restart": 0,
+        "iterations": 742,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2169
+      ],
+      "before": 89792,
+      "after": 89401,
+      "max_block": 218,
+      "repair": {
+        "restart": 0,
+        "iterations": 5,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2163
+      ],
+      "before": 89401,
+      "after": 88803,
+      "max_block": 217,
+      "repair": {
+        "restart": 0,
+        "iterations": 9,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2161
+      ],
+      "before": 88803,
+      "after": 86554,
+      "max_block": 211,
+      "repair": {
+        "restart": 0,
+        "iterations": 281,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2152
+      ],
+      "before": 86554,
+      "after": 85585,
+      "max_block": 210,
+      "repair": {
+        "restart": 0,
+        "iterations": 13,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2150
+      ],
+      "before": 85585,
+      "after": 85358,
+      "max_block": 209,
+      "repair": {
+        "restart": 0,
+        "iterations": 13,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2134
+      ],
+      "before": 85358,
+      "after": 84818,
+      "max_block": 208,
+      "repair": {
+        "restart": 0,
+        "iterations": 19,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2118
+      ],
+      "before": 84818,
+      "after": 84611,
+      "max_block": 207,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2114
+      ],
+      "before": 84611,
+      "after": 81437,
+      "max_block": 201,
+      "repair": {
+        "restart": 0,
+        "iterations": 172,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2111
+      ],
+      "before": 81437,
+      "after": 79842,
+      "max_block": 198,
+      "repair": {
+        "restart": 0,
+        "iterations": 140,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        2352
+      ],
+      "before": 79842,
+      "after": 78135,
+      "max_block": 196,
+      "repair": {
+        "restart": 0,
+        "iterations": 177,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2092
+      ],
+      "before": 78135,
+      "after": 77940,
+      "max_block": 195,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2078
+      ],
+      "before": 77940,
+      "after": 77179,
+      "max_block": 195,
+      "repair": {
+        "restart": 0,
+        "iterations": 42,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        2345
+      ],
+      "before": 77179,
+      "after": 76878,
+      "max_block": 195,
+      "repair": {
+        "restart": 0,
+        "iterations": 6,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2227
+      ],
+      "before": 76878,
+      "after": 76183,
+      "max_block": 194,
+      "repair": {
+        "restart": 0,
+        "iterations": 3,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        2344
+      ],
+      "before": 76183,
+      "after": 74565,
+      "max_block": 194,
+      "repair": {
+        "restart": 0,
+        "iterations": 325,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2210
+      ],
+      "before": 74565,
+      "after": 72471,
+      "max_block": 190,
+      "repair": {
+        "restart": 0,
+        "iterations": 482,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2209
+      ],
+      "before": 72471,
+      "after": 71195,
+      "max_block": 187,
+      "repair": {
+        "restart": 0,
+        "iterations": 232,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2067
+      ],
+      "before": 71195,
+      "after": 71008,
+      "max_block": 187,
+      "repair": {
+        "restart": 0,
+        "iterations": 5,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        2331
+      ],
+      "before": 71008,
+      "after": 69920,
+      "max_block": 186,
+      "repair": {
+        "restart": 0,
+        "iterations": 47,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2065
+      ],
+      "before": 69920,
+      "after": 69587,
+      "max_block": 186,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2148
+      ],
+      "before": 69587,
+      "after": 69402,
+      "max_block": 185,
+      "repair": {
+        "restart": 0,
+        "iterations": 15,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        2053
+      ],
+      "before": 69402,
+      "after": 69218,
+      "max_block": 185,
+      "repair": {
+        "restart": 0,
+        "iterations": 6,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2126
+      ],
+      "before": 69218,
+      "after": 68034,
+      "max_block": 184,
+      "repair": {
+        "restart": 0,
+        "iterations": 286,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2119
+      ],
+      "before": 68034,
+      "after": 65285,
+      "max_block": 180,
+      "repair": {
+        "restart": 0,
+        "iterations": 1882,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1996
+      ],
+      "before": 65285,
+      "after": 64217,
+      "max_block": 179,
+      "repair": {
+        "restart": 0,
+        "iterations": 114,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1991
+      ],
+      "before": 64217,
+      "after": 61424,
+      "max_block": 178,
+      "repair": {
+        "restart": 0,
+        "iterations": 536,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2103
+      ],
+      "before": 61424,
+      "after": 59181,
+      "max_block": 175,
+      "repair": {
+        "restart": 0,
+        "iterations": 483,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2098
+      ],
+      "before": 59181,
+      "after": 58752,
+      "max_block": 174,
+      "repair": {
+        "restart": 0,
+        "iterations": 54,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2082
+      ],
+      "before": 58752,
+      "after": 57256,
+      "max_block": 173,
+      "repair": {
+        "restart": 0,
+        "iterations": 65,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2043
+      ],
+      "before": 57256,
+      "after": 56061,
+      "max_block": 169,
+      "repair": {
+        "restart": 0,
+        "iterations": 211,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2039
+      ],
+      "before": 56061,
+      "after": 55893,
+      "max_block": 168,
+      "repair": {
+        "restart": 0,
+        "iterations": 9,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1982
+      ],
+      "before": 55893,
+      "after": 55409,
+      "max_block": 168,
+      "repair": {
+        "restart": 0,
+        "iterations": 37,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2029
+      ],
+      "before": 55409,
+      "after": 55242,
+      "max_block": 167,
+      "repair": {
+        "restart": 0,
+        "iterations": 18,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1900
+      ],
+      "before": 55242,
+      "after": 53508,
+      "max_block": 165,
+      "repair": {
+        "restart": 0,
+        "iterations": 1096,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2026
+      ],
+      "before": 53508,
+      "after": 53344,
+      "max_block": 164,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1850
+      ],
+      "before": 53344,
+      "after": 52395,
+      "max_block": 163,
+      "repair": {
+        "restart": 0,
+        "iterations": 383,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1840
+      ],
+      "before": 52395,
+      "after": 52223,
+      "max_block": 162,
+      "repair": {
+        "restart": 0,
+        "iterations": 8,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1808
+      ],
+      "before": 52223,
+      "after": 49310,
+      "max_block": 160,
+      "repair": {
+        "restart": 0,
+        "iterations": 1589,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1806
+      ],
+      "before": 49310,
+      "after": 48887,
+      "max_block": 159,
+      "repair": {
+        "restart": 0,
+        "iterations": 146,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1804
+      ],
+      "before": 48887,
+      "after": 48729,
+      "max_block": 158,
+      "repair": {
+        "restart": 0,
+        "iterations": 2,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1791
+      ],
+      "before": 48729,
+      "after": 48288,
+      "max_block": 157,
+      "repair": {
+        "restart": 0,
+        "iterations": 353,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1783
+      ],
+      "before": 48288,
+      "after": 47695,
+      "max_block": 157,
+      "repair": {
+        "restart": 0,
+        "iterations": 5,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        2006
+      ],
+      "before": 47695,
+      "after": 47081,
+      "max_block": 154,
+      "repair": {
+        "restart": 0,
+        "iterations": 68,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1720
+      ],
+      "before": 47081,
+      "after": 46928,
+      "max_block": 153,
+      "repair": {
+        "restart": 0,
+        "iterations": 4,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1694
+      ],
+      "before": 46928,
+      "after": 46622,
+      "max_block": 152,
+      "repair": {
+        "restart": 0,
+        "iterations": 11,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1669
+      ],
+      "before": 46622,
+      "after": 46351,
+      "max_block": 152,
+      "repair": {
+        "restart": 0,
+        "iterations": 10,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        2308
+      ],
+      "before": 46351,
+      "after": 46200,
+      "max_block": 152,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1994
+      ],
+      "before": 46200,
+      "after": 45748,
+      "max_block": 151,
+      "repair": {
+        "restart": 0,
+        "iterations": 18,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1986
+      ],
+      "before": 45748,
+      "after": 45597,
+      "max_block": 150,
+      "repair": {
+        "restart": 0,
+        "iterations": 7,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1641
+      ],
+      "before": 45597,
+      "after": 45092,
+      "max_block": 150,
+      "repair": {
+        "restart": 0,
+        "iterations": 544,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        2272
+      ],
+      "before": 45092,
+      "after": 44943,
+      "max_block": 150,
+      "repair": {
+        "restart": 0,
+        "iterations": 5,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1977
+      ],
+      "before": 44943,
+      "after": 44794,
+      "max_block": 149,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        2253
+      ],
+      "before": 44794,
+      "after": 44646,
+      "max_block": 149,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1975
+      ],
+      "before": 44646,
+      "after": 44351,
+      "max_block": 148,
+      "repair": {
+        "restart": 0,
+        "iterations": 31,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        2223
+      ],
+      "before": 44351,
+      "after": 44204,
+      "max_block": 148,
+      "repair": {
+        "restart": 0,
+        "iterations": 6,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1893
+      ],
+      "before": 44204,
+      "after": 43789,
+      "max_block": 147,
+      "repair": {
+        "restart": 0,
+        "iterations": 28,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1633
+      ],
+      "before": 43789,
+      "after": 43643,
+      "max_block": 147,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1890
+      ],
+      "before": 43643,
+      "after": 42890,
+      "max_block": 146,
+      "repair": {
+        "restart": 0,
+        "iterations": 27,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1558
+      ],
+      "before": 42890,
+      "after": 42165,
+      "max_block": 144,
+      "repair": {
+        "restart": 0,
+        "iterations": 148,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1555
+      ],
+      "before": 42165,
+      "after": 42022,
+      "max_block": 144,
+      "repair": {
+        "restart": 0,
+        "iterations": 22,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        2186
+      ],
+      "before": 42022,
+      "after": 41879,
+      "max_block": 143,
+      "repair": {
+        "restart": 0,
+        "iterations": 2,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1549
+      ],
+      "before": 41879,
+      "after": 41734,
+      "max_block": 143,
+      "repair": {
+        "restart": 0,
+        "iterations": 15,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        2183
+      ],
+      "before": 41734,
+      "after": 41592,
+      "max_block": 142,
+      "repair": {
+        "restart": 0,
+        "iterations": 7,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1523
+      ],
+      "before": 41592,
+      "after": 41328,
+      "max_block": 142,
+      "repair": {
+        "restart": 0,
+        "iterations": 33,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        2180
+      ],
+      "before": 41328,
+      "after": 41042,
+      "max_block": 141,
+      "repair": {
+        "restart": 0,
+        "iterations": 41,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1521
+      ],
+      "before": 41042,
+      "after": 40017,
+      "max_block": 141,
+      "repair": {
+        "restart": 0,
+        "iterations": 147,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1854
+      ],
+      "before": 40017,
+      "after": 39877,
+      "max_block": 140,
+      "repair": {
+        "restart": 0,
+        "iterations": 2,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1846
+      ],
+      "before": 39877,
+      "after": 39016,
+      "max_block": 138,
+      "repair": {
+        "restart": 0,
+        "iterations": 354,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1481
+      ],
+      "before": 39016,
+      "after": 38874,
+      "max_block": 137,
+      "repair": {
+        "restart": 0,
+        "iterations": 4,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1477
+      ],
+      "before": 38874,
+      "after": 37237,
+      "max_block": 135,
+      "repair": {
+        "restart": 0,
+        "iterations": 406,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1688
+      ],
+      "before": 37237,
+      "after": 37103,
+      "max_block": 134,
+      "repair": {
+        "restart": 0,
+        "iterations": 11,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1447
+      ],
+      "before": 37103,
+      "after": 36729,
+      "max_block": 134,
+      "repair": {
+        "restart": 0,
+        "iterations": 28,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1679
+      ],
+      "before": 36729,
+      "after": 36464,
+      "max_block": 133,
+      "repair": {
+        "restart": 0,
+        "iterations": 28,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1439
+      ],
+      "before": 36464,
+      "after": 35847,
+      "max_block": 133,
+      "repair": {
+        "restart": 0,
+        "iterations": 76,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1651
+      ],
+      "before": 35847,
+      "after": 35715,
+      "max_block": 132,
+      "repair": {
+        "restart": 0,
+        "iterations": 41,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1650
+      ],
+      "before": 35715,
+      "after": 35584,
+      "max_block": 131,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1436
+      ],
+      "before": 35584,
+      "after": 35448,
+      "max_block": 131,
+      "repair": {
+        "restart": 0,
+        "iterations": 52,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1506
+      ],
+      "before": 35448,
+      "after": 35318,
+      "max_block": 130,
+      "repair": {
+        "restart": 0,
+        "iterations": 36,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1430
+      ],
+      "before": 35318,
+      "after": 35078,
+      "max_block": 130,
+      "repair": {
+        "restart": 0,
+        "iterations": 24,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        2132
+      ],
+      "before": 35078,
+      "after": 34658,
+      "max_block": 130,
+      "repair": {
+        "restart": 0,
+        "iterations": 591,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1488
+      ],
+      "before": 34658,
+      "after": 34145,
+      "max_block": 128,
+      "repair": {
+        "restart": 0,
+        "iterations": 441,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1425
+      ],
+      "before": 34145,
+      "after": 33683,
+      "max_block": 128,
+      "repair": {
+        "restart": 0,
+        "iterations": 1254,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1472
+      ],
+      "before": 33683,
+      "after": 33275,
+      "max_block": 127,
+      "repair": {
+        "restart": 0,
+        "iterations": 295,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        2124
+      ],
+      "before": 33275,
+      "after": 33148,
+      "max_block": 126,
+      "repair": {
+        "restart": 0,
+        "iterations": 37,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1420
+      ],
+      "before": 33148,
+      "after": 32631,
+      "max_block": 126,
+      "repair": {
+        "restart": 0,
+        "iterations": 55,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1346
+      ],
+      "before": 32631,
+      "after": 32231,
+      "max_block": 125,
+      "repair": {
+        "restart": 0,
+        "iterations": 87,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1193
+      ],
+      "before": 32231,
+      "after": 31883,
+      "max_block": 124,
+      "repair": {
+        "restart": 0,
+        "iterations": 47,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1180
+      ],
+      "before": 31883,
+      "after": 30276,
+      "max_block": 121,
+      "repair": {
+        "restart": 0,
+        "iterations": 56,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        2088
+      ],
+      "before": 30276,
+      "after": 30092,
+      "max_block": 121,
+      "repair": {
+        "restart": 0,
+        "iterations": 6,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1176
+      ],
+      "before": 30092,
+      "after": 29397,
+      "max_block": 120,
+      "repair": {
+        "restart": 0,
+        "iterations": 17,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1172
+      ],
+      "before": 29397,
+      "after": 27647,
+      "max_block": 115,
+      "repair": {
+        "restart": 0,
+        "iterations": 165,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        2087
+      ],
+      "before": 27647,
+      "after": 27419,
+      "max_block": 114,
+      "repair": {
+        "restart": 0,
+        "iterations": 678,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1413
+      ],
+      "before": 27419,
+      "after": 27306,
+      "max_block": 114,
+      "repair": {
+        "restart": 0,
+        "iterations": 6,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1118
+      ],
+      "before": 27306,
+      "after": 26869,
+      "max_block": 113,
+      "repair": {
+        "restart": 0,
+        "iterations": 9,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        2050
+      ],
+      "before": 26869,
+      "after": 26757,
+      "max_block": 113,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1105
+      ],
+      "before": 26757,
+      "after": 26213,
+      "max_block": 112,
+      "repair": {
+        "restart": 0,
+        "iterations": 30,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1069
+      ],
+      "before": 26213,
+      "after": 25967,
+      "max_block": 111,
+      "repair": {
+        "restart": 0,
+        "iterations": 63,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        2037
+      ],
+      "before": 25967,
+      "after": 25797,
+      "max_block": 111,
+      "repair": {
+        "restart": 0,
+        "iterations": 3,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1050
+      ],
+      "before": 25797,
+      "after": 25457,
+      "max_block": 110,
+      "repair": {
+        "restart": 0,
+        "iterations": 19,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1943
+      ],
+      "before": 25457,
+      "after": 24967,
+      "max_block": 109,
+      "repair": {
+        "restart": 0,
+        "iterations": 734,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1046
+      ],
+      "before": 24967,
+      "after": 24659,
+      "max_block": 108,
+      "repair": {
+        "restart": 0,
+        "iterations": 32,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1043
+      ],
+      "before": 24659,
+      "after": 24223,
+      "max_block": 107,
+      "repair": {
+        "restart": 0,
+        "iterations": 12,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1041
+      ],
+      "before": 24223,
+      "after": 21823,
+      "max_block": 102,
+      "repair": {
+        "restart": 0,
+        "iterations": 335,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1407
+      ],
+      "before": 21823,
+      "after": 21722,
+      "max_block": 102,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1908
+      ],
+      "before": 21722,
+      "after": 21621,
+      "max_block": 101,
+      "repair": {
+        "restart": 0,
+        "iterations": 17,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1403
+      ],
+      "before": 21621,
+      "after": 21433,
+      "max_block": 101,
+      "repair": {
+        "restart": 0,
+        "iterations": 17,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1886
+      ],
+      "before": 21433,
+      "after": 21333,
+      "max_block": 100,
+      "repair": {
+        "restart": 0,
+        "iterations": 4,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1401
+      ],
+      "before": 21333,
+      "after": 21234,
+      "max_block": 100,
+      "repair": {
+        "restart": 0,
+        "iterations": 2,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1867
+      ],
+      "before": 21234,
+      "after": 21135,
+      "max_block": 99,
+      "repair": {
+        "restart": 0,
+        "iterations": 4,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        9,
+        1281
+      ],
+      "before": 21135,
+      "after": 21035,
+      "max_block": 99,
+      "repair": {
+        "restart": 0,
+        "iterations": 252,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1810
+      ],
+      "before": 21035,
+      "after": 20250,
+      "max_block": 99,
+      "repair": {
+        "restart": 0,
+        "iterations": 459,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1034
+      ],
+      "before": 20250,
+      "after": 19663,
+      "max_block": 97,
+      "repair": {
+        "restart": 0,
+        "iterations": 97,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1751
+      ],
+      "before": 19663,
+      "after": 19567,
+      "max_block": 97,
+      "repair": {
+        "restart": 0,
+        "iterations": 29,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1032
+      ],
+      "before": 19567,
+      "after": 19093,
+      "max_block": 96,
+      "repair": {
+        "restart": 0,
+        "iterations": 39,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        1006
+      ],
+      "before": 19093,
+      "after": 17921,
+      "max_block": 93,
+      "repair": {
+        "restart": 0,
+        "iterations": 500,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1733
+      ],
+      "before": 17921,
+      "after": 17829,
+      "max_block": 92,
+      "repair": {
+        "restart": 0,
+        "iterations": 28,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1730
+      ],
+      "before": 17829,
+      "after": 17606,
+      "max_block": 92,
+      "repair": {
+        "restart": 0,
+        "iterations": 551,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        995
+      ],
+      "before": 17606,
+      "after": 17489,
+      "max_block": 91,
+      "repair": {
+        "restart": 0,
+        "iterations": 5,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1664
+      ],
+      "before": 17489,
+      "after": 17399,
+      "max_block": 91,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        963
+      ],
+      "before": 17399,
+      "after": 16801,
+      "max_block": 90,
+      "repair": {
+        "restart": 0,
+        "iterations": 133,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1652
+      ],
+      "before": 16801,
+      "after": 16712,
+      "max_block": 90,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        934
+      ],
+      "before": 16712,
+      "after": 16253,
+      "max_block": 89,
+      "repair": {
+        "restart": 0,
+        "iterations": 513,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        932
+      ],
+      "before": 16253,
+      "after": 16081,
+      "max_block": 88,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1642
+      ],
+      "before": 16081,
+      "after": 15994,
+      "max_block": 88,
+      "repair": {
+        "restart": 0,
+        "iterations": 56,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        924
+      ],
+      "before": 15994,
+      "after": 15816,
+      "max_block": 87,
+      "repair": {
+        "restart": 0,
+        "iterations": 53,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1624
+      ],
+      "before": 15816,
+      "after": 15730,
+      "max_block": 87,
+      "repair": {
+        "restart": 0,
+        "iterations": 15,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        918
+      ],
+      "before": 15730,
+      "after": 15559,
+      "max_block": 86,
+      "repair": {
+        "restart": 0,
+        "iterations": 14,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1620
+      ],
+      "before": 15559,
+      "after": 15474,
+      "max_block": 85,
+      "repair": {
+        "restart": 0,
+        "iterations": 3,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1599
+      ],
+      "before": 15474,
+      "after": 15390,
+      "max_block": 85,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        915
+      ],
+      "before": 15390,
+      "after": 14920,
+      "max_block": 83,
+      "repair": {
+        "restart": 0,
+        "iterations": 26,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1548
+      ],
+      "before": 14920,
+      "after": 14796,
+      "max_block": 83,
+      "repair": {
+        "restart": 0,
+        "iterations": 28,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        899
+      ],
+      "before": 14796,
+      "after": 14617,
+      "max_block": 82,
+      "repair": {
+        "restart": 0,
+        "iterations": 10,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1534
+      ],
+      "before": 14617,
+      "after": 14533,
+      "max_block": 82,
+      "repair": {
+        "restart": 0,
+        "iterations": 53,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        896
+      ],
+      "before": 14533,
+      "after": 14019,
+      "max_block": 81,
+      "repair": {
+        "restart": 0,
+        "iterations": 480,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1533
+      ],
+      "before": 14019,
+      "after": 13931,
+      "max_block": 80,
+      "repair": {
+        "restart": 0,
+        "iterations": 11,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1519
+      ],
+      "before": 13931,
+      "after": 13850,
+      "max_block": 80,
+      "repair": {
+        "restart": 0,
+        "iterations": 50,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        890
+      ],
+      "before": 13850,
+      "after": 13676,
+      "max_block": 79,
+      "repair": {
+        "restart": 0,
+        "iterations": 11,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1500
+      ],
+      "before": 13676,
+      "after": 13598,
+      "max_block": 79,
+      "repair": {
+        "restart": 0,
+        "iterations": 10,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        889
+      ],
+      "before": 13598,
+      "after": 13370,
+      "max_block": 78,
+      "repair": {
+        "restart": 0,
+        "iterations": 43,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1441
+      ],
+      "before": 13370,
+      "after": 13293,
+      "max_block": 78,
+      "repair": {
+        "restart": 0,
+        "iterations": 3,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        884
+      ],
+      "before": 13293,
+      "after": 10306,
+      "max_block": 71,
+      "repair": {
+        "restart": 0,
+        "iterations": 1217,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1426
+      ],
+      "before": 10306,
+      "after": 10236,
+      "max_block": 70,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1423
+      ],
+      "before": 10236,
+      "after": 10160,
+      "max_block": 70,
+      "repair": {
+        "restart": 0,
+        "iterations": 3,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        883
+      ],
+      "before": 10160,
+      "after": 9890,
+      "max_block": 68,
+      "repair": {
+        "restart": 0,
+        "iterations": 155,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1421
+      ],
+      "before": 9890,
+      "after": 9677,
+      "max_block": 67,
+      "repair": {
+        "restart": 0,
+        "iterations": 620,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1419
+      ],
+      "before": 9677,
+      "after": 9405,
+      "max_block": 66,
+      "repair": {
+        "restart": 0,
+        "iterations": 258,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1412
+      ],
+      "before": 9405,
+      "after": 9217,
+      "max_block": 66,
+      "repair": {
+        "restart": 0,
+        "iterations": 157,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        874
+      ],
+      "before": 9217,
+      "after": 8971,
+      "max_block": 65,
+      "repair": {
+        "restart": 0,
+        "iterations": 117,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        871
+      ],
+      "before": 8971,
+      "after": 8846,
+      "max_block": 64,
+      "repair": {
+        "restart": 0,
+        "iterations": 7,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1303
+      ],
+      "before": 8846,
+      "after": 8783,
+      "max_block": 64,
+      "repair": {
+        "restart": 0,
+        "iterations": 17,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        869
+      ],
+      "before": 8783,
+      "after": 8187,
+      "max_block": 62,
+      "repair": {
+        "restart": 0,
+        "iterations": 177,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1254
+      ],
+      "before": 8187,
+      "after": 8060,
+      "max_block": 62,
+      "repair": {
+        "restart": 0,
+        "iterations": 76,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        811
+      ],
+      "before": 8060,
+      "after": 7940,
+      "max_block": 61,
+      "repair": {
+        "restart": 0,
+        "iterations": 5,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        713
+      ],
+      "before": 7940,
+      "after": 7774,
+      "max_block": 60,
+      "repair": {
+        "restart": 0,
+        "iterations": 70,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1231
+      ],
+      "before": 7774,
+      "after": 7652,
+      "max_block": 59,
+      "repair": {
+        "restart": 0,
+        "iterations": 37,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1226
+      ],
+      "before": 7652,
+      "after": 7481,
+      "max_block": 59,
+      "repair": {
+        "restart": 0,
+        "iterations": 307,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        681
+      ],
+      "before": 7481,
+      "after": 7418,
+      "max_block": 58,
+      "repair": {
+        "restart": 0,
+        "iterations": 98,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1224
+      ],
+      "before": 7418,
+      "after": 7361,
+      "max_block": 58,
+      "repair": {
+        "restart": 0,
+        "iterations": 7,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        668
+      ],
+      "before": 7361,
+      "after": 7075,
+      "max_block": 57,
+      "repair": {
+        "restart": 0,
+        "iterations": 256,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1215
+      ],
+      "before": 7075,
+      "after": 7019,
+      "max_block": 57,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        652
+      ],
+      "before": 7019,
+      "after": 6903,
+      "max_block": 56,
+      "repair": {
+        "restart": 0,
+        "iterations": 5,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1200
+      ],
+      "before": 6903,
+      "after": 6848,
+      "max_block": 56,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        648
+      ],
+      "before": 6848,
+      "after": 6727,
+      "max_block": 55,
+      "repair": {
+        "restart": 0,
+        "iterations": 9,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1143
+      ],
+      "before": 6727,
+      "after": 6294,
+      "max_block": 54,
+      "repair": {
+        "restart": 0,
+        "iterations": 138,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        645
+      ],
+      "before": 6294,
+      "after": 5503,
+      "max_block": 51,
+      "repair": {
+        "restart": 0,
+        "iterations": 184,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        2274
+      ],
+      "before": 5503,
+      "after": 5402,
+      "max_block": 50,
+      "repair": {
+        "restart": 0,
+        "iterations": 422,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        642
+      ],
+      "before": 5402,
+      "after": 5221,
+      "max_block": 49,
+      "repair": {
+        "restart": 0,
+        "iterations": 44,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        2201
+      ],
+      "before": 5221,
+      "after": 5173,
+      "max_block": 49,
+      "repair": {
+        "restart": 0,
+        "iterations": 41,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        641
+      ],
+      "before": 5173,
+      "after": 5082,
+      "max_block": 48,
+      "repair": {
+        "restart": 0,
+        "iterations": 4,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        2058
+      ],
+      "before": 5082,
+      "after": 5035,
+      "max_block": 48,
+      "repair": {
+        "restart": 0,
+        "iterations": 24,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        629
+      ],
+      "before": 5035,
+      "after": 4988,
+      "max_block": 47,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        1942
+      ],
+      "before": 4988,
+      "after": 4941,
+      "max_block": 47,
+      "repair": {
+        "restart": 0,
+        "iterations": 718,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        624
+      ],
+      "before": 4941,
+      "after": 3923,
+      "max_block": 45,
+      "repair": {
+        "restart": 0,
+        "iterations": 1315,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        609
+      ],
+      "before": 3923,
+      "after": 3879,
+      "max_block": 44,
+      "repair": {
+        "restart": 0,
+        "iterations": 5,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        605
+      ],
+      "before": 3879,
+      "after": 3765,
+      "max_block": 43,
+      "repair": {
+        "restart": 0,
+        "iterations": 14,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1134
+      ],
+      "before": 3765,
+      "after": 3723,
+      "max_block": 43,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        571
+      ],
+      "before": 3723,
+      "after": 3615,
+      "max_block": 42,
+      "repair": {
+        "restart": 0,
+        "iterations": 2,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1060
+      ],
+      "before": 3615,
+      "after": 3555,
+      "max_block": 42,
+      "repair": {
+        "restart": 0,
+        "iterations": 10,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        550
+      ],
+      "before": 3555,
+      "after": 3477,
+      "max_block": 41,
+      "repair": {
+        "restart": 0,
+        "iterations": 125,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1035
+      ],
+      "before": 3477,
+      "after": 3437,
+      "max_block": 41,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        532
+      ],
+      "before": 3437,
+      "after": 3397,
+      "max_block": 40,
+      "repair": {
+        "restart": 0,
+        "iterations": 12,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        1692
+      ],
+      "before": 3397,
+      "after": 3358,
+      "max_block": 40,
+      "repair": {
+        "restart": 0,
+        "iterations": 5,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1021
+      ],
+      "before": 3358,
+      "after": 3318,
+      "max_block": 40,
+      "repair": {
+        "restart": 0,
+        "iterations": 3,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        526
+      ],
+      "before": 3318,
+      "after": 3168,
+      "max_block": 39,
+      "repair": {
+        "restart": 0,
+        "iterations": 25,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        1593
+      ],
+      "before": 3168,
+      "after": 3130,
+      "max_block": 39,
+      "repair": {
+        "restart": 0,
+        "iterations": 239,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        1012
+      ],
+      "before": 3130,
+      "after": 3092,
+      "max_block": 38,
+      "repair": {
+        "restart": 0,
+        "iterations": 5,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        1538
+      ],
+      "before": 3092,
+      "after": 3045,
+      "max_block": 38,
+      "repair": {
+        "restart": 0,
+        "iterations": 243,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        999
+      ],
+      "before": 3045,
+      "after": 2991,
+      "max_block": 37,
+      "repair": {
+        "restart": 0,
+        "iterations": 15,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        1529
+      ],
+      "before": 2991,
+      "after": 2955,
+      "max_block": 37,
+      "repair": {
+        "restart": 0,
+        "iterations": 14,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        14,
+        990
+      ],
+      "before": 2955,
+      "after": 2919,
+      "max_block": 37,
+      "repair": {
+        "restart": 0,
+        "iterations": 2,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        520
+      ],
+      "before": 2919,
+      "after": 2842,
+      "max_block": 36,
+      "repair": {
+        "restart": 0,
+        "iterations": 13,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        1145
+      ],
+      "before": 2842,
+      "after": 2804,
+      "max_block": 36,
+      "repair": {
+        "restart": 0,
+        "iterations": 9,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        519
+      ],
+      "before": 2804,
+      "after": 2769,
+      "max_block": 35,
+      "repair": {
+        "restart": 0,
+        "iterations": 5,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        1142
+      ],
+      "before": 2769,
+      "after": 2579,
+      "max_block": 35,
+      "repair": {
+        "restart": 0,
+        "iterations": 77,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        958
+      ],
+      "before": 2579,
+      "after": 2545,
+      "max_block": 35,
+      "repair": {
+        "restart": 0,
+        "iterations": 91,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        504
+      ],
+      "before": 2545,
+      "after": 2508,
+      "max_block": 34,
+      "repair": {
+        "restart": 0,
+        "iterations": 15,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        950
+      ],
+      "before": 2508,
+      "after": 2475,
+      "max_block": 34,
+      "repair": {
+        "restart": 0,
+        "iterations": 9,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        494
+      ],
+      "before": 2475,
+      "after": 2413,
+      "max_block": 33,
+      "repair": {
+        "restart": 0,
+        "iterations": 2,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        904
+      ],
+      "before": 2413,
+      "after": 2381,
+      "max_block": 33,
+      "repair": {
+        "restart": 0,
+        "iterations": 11,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        468
+      ],
+      "before": 2381,
+      "after": 2229,
+      "max_block": 32,
+      "repair": {
+        "restart": 0,
+        "iterations": 105,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        898
+      ],
+      "before": 2229,
+      "after": 2198,
+      "max_block": 31,
+      "repair": {
+        "restart": 0,
+        "iterations": 11,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        795
+      ],
+      "before": 2198,
+      "after": 2128,
+      "max_block": 31,
+      "repair": {
+        "restart": 0,
+        "iterations": 4,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        455
+      ],
+      "before": 2128,
+      "after": 2090,
+      "max_block": 30,
+      "repair": {
+        "restart": 0,
+        "iterations": 24,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        1104
+      ],
+      "before": 2090,
+      "after": 2060,
+      "max_block": 30,
+      "repair": {
+        "restart": 0,
+        "iterations": 3,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        792
+      ],
+      "before": 2060,
+      "after": 2000,
+      "max_block": 30,
+      "repair": {
+        "restart": 0,
+        "iterations": 65,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        419
+      ],
+      "before": 2000,
+      "after": 1970,
+      "max_block": 29,
+      "repair": {
+        "restart": 0,
+        "iterations": 7,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        1052
+      ],
+      "before": 1970,
+      "after": 1942,
+      "max_block": 29,
+      "repair": {
+        "restart": 0,
+        "iterations": 232,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        771
+      ],
+      "before": 1942,
+      "after": 1895,
+      "max_block": 29,
+      "repair": {
+        "restart": 0,
+        "iterations": 9,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        374
+      ],
+      "before": 1895,
+      "after": 1867,
+      "max_block": 28,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        1018
+      ],
+      "before": 1867,
+      "after": 1728,
+      "max_block": 27,
+      "repair": {
+        "restart": 0,
+        "iterations": 211,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        769
+      ],
+      "before": 1728,
+      "after": 1659,
+      "max_block": 27,
+      "repair": {
+        "restart": 0,
+        "iterations": 20,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        358
+      ],
+      "before": 1659,
+      "after": 1633,
+      "max_block": 26,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        84,
+        1267
+      ],
+      "before": 1633,
+      "after": 1608,
+      "max_block": 26,
+      "repair": {
+        "restart": 0,
+        "iterations": 589,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        729
+      ],
+      "before": 1608,
+      "after": 1583,
+      "max_block": 26,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        311
+      ],
+      "before": 1583,
+      "after": 1552,
+      "max_block": 25,
+      "repair": {
+        "restart": 0,
+        "iterations": 51,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        84,
+        1256
+      ],
+      "before": 1552,
+      "after": 1521,
+      "max_block": 25,
+      "repair": {
+        "restart": 0,
+        "iterations": 20,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        992
+      ],
+      "before": 1521,
+      "after": 1497,
+      "max_block": 25,
+      "repair": {
+        "restart": 0,
+        "iterations": 3,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        702
+      ],
+      "before": 1497,
+      "after": 1473,
+      "max_block": 25,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        307
+      ],
+      "before": 1473,
+      "after": 1416,
+      "max_block": 24,
+      "repair": {
+        "restart": 0,
+        "iterations": 18,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        920
+      ],
+      "before": 1416,
+      "after": 1393,
+      "max_block": 24,
+      "repair": {
+        "restart": 0,
+        "iterations": 4,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        675
+      ],
+      "before": 1393,
+      "after": 1370,
+      "max_block": 24,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        277
+      ],
+      "before": 1370,
+      "after": 1325,
+      "max_block": 23,
+      "repair": {
+        "restart": 0,
+        "iterations": 76,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        870
+      ],
+      "before": 1325,
+      "after": 1303,
+      "max_block": 23,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        650
+      ],
+      "before": 1303,
+      "after": 1281,
+      "max_block": 23,
+      "repair": {
+        "restart": 0,
+        "iterations": 4,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        258
+      ],
+      "before": 1281,
+      "after": 1188,
+      "max_block": 22,
+      "repair": {
+        "restart": 0,
+        "iterations": 676,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        649
+      ],
+      "before": 1188,
+      "after": 1167,
+      "max_block": 22,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        217
+      ],
+      "before": 1167,
+      "after": 1108,
+      "max_block": 21,
+      "repair": {
+        "restart": 0,
+        "iterations": 94,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        843
+      ],
+      "before": 1108,
+      "after": 1088,
+      "max_block": 21,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        638
+      ],
+      "before": 1088,
+      "after": 1068,
+      "max_block": 21,
+      "repair": {
+        "restart": 0,
+        "iterations": 2,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        211
+      ],
+      "before": 1068,
+      "after": 1009,
+      "max_block": 20,
+      "repair": {
+        "restart": 0,
+        "iterations": 15,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        822
+      ],
+      "before": 1009,
+      "after": 958,
+      "max_block": 20,
+      "repair": {
+        "restart": 0,
+        "iterations": 88,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        207
+      ],
+      "before": 958,
+      "after": 939,
+      "max_block": 19,
+      "repair": {
+        "restart": 0,
+        "iterations": 52,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        732
+      ],
+      "before": 939,
+      "after": 903,
+      "max_block": 19,
+      "repair": {
+        "restart": 0,
+        "iterations": 3,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        203
+      ],
+      "before": 903,
+      "after": 885,
+      "max_block": 18,
+      "repair": {
+        "restart": 0,
+        "iterations": 58,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        714
+      ],
+      "before": 885,
+      "after": 867,
+      "max_block": 18,
+      "repair": {
+        "restart": 0,
+        "iterations": 35,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        627
+      ],
+      "before": 867,
+      "after": 845,
+      "max_block": 18,
+      "repair": {
+        "restart": 0,
+        "iterations": 11,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        199
+      ],
+      "before": 845,
+      "after": 811,
+      "max_block": 17,
+      "repair": {
+        "restart": 0,
+        "iterations": 22,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        672
+      ],
+      "before": 811,
+      "after": 757,
+      "max_block": 17,
+      "repair": {
+        "restart": 0,
+        "iterations": 180,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        615
+      ],
+      "before": 757,
+      "after": 741,
+      "max_block": 17,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        185
+      ],
+      "before": 741,
+      "after": 632,
+      "max_block": 16,
+      "repair": {
+        "restart": 0,
+        "iterations": 1275,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        614
+      ],
+      "before": 632,
+      "after": 617,
+      "max_block": 16,
+      "repair": {
+        "restart": 0,
+        "iterations": 2,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        183
+      ],
+      "before": 617,
+      "after": 602,
+      "max_block": 15,
+      "repair": {
+        "restart": 0,
+        "iterations": 4,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        603
+      ],
+      "before": 602,
+      "after": 588,
+      "max_block": 15,
+      "repair": {
+        "restart": 0,
+        "iterations": 2,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        181
+      ],
+      "before": 588,
+      "after": 563,
+      "max_block": 14,
+      "repair": {
+        "restart": 0,
+        "iterations": 39,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        572
+      ],
+      "before": 563,
+      "after": 550,
+      "max_block": 14,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        167
+      ],
+      "before": 550,
+      "after": 537,
+      "max_block": 13,
+      "repair": {
+        "restart": 0,
+        "iterations": 8,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        669
+      ],
+      "before": 537,
+      "after": 511,
+      "max_block": 13,
+      "repair": {
+        "restart": 0,
+        "iterations": 16,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        438
+      ],
+      "before": 511,
+      "after": 496,
+      "max_block": 13,
+      "repair": {
+        "restart": 0,
+        "iterations": 91,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        161
+      ],
+      "before": 496,
+      "after": 484,
+      "max_block": 12,
+      "repair": {
+        "restart": 0,
+        "iterations": 3,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        662
+      ],
+      "before": 484,
+      "after": 473,
+      "max_block": 12,
+      "repair": {
+        "restart": 0,
+        "iterations": 18,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        433
+      ],
+      "before": 473,
+      "after": 457,
+      "max_block": 12,
+      "repair": {
+        "restart": 0,
+        "iterations": 5,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        117
+      ],
+      "before": 457,
+      "after": 431,
+      "max_block": 11,
+      "repair": {
+        "restart": 0,
+        "iterations": 86,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        460
+      ],
+      "before": 431,
+      "after": 411,
+      "max_block": 11,
+      "repair": {
+        "restart": 0,
+        "iterations": 7,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        109
+      ],
+      "before": 411,
+      "after": 401,
+      "max_block": 10,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        92,
+        1251
+      ],
+      "before": 401,
+      "after": 381,
+      "max_block": 10,
+      "repair": {
+        "restart": 0,
+        "iterations": 113,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        451
+      ],
+      "before": 381,
+      "after": 367,
+      "max_block": 10,
+      "repair": {
+        "restart": 0,
+        "iterations": 25,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        412
+      ],
+      "before": 367,
+      "after": 354,
+      "max_block": 10,
+      "repair": {
+        "restart": 0,
+        "iterations": 6,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        91
+      ],
+      "before": 354,
+      "after": 345,
+      "max_block": 9,
+      "repair": {
+        "restart": 0,
+        "iterations": 7,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        92,
+        1101
+      ],
+      "before": 345,
+      "after": 335,
+      "max_block": 9,
+      "repair": {
+        "restart": 0,
+        "iterations": 8,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        392
+      ],
+      "before": 335,
+      "after": 327,
+      "max_block": 9,
+      "repair": {
+        "restart": 0,
+        "iterations": 12,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        313
+      ],
+      "before": 327,
+      "after": 319,
+      "max_block": 9,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        90
+      ],
+      "before": 319,
+      "after": 303,
+      "max_block": 9,
+      "repair": {
+        "restart": 0,
+        "iterations": 67,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        138,
+        1887
+      ],
+      "before": 303,
+      "after": 295,
+      "max_block": 8,
+      "repair": {
+        "restart": 0,
+        "iterations": 8,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        92,
+        1086
+      ],
+      "before": 295,
+      "after": 288,
+      "max_block": 8,
+      "repair": {
+        "restart": 0,
+        "iterations": 6,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        306
+      ],
+      "before": 288,
+      "after": 271,
+      "max_block": 8,
+      "repair": {
+        "restart": 0,
+        "iterations": 119,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        295
+      ],
+      "before": 271,
+      "after": 264,
+      "max_block": 8,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        71
+      ],
+      "before": 264,
+      "after": 247,
+      "max_block": 8,
+      "repair": {
+        "restart": 0,
+        "iterations": 219,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        138,
+        1800
+      ],
+      "before": 247,
+      "after": 237,
+      "max_block": 7,
+      "repair": {
+        "restart": 0,
+        "iterations": 38,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        268
+      ],
+      "before": 237,
+      "after": 231,
+      "max_block": 7,
+      "repair": {
+        "restart": 0,
+        "iterations": 4,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        270
+      ],
+      "before": 231,
+      "after": 223,
+      "max_block": 7,
+      "repair": {
+        "restart": 0,
+        "iterations": 21,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        67
+      ],
+      "before": 223,
+      "after": 212,
+      "max_block": 7,
+      "repair": {
+        "restart": 0,
+        "iterations": 8,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        138,
+        1754
+      ],
+      "before": 212,
+      "after": 206,
+      "max_block": 6,
+      "repair": {
+        "restart": 0,
+        "iterations": 12,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        127,
+        709
+      ],
+      "before": 206,
+      "after": 198,
+      "max_block": 6,
+      "repair": {
+        "restart": 0,
+        "iterations": 5,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        99
+      ],
+      "before": 198,
+      "after": 189,
+      "max_block": 6,
+      "repair": {
+        "restart": 0,
+        "iterations": 1402,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        267
+      ],
+      "before": 189,
+      "after": 177,
+      "max_block": 6,
+      "repair": {
+        "restart": 0,
+        "iterations": 48,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        34
+      ],
+      "before": 177,
+      "after": 168,
+      "max_block": 6,
+      "repair": {
+        "restart": 0,
+        "iterations": 1197,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        138,
+        1482
+      ],
+      "before": 168,
+      "after": 163,
+      "max_block": 5,
+      "repair": {
+        "restart": 0,
+        "iterations": 33,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        349,
+        1016
+      ],
+      "before": 163,
+      "after": 159,
+      "max_block": 5,
+      "repair": {
+        "restart": 0,
+        "iterations": 119,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        127,
+        525
+      ],
+      "before": 159,
+      "after": 152,
+      "max_block": 5,
+      "repair": {
+        "restart": 0,
+        "iterations": 10,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        82
+      ],
+      "before": 152,
+      "after": 144,
+      "max_block": 5,
+      "repair": {
+        "restart": 0,
+        "iterations": 88,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        225,
+        1188
+      ],
+      "before": 144,
+      "after": 140,
+      "max_block": 5,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        259
+      ],
+      "before": 140,
+      "after": 136,
+      "max_block": 5,
+      "repair": {
+        "restart": 0,
+        "iterations": 145,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        32
+      ],
+      "before": 136,
+      "after": 125,
+      "max_block": 5,
+      "repair": {
+        "restart": 0,
+        "iterations": 1571,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        138,
+        1053
+      ],
+      "before": 125,
+      "after": 121,
+      "max_block": 4,
+      "repair": {
+        "restart": 0,
+        "iterations": 6,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        434,
+        1182
+      ],
+      "before": 121,
+      "after": 118,
+      "max_block": 4,
+      "repair": {
+        "restart": 0,
+        "iterations": 3,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        127,
+        500
+      ],
+      "before": 118,
+      "after": 115,
+      "max_block": 4,
+      "repair": {
+        "restart": 0,
+        "iterations": 2,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        125,
+        728
+      ],
+      "before": 115,
+      "after": 112,
+      "max_block": 4,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        56
+      ],
+      "before": 112,
+      "after": 107,
+      "max_block": 4,
+      "repair": {
+        "restart": 0,
+        "iterations": 36,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        225,
+        1165
+      ],
+      "before": 107,
+      "after": 100,
+      "max_block": 4,
+      "repair": {
+        "restart": 0,
+        "iterations": 6,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        171
+      ],
+      "before": 100,
+      "after": 97,
+      "max_block": 4,
+      "repair": {
+        "restart": 0,
+        "iterations": 6,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        396,
+        1174
+      ],
+      "before": 97,
+      "after": 94,
+      "max_block": 4,
+      "repair": {
+        "restart": 0,
+        "iterations": 37,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        253,
+        1510
+      ],
+      "before": 94,
+      "after": 91,
+      "max_block": 4,
+      "repair": {
+        "restart": 0,
+        "iterations": 18,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        36,
+        1007
+      ],
+      "before": 91,
+      "after": 87,
+      "max_block": 4,
+      "repair": {
+        "restart": 0,
+        "iterations": 59,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        138,
+        908
+      ],
+      "before": 87,
+      "after": 84,
+      "max_block": 3,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        434,
+        1162
+      ],
+      "before": 84,
+      "after": 82,
+      "max_block": 3,
+      "repair": {
+        "restart": 0,
+        "iterations": 9,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        127,
+        328
+      ],
+      "before": 82,
+      "after": 80,
+      "max_block": 3,
+      "repair": {
+        "restart": 0,
+        "iterations": 8,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        125,
+        246
+      ],
+      "before": 80,
+      "after": 78,
+      "max_block": 3,
+      "repair": {
+        "restart": 0,
+        "iterations": 18,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        368,
+        937
+      ],
+      "before": 78,
+      "after": 74,
+      "max_block": 3,
+      "repair": {
+        "restart": 0,
+        "iterations": 242,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        50
+      ],
+      "before": 74,
+      "after": 70,
+      "max_block": 3,
+      "repair": {
+        "restart": 0,
+        "iterations": 22,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        225,
+        900
+      ],
+      "before": 70,
+      "after": 68,
+      "max_block": 3,
+      "repair": {
+        "restart": 0,
+        "iterations": 17,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        678,
+        1894
+      ],
+      "before": 68,
+      "after": 66,
+      "max_block": 3,
+      "repair": {
+        "restart": 0,
+        "iterations": 9,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        492,
+        632
+      ],
+      "before": 66,
+      "after": 64,
+      "max_block": 3,
+      "repair": {
+        "restart": 0,
+        "iterations": 7,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        78,
+        159
+      ],
+      "before": 64,
+      "after": 62,
+      "max_block": 3,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        396,
+        1146
+      ],
+      "before": 62,
+      "after": 60,
+      "max_block": 3,
+      "repair": {
+        "restart": 0,
+        "iterations": 43,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        30
+      ],
+      "before": 60,
+      "after": 57,
+      "max_block": 3,
+      "repair": {
+        "restart": 0,
+        "iterations": 113,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        1952,
+        2006
+      ],
+      "before": 57,
+      "after": 55,
+      "max_block": 3,
+      "repair": {
+        "restart": 0,
+        "iterations": 271,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        253,
+        991
+      ],
+      "before": 55,
+      "after": 53,
+      "max_block": 3,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        659,
+        1377
+      ],
+      "before": 53,
+      "after": 51,
+      "max_block": 3,
+      "repair": {
+        "restart": 0,
+        "iterations": 230,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        135,
+        1040
+      ],
+      "before": 51,
+      "after": 49,
+      "max_block": 3,
+      "repair": {
+        "restart": 0,
+        "iterations": 113,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        36,
+        933
+      ],
+      "before": 49,
+      "after": 47,
+      "max_block": 3,
+      "repair": {
+        "restart": 0,
+        "iterations": 2,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        88,
+        342
+      ],
+      "before": 47,
+      "after": 44,
+      "max_block": 3,
+      "repair": {
+        "restart": 0,
+        "iterations": 321,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        664,
+        819
+      ],
+      "before": 44,
+      "after": 42,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 8,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        349,
+        693
+      ],
+      "before": 42,
+      "after": 41,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 23,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        758,
+        785
+      ],
+      "before": 41,
+      "after": 40,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 3,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        1206,
+        2165
+      ],
+      "before": 40,
+      "after": 38,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 77,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        47,
+        435
+      ],
+      "before": 38,
+      "after": 36,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        434,
+        1078
+      ],
+      "before": 36,
+      "after": 34,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 409,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        127,
+        249
+      ],
+      "before": 34,
+      "after": 33,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 14,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        125,
+        136
+      ],
+      "before": 33,
+      "after": 31,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 20,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        368,
+        529
+      ],
+      "before": 31,
+      "after": 29,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 124,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        556,
+        723
+      ],
+      "before": 29,
+      "after": 28,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 96,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        269,
+        281
+      ],
+      "before": 28,
+      "after": 27,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 9,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        3,
+        29
+      ],
+      "before": 27,
+      "after": 25,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 301,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        759,
+        776
+      ],
+      "before": 25,
+      "after": 24,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        1444,
+        1547
+      ],
+      "before": 24,
+      "after": 23,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 123,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        115,
+        214
+      ],
+      "before": 23,
+      "after": 22,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 28,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        678,
+        1812
+      ],
+      "before": 22,
+      "after": 21,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 26,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        492,
+        513
+      ],
+      "before": 21,
+      "after": 20,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 1,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        12,
+        630
+      ],
+      "before": 20,
+      "after": 16,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 77,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        1821,
+        1876
+      ],
+      "before": 16,
+      "after": 15,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 6,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        1492,
+        1763
+      ],
+      "before": 15,
+      "after": 14,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 29,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        665,
+        1138
+      ],
+      "before": 14,
+      "after": 13,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 3,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        4,
+        22
+      ],
+      "before": 13,
+      "after": 12,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 2,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        1952,
+        1953
+      ],
+      "before": 12,
+      "after": 11,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 25,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        536,
+        780
+      ],
+      "before": 11,
+      "after": 10,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 12,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        387,
+        430
+      ],
+      "before": 10,
+      "after": 9,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 5,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        801,
+        1175
+      ],
+      "before": 9,
+      "after": 8,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 7,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        157,
+        260
+      ],
+      "before": 8,
+      "after": 7,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 6,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        582,
+        1466
+      ],
+      "before": 7,
+      "after": 6,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 265,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        427,
+        1899
+      ],
+      "before": 6,
+      "after": 5,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 15,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        659,
+        876
+      ],
+      "before": 5,
+      "after": 4,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 2,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        465,
+        592
+      ],
+      "before": 4,
+      "after": 3,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        135,
+        316
+      ],
+      "before": 3,
+      "after": 2,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 3,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        36,
+        634
+      ],
+      "before": 2,
+      "after": 1,
+      "max_block": 2,
+      "repair": {
+        "restart": 0,
+        "iterations": 0,
+        "best_conflicts": 0
+      }
+    },
+    {
+      "target": [
+        664,
+        727
+      ],
+      "before": 1,
+      "after": 0,
+      "max_block": 1,
+      "repair": {
+        "restart": 0,
+        "iterations": 41,
+        "best_conflicts": 0
+      }
+    }
+  ],
+  "failures": [
+    {
+      "pair": [
+        0,
+        2229
+      ],
+      "best_conflicts": 2
+    }
+  ],
+  "timeout_or_repair_failure_is_evidence": false,
+  "all_witnesses_validated_on_all_edges": true,
+  "elapsed_seconds": 26.053
+}
