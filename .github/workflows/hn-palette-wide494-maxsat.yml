@@ -1,0 +1,93 @@
+name: hn-palette-wide494-maxsat
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-palette-wide494-maxsat.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-wide494-input-34895797863
+          path: /tmp/wide
+          run-id: 34895797863
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-conflict-edge-trace-34895252857
+          path: /tmp/trace
+          run-id: 34895252857
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Exact fixed-prefix MaxSAT
+        run: |
+          mkdir -p /tmp/maxsat
+          PYTHONPATH=tools python tools/hn_fixed_prefix_extension_maxsat.py \
+            --graph /tmp/wide/GRAPH.json \
+            --prefix-coloring /tmp/trace/round-1-repair/COLORING.txt \
+            --prefix 10577 \
+            --out-dir /tmp/maxsat
+      - uses: actions/upload-artifact@v7
+        with:
+          name: palette-wide494-maxsat-${{ github.run_id }}
+          path: /tmp/maxsat
+          retention-days: 30
+
+  repair:
+    needs: optimize
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-wide494-input-34895797863
+          path: /tmp/wide
+          run-id: 34895797863
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-wide494-maxsat-${{ github.run_id }}
+          path: /tmp/maxsat
+      - name: Repair exact-optimal fixed-prefix seed
+        run: |
+          mkdir -p /tmp/out
+          PYTHONPATH=tools python tools/hn_seeded_tabucol.py \
+            --graph /tmp/wide/GRAPH.json \
+            --seed-coloring /tmp/maxsat/SEED.txt \
+            --seconds 14400 \
+            --restarts 100 \
+            --iterations 12000000 \
+            --perturb 90 \
+            --seed 20260915495 \
+            --out-dir /tmp/out
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-wide494-maxsat-repair-${{ github.run_id }}
+          path: /tmp/out
+          retention-days: 30
