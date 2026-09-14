@@ -1,0 +1,76 @@
+name: hn-three-orbit-geometry-wide
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-three-orbit-geometry-wide.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  UPSTREAM_SHA: d1e80998bda337d9fa721f2e96d203ae54e97fc8
+  G510_SHA256: 0248fe0c7fd2df06d818aee0c188a7b70362d5990c1ca39271fc057b7b898346
+  OUT_DIR: results/unconditional-2026-09-14/three-orbit-geometry-wide
+
+jobs:
+  geometry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/checkout@v7
+        with:
+          repository: HeliCorgi/five-color-forcing-anatomy
+          ref: ${{ env.UPSTREAM_SHA }}
+          path: upstream
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install scipy==1.14.1
+      - name: Verify pinned G510
+        run: echo "$G510_SHA256  upstream/handoff/data/g510_k2.json" | sha256sum -c -
+      - name: Wide exact two-sided coupling screen
+        run: |
+          mkdir -p "$OUT_DIR"
+          PYTHONPATH=tools python tools/hn_three_orbit_network.py \
+            --graph upstream/handoff/data/g510_k2.json --out-dir "$OUT_DIR" \
+            --ring-order 3 --ring-anchor 95,101 --b-dst 0 --b-src 911 \
+            --pivot-count 12 --geometry-keep 0 --sample-models 1 \
+            --conflicts 1 --seed 2026091440
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ['OUT_DIR']); s=json.loads((root/'GEOMETRY_SCREEN.json').read_text()); sel=json.loads((root/'SELECTED.json').read_text())['selection']
+          rec=s['records']; both=[r for r in rec if r['couples_to_both']]
+          out={'placements':len(rec),'two_sided_placements':len(both),'selected':sel,
+               'max_added_cross_edges':max(r['added_cross_edges'] for r in rec),
+               'max_min_two_sided_coupling':max((min(r['c_to_a_edges'],r['c_to_b_edges']) for r in both),default=0),
+               'max_total_two_sided_coupling':max((r['c_to_a_edges']+r['c_to_b_edges'] for r in both),default=0)}
+          (root/'SUMMARY.json').write_text(json.dumps(out,indent=2)+'\n'); print(json.dumps(out,indent=2))
+          PY
+      - name: Commit geometry census
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase origin main
+          git add "$OUT_DIR/ROTATIONS.json" "$OUT_DIR/SELECTED.json" "$OUT_DIR/SUMMARY.json"
+          if ! git diff --cached --quiet; then
+            git commit -m 'Store wide three-orbit geometry census'
+            git push origin HEAD:main
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: hn-three-orbit-geometry-wide-${{ github.run_id }}
+          path: ${{ env.OUT_DIR }}
+          if-no-files-found: error
+          retention-days: 30
