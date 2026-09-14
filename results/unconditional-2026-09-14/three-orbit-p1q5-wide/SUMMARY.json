@@ -1,0 +1,68 @@
+{
+  "c_parameter": [
+    1,
+    5
+  ],
+  "c_rotation": {
+    "a": [
+      7,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "b": [
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "den": 18
+  },
+  "placements": 288,
+  "two_sided_placements": 89,
+  "max_min_two_sided_coupling": 7,
+  "max_total_two_sided_coupling": 111,
+  "max_added_cross_edges": 110,
+  "selected": {
+    "dst_owner": "A",
+    "dst_pivot": 46,
+    "src_pivot": 81,
+    "vertices": 3564,
+    "added_cross_edges": 13,
+    "c_to_a_edges": 7,
+    "c_to_b_edges": 8,
+    "couples_to_both": true,
+    "exact_proposals_checked": 49,
+    "shift": {
+      "a": [
+        -69,
+        0,
+        0,
+        0,
+        0,
+        26,
+        0,
+        0
+      ],
+      "b": [
+        15,
+        0,
+        0,
+        0,
+        0,
+        -20,
+        0,
+        0
+      ],
+      "den": 54
+    }
+  }
+}
