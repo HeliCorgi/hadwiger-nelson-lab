@@ -6,7 +6,8 @@ from pathlib import Path
 
 from hn_exact import K2, unit_modulus
 from hn_closed_copy_assembly import sample_models, signature_stats
-from hn_unconditional_scan import valid_coloring, write_json
+from hn_unconditional_scan import color_cnf, valid_coloring, write_json
+from hn_linked_closed_orbits import solve_limited
 
 
 def main():
@@ -16,19 +17,31 @@ def main():
     ap.add_argument('--models',type=int,default=16)
     ap.add_argument('--conflicts',type=int,default=800000)
     ap.add_argument('--seed',type=int,default=20260914)
+    ap.add_argument('--first-model-conflicts',type=int,default=0)
+    ap.add_argument('--first-model-seed',type=int,default=20260914)
     a=ap.parse_args(); a.out_dir.mkdir(parents=True,exist_ok=True)
 
     raw=a.graph.read_bytes(); d=json.loads(raw)
     pts=[K2(p['a'],p['b'],p['den']) for p in d['pts']]
     edges=sorted({tuple(map(int,e)) for e in d['edges']}); n=len(pts)
     assert len(set(pts))==n and all(unit_modulus(pts[u]-pts[v]) for u,v in edges)
-    models=sample_models(n,edges,a.models,a.conflicts,a.seed)
+
+    first=None
+    if a.first_model_conflicts:
+        clauses=color_cnf(n,edges)
+        sat,first=solve_limited(clauses,n,edges,a.first_model_conflicts,a.first_model_seed)
+        assert sat is True and first is not None
+        assert valid_coloring(first,n,edges)
+    models=sample_models(n,edges,a.models,a.conflicts,a.seed,first_model=first)
     assert models and all(valid_coloring(c,n,edges) for c in models)
     stats=signature_stats(models,n)
     out={
         'status':'VALIDATED_COLORING_FAMILY','vertices':n,'edges':len(edges),
         'graph_sha256':hashlib.sha256(raw).hexdigest(),'models':len(models),
         'signature_stats':stats,'all_models_validated_on_all_edges':True,
+        'first_model_seeded':first is not None,
+        'first_model_conflicts':a.first_model_conflicts if first is not None else None,
+        'first_model_seed':a.first_model_seed if first is not None else None,
     }
     write_json(a.out_dir/'MODELS.json',{'models':models})
     write_json(a.out_dir/'STATS.json',out)
