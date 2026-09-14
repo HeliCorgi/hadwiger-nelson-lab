@@ -1,0 +1,72 @@
+name: hn-palette-layer-portfolio
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-palette-layer-portfolio.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      matrix:
+        tag: [largest16, hybrid25, nonisolated, all160]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: p1q7-residual-sat-input-34853416283
+          path: /tmp/input
+          run-id: 34853416283
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-center-geometry-34881700970
+          path: /tmp/geom
+          run-id: 34881700970
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build layer and exact-optimize center colors on validated base models
+        run: |
+          mkdir -p /tmp/build
+          PYTHONPATH=tools python tools/hn_palette_layer_build.py \
+            --graph /tmp/input/COMPLETED_GRAPH.json \
+            --library /tmp/geom/CENTER_LIBRARY.json \
+            --tag '${{ matrix.tag }}' \
+            --witnesses results/unconditional-2026-09-14/commuting-cube-p1q7/WITNESSES.json \
+            --seed-coloring /tmp/input/SEED_COLORING.txt \
+            --out-dir /tmp/build
+      - name: Unrestricted repair from exact fixed-base optimum seed
+        run: |
+          mkdir -p /tmp/repair
+          PYTHONPATH=tools python tools/hn_seeded_tabucol.py \
+            --graph /tmp/build/GRAPH.json \
+            --seed-coloring /tmp/build/SEED.txt \
+            --seconds 5400 \
+            --restarts 30 \
+            --iterations 3000000 \
+            --perturb 40 \
+            --seed 2026091517 \
+            --out-dir /tmp/repair
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-layer-${{ matrix.tag }}-${{ github.run_id }}
+          path: |
+            /tmp/build
+            /tmp/repair
+          retention-days: 30
