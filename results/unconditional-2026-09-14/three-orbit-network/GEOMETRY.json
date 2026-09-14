@@ -1,0 +1,11 @@
+{
+  "vertices": 3564,
+  "screen_edges": 21206,
+  "exact_induced_edges": 21206,
+  "new_edges_from_exact_completion": 0,
+  "all_pairs_exactly_checked": 6349266,
+  "float_prefilter_used_for_final_completion": false,
+  "screen_edges_subset_of_exact_completion": true,
+  "graph_sha256": "b203fe20fab7e69408a96f08c0d1c7d993fe70781690c76a4972719ef11c44d1",
+  "semantic_pts_edges_sha256": "b0ddf3a161b8590c9c72290b39eb861e8f0f99507f3b5278451fe239ad08a39f"
+}
