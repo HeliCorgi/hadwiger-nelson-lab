@@ -1,0 +1,54 @@
+name: hn-parts-six-color-scaffold
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/hn-parts-six-color-scaffold.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  scaffold:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: marijnheule/drat-trim
+          ref: 2e3b2dc0ecf938addbd779d42877b6ed69d9a985
+          path: .proof-checker
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.11'
+      - name: Install solver and checker
+        run: |
+          python -m pip install python-sat==1.9.dev7
+          gcc -O2 .proof-checker/drat-trim.c -o /tmp/drat-trim
+      - name: Exact geometry and independent exhaustive coloring enumeration
+        run: python tools/hn_parts_scaffold.py --out-dir /tmp/scaffold/geometry
+      - name: Independent SAT and proof checks; these are TWO-distance graphs
+        run: |
+          for solver in cadical195 glucose4; do
+            while read -r label graph colors relation ports; do
+              python tools/hn_certified_color_probe.py \
+                --graph /tmp/scaffold/geometry/$graph.json --colors "$colors" \
+                --relation "$relation" --ports "$ports" --solver "$solver" \
+                --seconds 60 --proof-checker /tmp/drat-trim \
+                --out-dir /tmp/scaffold/$solver/$label
+            done <<'CASES'
+          g16-5-color PARTS_G16 5 ordinary -
+          g16-5-different PARTS_G16 5 different left,right
+          g31-5-color PARTS_G31 5 ordinary -
+          g31-6-color PARTS_G31 6 ordinary -
+          CASES
+          done
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: parts-six-color-scaffold-${{ github.run_id }}
+          path: /tmp/scaffold
+          retention-days: 90
