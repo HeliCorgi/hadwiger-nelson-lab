@@ -1,0 +1,56 @@
+name: hn-palette-wide494-phase-sat
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-palette-wide494-phase-sat.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  sat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        solver: [cadical195, glucose4]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-wide494-input-34895797863
+          path: /tmp/wide
+          run-id: 34895797863
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-wide494-maxsat-34896629593
+          path: /tmp/maxsat
+          run-id: 34896629593
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Full exact 5-color SAT with near-coloring phase hint
+        run: |
+          mkdir -p /tmp/out
+          PYTHONPATH=tools python tools/hn_full_sat_phase_probe.py \
+            --graph /tmp/wide/GRAPH.json \
+            --phase-coloring /tmp/maxsat/SEED.txt \
+            --solver '${{ matrix.solver }}' \
+            --out-dir /tmp/out
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-wide494-phase-${{ matrix.solver }}-${{ github.run_id }}
+          path: /tmp/out
+          retention-days: 30
