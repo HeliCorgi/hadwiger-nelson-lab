@@ -1,0 +1,125 @@
+name: hn-palette-wide494-generation2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-palette-wide494-generation2.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-wide494-input-34895797863
+          path: /tmp/wide1
+          run-id: 34895797863
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-wide494-near31-deep-r4-34956557326
+          path: /tmp/escape
+          run-id: 34956557326
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build second 494-direction frontier from validated escape
+        run: |
+          mkdir -p /tmp/build
+          PYTHONPATH=tools python tools/hn_palette_wide_frontier.py \
+            --graph /tmp/wide1/GRAPH.json \
+            --coloring /tmp/escape/COLORING.txt \
+            --base-vertices 9369 \
+            --direction-vertices 9369 \
+            --out-dir /tmp/build
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-wide494-generation2-input-${{ github.run_id }}
+          path: /tmp/build
+          retention-days: 30
+
+  repair:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-wide494-generation2-input-${{ github.run_id }}
+          path: /tmp/build
+      - name: Fast incremental repair
+        run: |
+          mkdir -p /tmp/out
+          PYTHONPATH=tools python tools/hn_fast_seeded_tabucol.py \
+            --graph /tmp/build/GRAPH.json \
+            --seed-coloring /tmp/build/SEED.txt \
+            --seconds 14400 \
+            --restarts 80 \
+            --iterations 30000000 \
+            --perturb 100 \
+            --seed 202609154942 \
+            --out-dir /tmp/out
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-wide494-generation2-repair-${{ github.run_id }}
+          path: /tmp/out
+          retention-days: 30
+
+  sat:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        solver: [cadical195, glucose4]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-wide494-generation2-input-${{ github.run_id }}
+          path: /tmp/build
+      - name: Full exact 5-color SAT
+        run: |
+          mkdir -p /tmp/out
+          PYTHONPATH=tools python tools/hn_full_sat_phase_probe.py \
+            --graph /tmp/build/GRAPH.json \
+            --phase-coloring /tmp/build/SEED.txt \
+            --solver '${{ matrix.solver }}' \
+            --out-dir /tmp/out
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-wide494-generation2-${{ matrix.solver }}-${{ github.run_id }}
+          path: /tmp/out
+          retention-days: 30
