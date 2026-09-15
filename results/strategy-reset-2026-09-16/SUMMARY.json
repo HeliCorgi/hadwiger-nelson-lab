@@ -1,0 +1,61 @@
+{
+  "date_jst": "2026-09-16",
+  "new_hn_lower_bound": false,
+  "unit_distance_6_chromatic_witness_found": false,
+  "phi_inequality_unit_gadget_found": false,
+  "old_field_a_search": {
+    "field": "Q(sqrt3,sqrt5,sqrt11)",
+    "proved_chromatic_upper_bound": 5,
+    "formalized_in_lean": false,
+    "method": "Madore valuation reduction, F11 norm graph, explicit 121-point 5-color table",
+    "finite_table_edges_checked": 726,
+    "all1200": {"vertices":10569,"edges":68754,"conflicts":0,"coloring_txt_sha256":"8e84524fc5d1c09978539d2bfd1260020776da12be0a4983f2901e73f31e44e9"},
+    "gen1": {"vertices":11473,"edges":75705,"conflicts":0,"coloring_txt_sha256":"1578318befaec1bbdc2a1b419e37099ee0d14e065c767a589bab440dcccb5efd"},
+    "gen2": {"vertices":12102,"edges":80678,"conflicts":0,"coloring_txt_sha256":"ce44cfc739f7038193d38a0bc7512290d51847fb263a1892ea51b06001110fbd"},
+    "decision": "Do not continue the same 494-direction p+d language as an A search",
+    "forced_equal_b_status": "Not decided by this upper-bound argument"
+  },
+  "heptagon_geometry": {
+    "H21": {"vertices":21,"edges":42,"all_pairs":210,"semantic_sha256":"f7c54a807e82e5f3406cdfa2e6d31ee8a069b16260630875ebe99ed62473cf9d"},
+    "G1": {"vertices":740,"edges":3985,"all_pairs":273430,"semantic_sha256":"2b725a4e4d511908a56d5a5f54fac8e5717e09d3a3f41e4bdcb19049e4c572e0"},
+    "G2": {"vertices":1066,"edges":6264,"all_pairs":567645,"semantic_sha256":"1a06c9dd242e8a0505e5e370e649eb2e595aa0cafaec2145164dd0d95108a54b"},
+    "G3": {"vertices":2131,"edges":12530,"all_pairs":2269515,"semantic_sha256":"76c2c6d7ac074a13005f61f4cd634ebd27a376252e62f5575752a4d916d4a76e"},
+    "floating_point_used": false,
+    "modular_filters_are_necessary_conditions_only": true,
+    "actual_old_field_escape": "G1 contains zeta42; its real coordinate cos(pi/21) has irreducible degree 6, not dividing old field degree 8",
+    "local_and_actions_pts_edges_match": true,
+    "source": "https://arxiv.org/html/2608.04542v2"
+  },
+  "five_color_relations": {
+    "G1": {"ports":{"A":112,"B":51},"partitions":2,"local_edge_exclusions":0,"validated_sat_states":2,"nonlocal_exclusions":0,"unknown":0},
+    "G2": {"ports":{"left":38,"middle":125,"right":189,"upper_left":47,"upper_right":134},"partitions":52,"local_edge_exclusions":47,"validated_sat_states":5,"nonlocal_exclusions":0,"unknown":0},
+    "G3": {"ports":{"left":38,"middle":125,"right":189,"upper_left":47,"upper_right":134,"rotated_right":215},"partitions":202,"local_edge_exclusions":183,"validated_sat_states":19,"nonlocal_exclusions":0,"unknown":0},
+    "all_26_sat_witnesses_independently_revalidated_locally": true,
+    "scope": "These exact graphs and terminal selections only; no extra restriction beyond terminal unit edges",
+    "decision": "Do not attempt five-color forcing by terminal-only splicing of these unchanged interfaces"
+  },
+  "parts_two_distance_scaffold": {
+    "source": "https://arxiv.org/abs/2010.12656v2",
+    "G16": {"vertices":16,"unit_edges":28,"phi_edges":28,"canonical_5_colorings":12,"enumeration_nodes":102,"terminals_forced_equal_in_5_colors":true},
+    "G31": {"vertices":31,"unit_edges":57,"phi_edges":56,"all_pairs":465,"chromatic_number":6,"exhaustive_5_color_refutation_nodes":26502,"unit_only_chromatic_number":3,"semantic_sha256":"047da2a6c8b8d3d25cfb65b632c7bcd6be448e03edb4174a8d48a76b25ec35e2"},
+    "glucose4_g16_inequality_unsat": {"status":"UNSAT_PROOF_VERIFIED","cnf_sha256":"9228a8aca27d46f0d0da8ed90b4528e4195e0af894c6779592d838a186a9dc0c","proof_sha256":"2e0676f705e302adeeec5eba45cf4e535dc137ace1487317f8dadb9db693517a"},
+    "glucose4_g31_5color_unsat": {"status":"UNSAT_PROOF_VERIFIED","cnf_sha256":"64af54ae38328e035edc10217c31ecf85ad87964cc6b0b8195d1dd90ad694c68","proof_sha256":"970eb07c8bcee3bbd8d8808b0d59fdf80916634b4c6ad95820dec363cac0933b"},
+    "both_solvers_positive_models_revalidated_locally": true,
+    "cadical195_unsat_proof_status": "PROOF_CHECK_FAILED: checker reports no conflict; exports do not end with an empty clause; root cause not established",
+    "cadical_failed_proofs_used_as_evidence": false,
+    "checker_commit": "2e3b2dc0ecf938addbd779d42877b6ed69d9a985",
+    "ordinary_unit_distance_A": false
+  },
+  "artifacts": [
+    {"run_id":35003232409,"artifact_id":10410248491,"name":"strategy-reset-geometry-35003232409","archive_sha256":"9e4d4ce73565326ec0513b275bb0f77d78fb78ab2a52a85caf5709c5459b30c1"},
+    {"run_id":35003816730,"artifact_id":10410428673,"name":"five-color-interface-G1-35003816730","archive_sha256":"ee054f14933b15e61137be3b66f0ac6acc1e24cfd5406c0333d6b963e8ff949b"},
+    {"run_id":35003816730,"artifact_id":10410583251,"name":"five-color-interface-G2-35003816730","archive_sha256":"5025831aeb3c16fe964ef75b465329c25a8e21b1a00c0eed9b508bfc3a64a8b8"},
+    {"run_id":35003816730,"artifact_id":10411010758,"name":"five-color-interface-G3-35003816730","archive_sha256":"c02021b2a9feeee35aea668bbb47bb306796eaea0939f3071a3115b16965da3a"},
+    {"run_id":35003956571,"artifact_id":10410023793,"name":"parts-six-color-scaffold-35003956571","archive_sha256":"518ae03b2deb71affec68fb2fe1f2f39d069b486f01a72abbfeee80b960f482e"}
+  ],
+  "unfinished": [
+    "Known four-color Haugland calibration jobs of run 35003232409 still active at last check; no complete four-color reproduction claimed",
+    "No nontrivial five-color unit-distance terminal gadget found",
+    "Mixed Q(zeta210) phi-accessibility identities checked locally, but no new mixed-field forcing graph yet built"
+  ]
+}
