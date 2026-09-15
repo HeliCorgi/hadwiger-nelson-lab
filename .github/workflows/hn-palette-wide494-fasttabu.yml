@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/hn-palette-wide494-fasttabu.yml'
+      - 'tools/hn_fast_seeded_tabucol.py'
   workflow_dispatch:
 
 permissions:
@@ -18,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        seed: [20260915496, 20260915497, 20260915498]
+        seed: [20260915497, 20260915499, 20260915500]
     steps:
       - uses: actions/checkout@v7
         with:
@@ -40,7 +41,7 @@ jobs:
           path: /tmp/maxsat
           run-id: 34896629593
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Fast incremental-conflict repair
+      - name: Fast incremental-conflict repair with near-color checkpoint
         run: |
           mkdir -p /tmp/out
           PYTHONPATH=tools python tools/hn_fast_seeded_tabucol.py \
@@ -55,6 +56,6 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: palette-wide494-fasttabu-${{ matrix.seed }}-${{ github.run_id }}
+          name: palette-wide494-fasttabu-checkpoint-${{ matrix.seed }}-${{ github.run_id }}
           path: /tmp/out
           retention-days: 30
