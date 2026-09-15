@@ -1,0 +1,65 @@
+name: hn-palette-wide494-near31-lns-global
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-palette-wide494-near31-lns-global.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  lns:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        radius: [6, 7]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-wide494-input-34895797863
+          path: /tmp/wide
+          run-id: 34895797863
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Decode and validate near-31 seed
+        run: |
+          python - <<'PY'
+          import base64,gzip,json
+          from pathlib import Path
+          z=Path('results/unconditional-2026-09-14/palette-coupling/WIDE494_NEAR31.txt.gz.b64').read_text().strip()
+          s=gzip.decompress(base64.b64decode(z)).decode().strip()
+          g=json.loads(Path('/tmp/wide/GRAPH.json').read_text())
+          assert len(s)==len(g['pts'])==11473
+          assert sum(s[u]==s[v] for u,v in g['edges'])==31
+          Path('/tmp/NEAR31.txt').write_text(s+'\n')
+          PY
+      - name: Near-global exact SAT
+        run: |
+          mkdir -p /tmp/out
+          PYTHONPATH=tools python tools/hn_lns_sat_repair.py \
+            --graph /tmp/wide/GRAPH.json \
+            --seed-coloring /tmp/NEAR31.txt \
+            --radius '${{ matrix.radius }}' \
+            --conflicts 60000000 \
+            --attempts 2 \
+            --seed 2026091531 \
+            --out-dir /tmp/out
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-wide494-near31-global-r${{ matrix.radius }}-${{ github.run_id }}
+          path: /tmp/out
+          retention-days: 30
