@@ -1,0 +1,110 @@
+name: hn-strategy-reset-calibration
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/hn-strategy-reset-calibration.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: palette-layer1200-input-34887160185
+          run-id: 34887160185
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/old/all1200
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: palette-wide494-input-34895797863
+          run-id: 34895797863
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/old/gen1
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: palette-wide494-generation2-input-34957362184
+          run-id: 34957362184
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/old/gen2
+      - name: Independent arithmetic coloring audits
+        run: |
+          for tag in all1200 gen1 gen2; do
+            python tools/hn_mod11_barrier.py --graph /tmp/old/$tag/GRAPH.json --out-dir /tmp/prepared/audit/$tag
+          done
+      - name: Reconstruct complete heptagon graphs without floating point
+        run: |
+          python tools/hn_heptagon_exact.py --paths data/haugland-2608.04542v2-paths.txt --out-dir /tmp/prepared/heptagon
+          python -m compileall -q tools/hn_mod11_barrier.py tools/hn_heptagon_exact.py tools/hn_certified_color_probe.py
+          git rev-parse HEAD > /tmp/prepared/SOURCE_COMMIT.txt
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: strategy-reset-geometry-${{ github.run_id }}
+          path: /tmp/prepared
+          retention-days: 90
+  calibrate:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        solver: [cadical195, glucose4]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: marijnheule/drat-trim
+          ref: 2e3b2dc0ecf938addbd779d42877b6ed69d9a985
+          path: .proof-checker
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.11'
+      - name: Install pinned SAT package and compile pinned proof checker
+        run: |
+          python -m pip install python-sat==1.9.dev7
+          gcc -O2 .proof-checker/drat-trim.c -o /tmp/drat-trim
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: strategy-reset-geometry-${{ github.run_id }}
+          path: /tmp/prepared
+      - name: Known four-color statements and genuine five-color controls
+        env:
+          SOLVER: ${{ matrix.solver }}
+        run: |
+          while read -r label graph colors relation ports; do
+            python tools/hn_certified_color_probe.py \
+              --graph /tmp/prepared/heptagon/$graph.json --colors "$colors" \
+              --relation "$relation" --ports "$ports" --solver "$SOLVER" \
+              --seconds 600 --proof-checker /tmp/drat-trim --out-dir /tmp/calibration/$label
+          done <<'CASES'
+          g1-4-color G1 4 ordinary -
+          g1-4-equal G1 4 equal A,B
+          g1-5-equal G1 5 equal A,B
+          g2-4-color G2 4 ordinary -
+          g2-4-different G2 4 different left,right
+          g2-5-different G2 5 different left,right
+          g3-5-color G3 5 ordinary -
+          g3-4-color G3 4 ordinary -
+          CASES
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: strategy-reset-calibration-${{ matrix.solver }}-${{ github.run_id }}
+          path: /tmp/calibration
+          retention-days: 90
