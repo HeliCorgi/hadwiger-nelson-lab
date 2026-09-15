@@ -2,7 +2,7 @@
 
 Updated 2026-09-16 JST.
 
-This file is the short operational handoff for the current unconditional Hadwiger–Nelson mainline. Historical details remain in `HANDOFF.md`; the authoritative strategy-reset evidence is in `results/strategy-reset-2026-09-16/SUMMARY.md` and `SUMMARY.json`.
+This file is the short operational handoff for the current unconditional Hadwiger–Nelson mainline. Historical details remain in `HANDOFF.md`; the main strategy-reset checkpoint is in `results/strategy-reset-2026-09-16/SUMMARY.md` and `SUMMARY.json`, with later bounded follow-ups recorded separately.
 
 ## Current status
 
@@ -34,6 +34,22 @@ The old real field cannot host such a gadget: the explicit finite-field five-col
 
 A target-accessible mixed field such as `Q(zeta210)` is a natural search space because it contains both the sevenfold directions and pentagonal/phi structure, but no forcing claim follows merely from the field choice.
 
+### 5. First bounded mixed-field phi assembly is closed negatively
+
+Workflow `hn-phi-rhombus-interface`, Actions **35009411746**, tested two exact mixed-field rhombus assemblies (`same` and `alternating`) with exhaustive four-port five-color boundary relations.
+
+For both variants the joined graph has **8,520 vertices / 50,584 exact unit-distance edges**. Full proper five-color witnesses exist for all four locally admissible boundary states `[0,1,0,1]`, `[0,1,0,2]`, `[0,1,2,1]`, and `[0,1,2,3]`. All parent edges were validated.
+
+Therefore these bounded assemblies are:
+
+- target A: **NOT_A**;
+- desired phi-inequality gadget: **NOT_H_PHI**;
+- specified pair B: **NOT_FORCED_EQUAL**.
+
+This does not rule out other mixed-field phi gadgets. It does show that field escape plus exact phi accessibility is insufficient without stronger cross-coupling.
+
+Detailed record: `results/strategy-reset-2026-09-16/PHI_RHOMBUS_FOLLOWUP.md`.
+
 ## Acceptance rules for the next experiments
 
 - Positive ordinary five-colorability requires an explicit coloring validated on every exact unit edge.
@@ -46,14 +62,16 @@ A target-accessible mixed field such as `Q(zeta210)` is a natural search space b
 
 1. Search for `H_phi` or a stronger multiport five-color relation in mixed-field geometry outside the mod-11 barrier.
 2. Prefer small modules whose complete boundary relation can be enumerated exactly.
-3. Compose only relations that are proved, not sampled, into the 31-vertex six-color scaffold or another explicit six-color skeleton.
-4. If direct phi-inequality forcing remains transparent, pivot to a multiport relation and solve the composition problem as a finite CSP before building a large geometric union.
-5. Keep seven-color attempts secondary: a genuine 7-chromatic unit-distance graph would settle HN, so it is not expected to be an easier intermediate target.
+3. Reject transparent joins early: require genuine interior cross-edges or multi-contact coupling before large SAT runs.
+4. Compose only proved relations, not sampled ones, into the 31-vertex six-color scaffold or another explicit six-color skeleton.
+5. If direct phi-inequality forcing remains transparent, pivot to a multiport relation and solve the composition problem as a finite CSP before building a large geometric union.
+6. Keep seven-color attempts secondary: a genuine 7-chromatic unit-distance graph would settle HN, so it is not expected to be an easier intermediate target.
 
 ## Durable references
 
 - `results/strategy-reset-2026-09-16/SUMMARY.md`
 - `results/strategy-reset-2026-09-16/SUMMARY.json`
+- `results/strategy-reset-2026-09-16/PHI_RHOMBUS_FOLLOWUP.md`
 - `research/strategy-reset-2026-09-16/ARITHMETIC_BARRIER.md`
 - `research/strategy-reset-2026-09-16/PHI_TARGET_AND_INTERFACE_GATES.md`
 
