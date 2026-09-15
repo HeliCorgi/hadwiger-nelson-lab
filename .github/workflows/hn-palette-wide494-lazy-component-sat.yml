@@ -1,0 +1,49 @@
+name: hn-palette-wide494-lazy-component-sat
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-palette-wide494-lazy-component-sat.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  solve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v7
+        with:
+          name: palette-wide494-input-34895797863
+          path: /tmp/wide
+          run-id: 34895797863
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Lazy prefix/component exact SAT
+        run: |
+          mkdir -p /tmp/out
+          PYTHONPATH=tools python tools/hn_palette_lazy_component_sat.py \
+            --graph /tmp/wide/GRAPH.json \
+            --prefix-vertices 10577 \
+            --seed-coloring /tmp/wide/SEED.txt \
+            --iterations 12000 \
+            --cores-per-iteration 64 \
+            --seconds 17000 \
+            --out-dir /tmp/out
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: palette-wide494-lazy-component-sat-${{ github.run_id }}
+          path: /tmp/out
+          retention-days: 30
