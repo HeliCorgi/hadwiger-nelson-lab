@@ -1,0 +1,146 @@
+name: hn-phi-rhombus-interface
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/hn-phi-rhombus-interface.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.11'
+      - run: python -m pip install numpy==1.26.4
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: strategy-reset-geometry-35003232409
+          run-id: 35003232409
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/input
+      - name: Verify input identity and exact field identities
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          assert hashlib.sha256(Path('/tmp/input/heptagon/G3.json').read_bytes()).hexdigest() == '90096518a3c10de93066f6fee70a0b16a218a094de5e5b35285089472d646b8a'
+          PY
+          python tools/hn_cyclotomic210.py
+      - name: Build two exact assemblies and their certified separators
+        run: |
+          for scheme in same alternating; do
+            python tools/hn_phi_rhombus_synthesis.py \
+              --graph /tmp/input/heptagon/G3.json --scheme "$scheme" \
+              --out-dir /tmp/prepared/$scheme
+            python tools/hn_phi_separator.py extract \
+              --assembly /tmp/prepared/$scheme --out-dir /tmp/prepared/$scheme/sides
+          done
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('/tmp/prepared')
+          a=json.loads((p/'same/sides/long.json').read_text())
+          b=json.loads((p/'alternating/sides/long.json').read_text())
+          assert all(a[k]==b[k] for k in ('pts','edges','ports'))
+          PY
+          echo '${{ github.sha }}' > /tmp/prepared/SOURCE_COMMIT.txt
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: phi-rhombus-geometry-${{ github.run_id }}
+          path: /tmp/prepared
+          retention-days: 90
+  relation:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        case: [long, short-same, short-alternating]
+        solver: [cadical195, glucose4]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: marijnheule/drat-trim
+          ref: 2e3b2dc0ecf938addbd779d42877b6ed69d9a985
+          path: .proof-checker
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.11'
+      - name: Install pinned solver and proof checker
+        run: |
+          python -m pip install python-sat==1.9.dev7
+          gcc -O2 .proof-checker/drat-trim.c -o /tmp/drat-trim
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: phi-rhombus-geometry-${{ github.run_id }}
+          path: /tmp/prepared
+      - name: Exhaust all fifteen partitions, retaining unknown states
+        run: |
+          case '${{ matrix.case }}' in
+            long) graph=/tmp/prepared/same/sides/long.json;;
+            short-same) graph=/tmp/prepared/same/sides/short.json;;
+            short-alternating) graph=/tmp/prepared/alternating/sides/short.json;;
+          esac
+          python tools/hn_boundary_relation_scan.py \
+            --graph "$graph" --ports a,u,b,v --colors 5 \
+            --solver '${{ matrix.solver }}' --seconds 60 --total-seconds 240 \
+            --proof-checker /tmp/drat-trim --out-dir /tmp/relation
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: phi-relation-${{ matrix.case }}-${{ matrix.solver }}-${{ github.run_id }}
+          path: /tmp/relation
+          retention-days: 90
+  join:
+    needs: [prepare, relation]
+    if: always() && needs.prepare.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: phi-rhombus-geometry-${{ github.run_id }}
+          path: /tmp/prepared
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          pattern: phi-relation-*-${{ github.run_id }}
+          path: /tmp/relations
+      - name: Join only verified positive witnesses and validate all parent edges
+        run: |
+          PYTHONPATH=tools python - <<'PY'
+          from pathlib import Path
+          from hn_phi_separator import join
+          p=Path('/tmp/prepared');r=Path('/tmp/relations')
+          for scheme in ('same','alternating'):
+              long=list(r.glob('phi-relation-long-*/RELATION.json'))
+              short=list(r.glob('phi-relation-short-'+scheme+'-*/RELATION.json'))
+              join(p/scheme,p/scheme/'sides',long,short,Path('/tmp/joined')/scheme)
+          PY
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: phi-rhombus-joined-${{ github.run_id }}
+          path: /tmp/joined
+          retention-days: 90
