@@ -1,0 +1,60 @@
+name: hn-five-color-interface
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/hn-five-color-interface.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  relation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - graph: G1
+            ports: A,B
+          - graph: G2
+            ports: left,middle,right,upper_left,upper_right
+          - graph: G3
+            ports: left,middle,right,upper_left,upper_right,rotated_right
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: marijnheule/drat-trim
+          ref: 2e3b2dc0ecf938addbd779d42877b6ed69d9a985
+          path: .proof-checker
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.11'
+      - name: Install solver and proof checker
+        run: |
+          python -m pip install python-sat==1.9.dev7
+          gcc -O2 .proof-checker/drat-trim.c -o /tmp/drat-trim
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: strategy-reset-geometry-35003232409
+          run-id: 35003232409
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/prepared
+      - name: Exact terminal-state census with UNKNOWN states retained
+        run: |
+          python tools/hn_boundary_relation_scan.py \
+            --graph /tmp/prepared/heptagon/${{ matrix.graph }}.json \
+            --ports '${{ matrix.ports }}' --colors 5 --solver cadical195 \
+            --seconds 20 --total-seconds 600 --proof-checker /tmp/drat-trim \
+            --out-dir /tmp/relation
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: five-color-interface-${{ matrix.graph }}-${{ github.run_id }}
+          path: /tmp/relation
+          retention-days: 90
