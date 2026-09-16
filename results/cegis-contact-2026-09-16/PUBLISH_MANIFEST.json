@@ -1,0 +1,9 @@
+{
+  "tools/hn_cegis_contact.py": "5b02d401e7cf60f965929e34a821a57a853e9c3d3abd8bcf79bb37f31738c400",
+  "tools/hn_cegis_geometry.py": "e8a419d1b7148d1e5c8153e88a3630421823122c1b5a8d34e45140e6ee833765",
+  "tools/hn_cegis_verify.py": "337dafcb34eaa72df164e202eb2c26ae5e979ade580aecbd35a15265805ead3d",
+  "tools/hn_cegis_restore.py": "06ca1bd9af47707f37a95a92a09a86978e9bc8a622084a443281ebc5bad6e92d",
+  "tools/test_hn_cegis.py": "d7413a174c80cbac232cf1425b0c21972f2d7d2ad21489e7feea3ca70e3ed8c0",
+  "results/cegis-contact-2026-09-16/INPUT_G3_COLORING.txt": "5f5112d6e50fc355807b4589d6cc9a8431eb2a5e2ec54421fe10ab68bca08792",
+  "results/cegis-contact-2026-09-16/RESUME_RECIPES.json": "dc146060cd7824ebdf8b06aa122891d4f265fb37152d9cbc9ce9875a1ca6cd38"
+}

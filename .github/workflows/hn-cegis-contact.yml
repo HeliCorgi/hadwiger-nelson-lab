@@ -1,0 +1,134 @@
+name: hn-cegis-contact
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/hn-cegis-contact.yml'
+      - 'tools/hn_cegis*.py'
+      - 'tools/test_hn_cegis.py'
+      - 'results/cegis-contact-2026-09-16/RESUME_RECIPES.json'
+      - 'results/cegis-contact-2026-09-16/INPUT_G3_COLORING.txt'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: cegis-contact-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+jobs:
+  calibration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: marijnheule/drat-trim
+          ref: 2e3b2dc0ecf938addbd779d42877b6ed69d9a985
+          path: .proof-checker
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.11'
+      - name: Verify publication hashes
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          manifest=json.loads(Path('results/cegis-contact-2026-09-16/PUBLISH_MANIFEST.json').read_text())
+          for name,expected in manifest.items():
+              assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==expected,name
+          print('All publication hashes match')
+          PY
+      - name: Regression tests and proof-checked geometric control
+        run: |
+          python -m pip install numpy==1.26.4 sympy==1.14.0 python-sat==1.9.dev7
+          gcc -O2 .proof-checker/drat-trim.c -o /tmp/drat-trim
+          PYTHONPATH=tools python -m unittest discover -s tools -p test_hn_cegis.py -v
+          python tools/hn_cegis_contact.py --calibration --rounds 1 --pool 1 --extra-models 0 --checker /tmp/drat-trim --out /tmp/calibration
+          python tools/hn_cegis_verify.py --run /tmp/calibration
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('/tmp/calibration/SUMMARY.json').read_text())
+          assert r['status']=='CALIBRATION_DISCOVERY'
+          assert r['rounds'][0]['free_status']=='UNSAT_PROOF_VERIFIED'
+          assert r['discovery']['center_saturation_certified']
+          assert (r['current_vertices'],r['current_edges'])==(7,11)
+          PY
+      - name: Rebuild pinned G3 from committed exact path data
+        run: |
+          python tools/hn_heptagon_exact.py --paths data/haugland-2608.04542v2-paths.txt --out-dir /tmp/input
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          assert hashlib.sha256(Path('/tmp/input/G3.json').read_bytes()).hexdigest()=='90096518a3c10de93066f6fee70a0b16a218a094de5e5b35285089472d646b8a'
+          PY
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: cegis-source-${{ github.run_id }}
+          path: /tmp/input/G3.json
+          retention-days: 90
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: cegis-calibration-${{ github.run_id }}
+          path: /tmp/calibration
+          retention-days: 90
+  bounded:
+    needs: calibration
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        seed: [11, 29]
+        mode: [guided, random]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: marijnheule/drat-trim
+          ref: 2e3b2dc0ecf938addbd779d42877b6ed69d9a985
+          path: .proof-checker
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.11'
+      - run: |
+          python -m pip install numpy==1.26.4 sympy==1.14.0 python-sat==1.9.dev7
+          gcc -O2 .proof-checker/drat-trim.c -o /tmp/drat-trim
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: cegis-source-${{ github.run_id }}
+          path: /tmp/input
+      - name: Restore exact checkpoint and continue with all old colors free
+        env:
+          EXPERIMENT_SEED: ${{ matrix.seed }}
+          EXPERIMENT_MODE: ${{ matrix.mode }}
+        run: |
+          python tools/hn_cegis_restore.py --source /tmp/input/G3.json \
+            --case "$EXPERIMENT_SEED-$EXPERIMENT_MODE" --out /tmp/resume
+          python tools/hn_cegis_contact.py --resume /tmp/resume \
+            --seed "$EXPERIMENT_SEED" --mode "$EXPERIMENT_MODE" \
+            --rounds 2 --pool 3 --bank 3 --extra-models 1 \
+            --fixed-seconds 3 --seconds 30 --max-vertices 9000 \
+            --checker /tmp/drat-trim --out /tmp/output
+          python tools/hn_cegis_verify.py --run /tmp/output
+          cp /tmp/resume/RESTORE.json /tmp/output/RESUMED_FROM.json
+          echo '${{ github.sha }}' > /tmp/output/SOURCE_COMMIT.txt
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: cegis-${{ matrix.seed }}-${{ matrix.mode }}-${{ github.run_id }}
+          path: |
+            /tmp/output
+            /tmp/resume/RESTORE.json
+          retention-days: 90

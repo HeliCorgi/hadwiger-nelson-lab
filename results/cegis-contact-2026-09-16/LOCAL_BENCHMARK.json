@@ -1,0 +1,101 @@
+{
+  "environment": "local, not GitHub Actions",
+  "solver": "local adapted microsat; positive models only; all unverified negatives remain unverified",
+  "fixed_seconds": 0.5,
+  "free_seconds": 2,
+  "rounds": 2,
+  "pool": 2,
+  "source_G3_vertices": 2131,
+  "rows": [
+    {
+      "arm": "11-guided",
+      "retained_vertices": 4261,
+      "retained_edges": 25062,
+      "proposals": 4,
+      "verified_fixed_kills": 0,
+      "round2_vertices": 5633,
+      "round2_status": "UNKNOWN_TIMEOUT",
+      "audit": {
+        "status": "PASS",
+        "graph_sha256": "a01e74677387d84496d9fb360704b6d7458f54fa7146826f8b88db9737b78635",
+        "vertices": 4261,
+        "edges": 25062,
+        "all_pairs": 9075930,
+        "survivors": 25064,
+        "separate_filter_primes": [2311, 2731],
+        "models_checked": 1,
+        "search_arithmetic_imported": false,
+        "SAT_imported": false,
+        "float_geometry": false
+      }
+    },
+    {
+      "arm": "11-random",
+      "retained_vertices": 4261,
+      "retained_edges": 25061,
+      "proposals": 4,
+      "verified_fixed_kills": 0,
+      "round2_vertices": 6391,
+      "round2_status": "UNKNOWN_TIMEOUT",
+      "audit": {
+        "status": "PASS",
+        "graph_sha256": "c0c0d84a107773634aae972f172f6e5e00861c174f4d89b7159e7414531ca6d8",
+        "vertices": 4261,
+        "edges": 25061,
+        "all_pairs": 9075930,
+        "survivors": 25063,
+        "separate_filter_primes": [2311, 2731],
+        "models_checked": 1,
+        "search_arithmetic_imported": false,
+        "SAT_imported": false,
+        "float_geometry": false
+      }
+    },
+    {
+      "arm": "29-guided",
+      "retained_vertices": 4261,
+      "retained_edges": 25062,
+      "proposals": 4,
+      "verified_fixed_kills": 0,
+      "round2_vertices": 6305,
+      "round2_status": "UNKNOWN_TIMEOUT",
+      "audit": {
+        "status": "PASS",
+        "graph_sha256": "4492992b17140220929df0a60c3beac1d3953c20453cee42596f4e8defba2159",
+        "vertices": 4261,
+        "edges": 25062,
+        "all_pairs": 9075930,
+        "survivors": 25064,
+        "separate_filter_primes": [2311, 2731],
+        "models_checked": 1,
+        "search_arithmetic_imported": false,
+        "SAT_imported": false,
+        "float_geometry": false
+      }
+    },
+    {
+      "arm": "29-random",
+      "retained_vertices": 6391,
+      "retained_edges": 37594,
+      "proposals": 4,
+      "verified_fixed_kills": 0,
+      "round2_vertices": 6391,
+      "round2_status": "SAT_VALIDATED_EXTENSION",
+      "audit": {
+        "status": "PASS",
+        "graph_sha256": "8817a1ea877c15eea8251d2024641521e8442532a9ff5de772e49a7996611fdc",
+        "vertices": 6391,
+        "edges": 37594,
+        "all_pairs": 20419245,
+        "survivors": 37598,
+        "separate_filter_primes": [2311, 2731],
+        "models_checked": 1,
+        "search_arithmetic_imported": false,
+        "SAT_imported": false,
+        "float_geometry": false
+      }
+    }
+  ],
+  "discovery_rate_improvement_established": false,
+  "new_HN_bound_claimed": false
+}
