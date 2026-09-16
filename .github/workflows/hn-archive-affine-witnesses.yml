@@ -1,0 +1,48 @@
+name: hn-archive-affine-witnesses
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/hn-archive-affine-witnesses.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: affine-rhombus-u-cadical195-35057449450
+          run-id: 35057449450
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/input/u
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: affine-seeded-fork-1-cadical195-35058000720
+          run-id: 35058000720
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/input/f1
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: affine-seeded-fork-4-cadical195-35058000720
+          run-id: 35058000720
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/input/f4
+      - name: Validate full witnesses and store only the planned Git blob
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python tools/hn_archive_affine_witnesses.py --input /tmp/input --out /tmp/output --store-git-blob
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: archived-affine-witnesses-${{ github.run_id }}
+          path: /tmp/output
+          retention-days: 90
