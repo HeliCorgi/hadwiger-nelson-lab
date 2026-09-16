@@ -54,6 +54,20 @@ This does not rule out other mixed-field phi gadgets. It does show that field es
 
 Detailed record: `results/strategy-reset-2026-09-16/PHI_RHOMBUS_FOLLOWUP.md`.
 
+### 6. Genuine interior-reflection assemblies are also five-colorable
+
+Two new G3 reflection assemblies have genuine interior coupling: **4,097 vertices / 24,648 unit edges** with 96 new cross-interior edges, and **5,667 vertices / 34,945 unit edges** with 438 new cross-interior edges. Independent SymPy arithmetic completed all 8,390,656 and 16,054,611 point pairs and confirmed the saved induced unit-edge sets.
+
+In Actions **35046524554**, all direct five-color probes timed out at 45 seconds per case; both solvers supplied six-color witnesses. Those timeouts were not forcing evidence. In the positive-only quotient follow-up, Actions **35047081806**, three five-color models were found and lifted back, then revalidated on every original edge. Both original graphs are therefore **NOT_A**.
+
+The tested distinct terminals have distance sqrt(3), not phi. The saved five-color witnesses make them equal, but inequality is still unresolved: the specified target-B pairs remain **UNKNOWN**, not forced equal and not excluded. Reflections remain within the source sevenfold field; the Q(zeta210) container is not itself a further field escape.
+
+Do not repeat these unchanged graphs as an A-search. Details, full compressed five-color witnesses, hashes and reproduction instructions are in `results/interior-reflection-2026-09-16/README.md` and `SUMMARY.json`.
+
+A K6 calibration exposed incomplete CaDiCaL195 proof extraction, including after an attempted stream-finalization fix. The new wrapper treats its negatives as UNSAT_UNCHECKED; only directly validated SAT witnesses are accepted from that path. Glucose4 negatives require strict DRAT verification. The historical probe implementation is unchanged. No candidate UNSAT was promoted.
+
+`tools/hn_hex7_certificate.py` and the accompanying Japanese proof verify an explicit infinite seven-coloring, and exclude six colors only for its fixed monochromatic-hexagon tiling. The seven-cell conflict graph is NOT a seven-chromatic unit-distance point graph and does NOT settle arbitrary six-colorability of the plane.
+
 ## Acceptance rules for the next experiments
 
 - Positive ordinary five-colorability requires an explicit coloring validated on every exact unit edge.
@@ -73,6 +87,9 @@ Detailed record: `results/strategy-reset-2026-09-16/PHI_RHOMBUS_FOLLOWUP.md`.
 
 ## Durable references
 
+- `results/interior-reflection-2026-09-16/README.md`
+- `results/interior-reflection-2026-09-16/SUMMARY.json`
+- `results/interior-reflection-2026-09-16/HEX7_PROOF_ja.md`
 - `results/mod11-no-forced-equal-2026-09-16/README.md`
 - `results/mod11-no-forced-equal-2026-09-16/SUMMARY.json`
 - `results/strategy-reset-2026-09-16/SUMMARY.md`

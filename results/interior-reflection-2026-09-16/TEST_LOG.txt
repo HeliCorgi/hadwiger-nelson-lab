@@ -1,0 +1,20 @@
+Local Python unittest verification of tools/test_hn_reflection_evidence.py
+
+test_bad_pin_rejected ... ok
+test_duplicate_point_rejected ... ok
+test_hex7 ... ok
+test_missing_unit_edge_rejected ... ok
+test_monochromatic_edge_rejected ... ok
+test_nonunit_edge_rejected ... ok
+test_single_edge_positive ... ok
+test_wrong_graph_hash_rejected ... ok
+
+Ran 8 tests. OK.
+
+Separate full-data checks:
+2-copy complete unit edge set: PASS, 8,390,656 pairs, 24,648 edges.
+3-copy complete unit edge set: PASS, 16,054,611 pairs, 34,945 edges.
+Five-color witnesses: 3 validated on every corresponding original edge.
+Six-color witnesses: 4 validated on every corresponding original edge and pins.
+K6/5 Glucose4 control: independent RUP verification PASS (140 added lemmas, 41 deletions).
+No candidate UNSAT proof or HN lower-bound improvement is claimed.

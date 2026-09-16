@@ -1,0 +1,17 @@
+{
+  "status":"PASS",
+  "engine":"SymPy 1.14.0 integer polynomial ring ZZ[z]/Phi210; numpy 2.3.5 modular filters",
+  "imports_synthesis_arithmetic":false,
+  "imports_SAT_solver":false,
+  "floating_point_geometry":false,
+  "cases":[
+    {"copies":2,"vertices":4097,"edges":24648,"graph_sha256":"9d03699ac6b249462dc1e7c3b2610ec2bb63f31ca2624d65b6c4b8b8fa804ccb","all_unordered_pairs_checked":8390656,"modular_filter_survivors":24726,"distinct_exact_norms_checked":355,"induced_unit_edge_set_equal":true,"five_color_witnesses_checked":2,"six_color_witnesses_checked":2},
+    {"copies":3,"vertices":5667,"edges":34945,"graph_sha256":"58674bb2a1326adcf31b3a8f3e5a56e7200ee768fea8d1cfed0b9c6852549a78","all_unordered_pairs_checked":16054611,"modular_filter_survivors":35076,"distinct_exact_norms_checked":407,"induced_unit_edge_set_equal":true,"five_color_witnesses_checked":1,"six_color_witnesses_checked":2}
+  ],
+  "all_witnesses_checked_on_all_original_edges":true,
+  "folded_five_witnesses_have_equal_actual_terminals":true,
+  "forced_equality_claimed":false,
+  "regression_tests_passed":8,
+  "tests_run_locally_not_in_Actions":true,
+  "control_RUP_check":{"status":"VERIFIED_RUP","added_lemmas":140,"deletions":41,"cnf_sha256":"72d64157dae0bd41593185f43c57168d6604c4818a80a54dc6e32edcf3e042ad","proof_sha256":"ac559b3f89c312440fba7b96cfe00ed80cc629fefc5ba049835b386881c45b0c"}
+}

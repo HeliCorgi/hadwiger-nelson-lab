@@ -1,0 +1,79 @@
+{
+  "date": "2026-09-16 JST",
+  "status": "BOTH_TESTED_REFLECTION_GRAPHS_ARE_FIVE_COLORABLE",
+  "no_new_HN_bound": true,
+  "original_probe_run": 35046524554,
+  "original_probe_commit": "a0def9f2fd8121ca0482d9578e957348a169a246",
+  "fold_probe_run": 35047081806,
+  "fold_probe_commit": "aa6dd28d2de00e1de37d739ce7c76553bcfcb964",
+  "source_G3_sha256": "90096518a3c10de93066f6fee70a0b16a218a094de5e5b35285089472d646b8a",
+  "five_bundle_sha256": "4d16f822acacc3971a9ec4f34382e8eb073df4c394f615d95e4478e4743e8b6a",
+  "cases": [
+    {
+      "copies": 2,
+      "vertices": 4097,
+      "unit_edges": 24648,
+      "additional_cross_interior_edges": 96,
+      "graph_sha256": "9d03699ac6b249462dc1e7c3b2610ec2bb63f31ca2624d65b6c4b8b8fa804ccb",
+      "A": "NOT_A",
+      "specified_pair_B": "UNKNOWN",
+      "H_phi": "NOT_APPLICABLE",
+      "terminal_squared_distance": 3,
+      "ordinary_five_tests": "6 UNKNOWN_TIMEOUT results at 45 seconds per case",
+      "ordinary_six_tests": "SAT with both solvers",
+      "quotient_vertices": 2050,
+      "quotient_edges": 12325,
+      "quotient_results": [{"solver":"cadical195","status":"SAT"},{"solver":"glucose4","status":"SAT"}],
+      "five_witnesses": [
+        {"solver":"cadical195","sha256":"7f4d3937f1e10d0c822eca990b683a3fee244ed686ef6c76afdc4b8f72b49b8e","all_edges_checked":24648,"terminal_relation":"equal"},
+        {"solver":"glucose4","sha256":"669bc0175a5dc811bc8eb7a8efd6be10aa0b8ef18ca13e0e279cdfd2d24dad71","all_edges_checked":24648,"terminal_relation":"equal"}
+      ],
+      "independent_all_pairs_geometry_checks": 8390656,
+      "ordinary_artifact_id": 10427630689,
+      "fold_artifact_id": 10427562187
+    },
+    {
+      "copies": 3,
+      "vertices": 5667,
+      "unit_edges": 34945,
+      "additional_cross_interior_edges": 438,
+      "graph_sha256": "58674bb2a1326adcf31b3a8f3e5a56e7200ee768fea8d1cfed0b9c6852549a78",
+      "A": "NOT_A",
+      "specified_pair_B": "UNKNOWN",
+      "H_phi": "NOT_APPLICABLE",
+      "terminal_squared_distance": 3,
+      "ordinary_five_tests": "6 UNKNOWN_TIMEOUT results at 45 seconds per case",
+      "ordinary_six_tests": "SAT with both solvers",
+      "quotient_vertices": 1639,
+      "quotient_edges": 10276,
+      "quotient_results": [{"solver":"cadical195","status":"SAT"},{"solver":"glucose4","status":"UNKNOWN_TIMEOUT","wall_seconds":60}],
+      "five_witnesses": [
+        {"solver":"cadical195","sha256":"b966eae10b3003a7448ef6d80caa83199486cff9463eb74a1d29930d8d6fb8bb","all_edges_checked":34945,"terminal_relation":"equal"}
+      ],
+      "independent_all_pairs_geometry_checks": 16054611,
+      "ordinary_artifact_id": 10427566754,
+      "fold_artifact_id": 10427238662
+    }
+  ],
+  "calibration": {
+    "failed_control_runs": [35045994995,35046231650],
+    "cadical_proof_path_repaired": false,
+    "cadical_negative_policy": "UNSAT_UNCHECKED",
+    "glucose4_drat_control": "UNSAT_PROOF_VERIFIED",
+    "independent_rup_control": "VERIFIED_RUP",
+    "added_lemmas": 140,
+    "deletions": 41,
+    "cnf_sha256": "72d64157dae0bd41593185f43c57168d6604c4818a80a54dc6e32edcf3e042ad",
+    "proof_sha256": "ac559b3f89c312440fba7b96cfe00ed80cc629fefc5ba049835b386881c45b0c",
+    "K6_control_is_not_a_unit_distance_witness": true
+  },
+  "hex7": {
+    "plane_upper_bound": 7,
+    "circumradius": "2/5",
+    "color_rule": "(i+3*j) mod 7",
+    "within_cell_diameter": "4/5 < 1",
+    "same_color_cell_distance_bound": "(2/5)*(sqrt(21)-2) > 1",
+    "fixed_hex_tiling_no_six": true,
+    "no_arbitrary_plane_six_coloring_exclusion": true
+  }
+}
