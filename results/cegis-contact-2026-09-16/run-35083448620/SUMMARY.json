@@ -1,0 +1,153 @@
+{
+  "run_id": 35083448620,
+  "status": "RECORDED_BOUNDED_NO_DISCOVERY",
+  "new_HN_bound_claimed": false,
+  "pr_head_sha": "7fb39ba28fe64bc35f0fbdc6ded444d41d515ee7",
+  "executed_merge_sha": "907902493914541888a0d0630b74211794cb90a9",
+  "base_main_sha": "2275bbacac02776d0c8ef736cc47869befb2b9af",
+  "candidate_evaluations": 24,
+  "totals": {
+    "saved_CNF_files": 23,
+    "fixed_conflicts_reproved": 7,
+    "diversification_timeouts": 3,
+    "UNKNOWN": 12,
+    "fixed_blocked": 7,
+    "NOT_A": 12,
+    "free_timeouts": 5
+  },
+  "arms": [
+    {
+      "arm": "11-guided",
+      "artifact_id": 10441088371,
+      "artifact_zip_sha256": "1d5038eaeeb736672c2a069895da23ae6935c1ab0d031e2c31ce211cb69e5c45",
+      "candidate_evaluations": 6,
+      "UNKNOWN": 1,
+      "fixed_blocked": 1,
+      "NOT_A": 5,
+      "free_timeouts": 1,
+      "retained_vertices": 6391,
+      "retained_edges": 37825,
+      "retained_graph_sha256": "451033528f52f68c5597b2acc767bd25b1293e99154b3634b8b6c50b587a6ba0",
+      "next_round": 4,
+      "retained_colorings": 1,
+      "actions_geometry_audit": {
+        "status": "PASS",
+        "graph_sha256": "451033528f52f68c5597b2acc767bd25b1293e99154b3634b8b6c50b587a6ba0",
+        "vertices": 6391,
+        "edges": 37825,
+        "all_pairs": 20419245,
+        "survivors": 37828,
+        "separate_filter_primes": [
+          2311,
+          2731
+        ],
+        "models_checked": 1,
+        "search_arithmetic_imported": false,
+        "SAT_imported": false,
+        "float_geometry": false
+      },
+      "checkpoint_sha256": "0f6842bddabb23c2ace06a2797c18ee5ac8f1b948532fe48d90263a270ccb5cf"
+    },
+    {
+      "arm": "11-random",
+      "artifact_id": 10440963657,
+      "artifact_zip_sha256": "cb8f23effb5d882e18632816ff107b88d4598db3ed380e5b804b50ce4b3501a9",
+      "candidate_evaluations": 6,
+      "UNKNOWN": 5,
+      "fixed_blocked": 1,
+      "NOT_A": 1,
+      "free_timeouts": 1,
+      "retained_vertices": 6391,
+      "retained_edges": 37593,
+      "retained_graph_sha256": "09cfd7fd1c6bb816c83d36b5dbab06680ba51aa4628a1e87fdd9eca3a0e4079f",
+      "next_round": 4,
+      "retained_colorings": 1,
+      "actions_geometry_audit": {
+        "status": "PASS",
+        "graph_sha256": "09cfd7fd1c6bb816c83d36b5dbab06680ba51aa4628a1e87fdd9eca3a0e4079f",
+        "vertices": 6391,
+        "edges": 37593,
+        "all_pairs": 20419245,
+        "survivors": 37596,
+        "separate_filter_primes": [
+          2311,
+          2731
+        ],
+        "models_checked": 1,
+        "search_arithmetic_imported": false,
+        "SAT_imported": false,
+        "float_geometry": false
+      },
+      "checkpoint_sha256": "389b699bf50a22fb6a0475cf3fe2563a5f7a66cf75f073ffdf0cecd2f2fce76a"
+    },
+    {
+      "arm": "29-guided",
+      "artifact_id": 10440929191,
+      "artifact_zip_sha256": "0ef9097b5d2c156520fadb7d99dd36c2a571c0381403a41c88895fa1b9b238db",
+      "candidate_evaluations": 6,
+      "NOT_A": 5,
+      "fixed_blocked": 1,
+      "UNKNOWN": 1,
+      "free_timeouts": 1,
+      "retained_vertices": 6391,
+      "retained_edges": 38050,
+      "retained_graph_sha256": "cec985413ea6faef5273001489de7cb2ddd17068ef72b6b30419a08c038dee08",
+      "next_round": 4,
+      "retained_colorings": 1,
+      "actions_geometry_audit": {
+        "status": "PASS",
+        "graph_sha256": "cec985413ea6faef5273001489de7cb2ddd17068ef72b6b30419a08c038dee08",
+        "vertices": 6391,
+        "edges": 38050,
+        "all_pairs": 20419245,
+        "survivors": 38053,
+        "separate_filter_primes": [
+          2311,
+          2731
+        ],
+        "models_checked": 1,
+        "search_arithmetic_imported": false,
+        "SAT_imported": false,
+        "float_geometry": false
+      },
+      "checkpoint_sha256": "52ca24cc4f9542e598838611474c8910610197a9ee0b395cb08756ad8799a624"
+    },
+    {
+      "arm": "29-random",
+      "artifact_id": 10441173499,
+      "artifact_zip_sha256": "908ed73888aa0c8a3dec441af90a638418837ec5dfbd6121b89726f57290c013",
+      "candidate_evaluations": 6,
+      "UNKNOWN": 5,
+      "fixed_blocked": 4,
+      "free_timeouts": 2,
+      "NOT_A": 1,
+      "retained_vertices": 6391,
+      "retained_edges": 37594,
+      "retained_graph_sha256": "8817a1ea877c15eea8251d2024641521e8442532a9ff5de772e49a7996611fdc",
+      "next_round": 4,
+      "retained_colorings": 1,
+      "actions_geometry_audit": {
+        "status": "PASS",
+        "graph_sha256": "8817a1ea877c15eea8251d2024641521e8442532a9ff5de772e49a7996611fdc",
+        "vertices": 6391,
+        "edges": 37594,
+        "all_pairs": 20419245,
+        "survivors": 37598,
+        "separate_filter_primes": [
+          2311,
+          2731
+        ],
+        "models_checked": 1,
+        "search_arithmetic_imported": false,
+        "SAT_imported": false,
+        "float_geometry": false
+      },
+      "checkpoint_sha256": "ed295e7289d8df2baa28dc74f4dec8f119d843fd3c95cbdccc10a96f74687e6a"
+    }
+  ],
+  "scope": "12 positive five-color candidates; 12 UNKNOWN. Fixed-parent conflicts are not free-coloring impossibility.",
+  "geometry_reproved_by_this_script": false,
+  "resume": "Use output/CHECKPOINT.json with CURRENT.json.gz and SOURCE.json.gz; next_round=4. Original workflow restores round 2.",
+  "artifact_expiry_UTC": "2026-12-15T10:09:33Z",
+  "evidence": "Full graph/CNF/proof records remain in original hash-bound Actions artifacts; verify_export.py can export full witness/checkpoint bundle."
+}
