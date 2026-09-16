@@ -24,7 +24,8 @@ def test_small():
 
 
 def probe(out: Path, seconds: int, checker: str | None, solvers: list[str]) -> dict:
-    from hn_certified_color_probe import run_case, select_pins
+    from hn_closed_trace_color_probe import run_case
+    from hn_certified_color_probe import select_pins
     graph = out/'GRAPH.json'
     g = json.loads(graph.read_text())
     results = []

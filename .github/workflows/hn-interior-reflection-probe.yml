@@ -6,6 +6,7 @@ on:
       - '.github/workflows/hn-interior-reflection-probe.yml'
       - 'tools/hn_interior_reflection_probe.py'
       - 'tools/hn_overlap_probe_common.py'
+      - 'tools/hn_closed_trace_color_probe.py'
       - 'tools/hn_hex7_certificate.py'
   workflow_dispatch:
 permissions:
@@ -53,7 +54,7 @@ jobs:
           from pathlib import Path
           from itertools import combinations
           from hn_cyclotomic210 import selftest
-          from hn_certified_color_probe import run_case
+          from hn_closed_trace_color_probe import run_case
           assert hashlib.sha256(Path('/tmp/input/heptagon/G3.json').read_bytes()).hexdigest() == '90096518a3c10de93066f6fee70a0b16a218a094de5e5b35285089472d646b8a'
           selftest()
           # K6 is an abstract solver control, never a planar geometric witness.
