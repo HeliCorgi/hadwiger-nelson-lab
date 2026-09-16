@@ -1,11 +1,8 @@
 name: hn-archive-affine-witnesses
 on:
-  push:
-    branches: [main]
-    paths: ['.github/workflows/hn-archive-affine-witnesses.yml']
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
   actions: read
 jobs:
   archive:
@@ -37,10 +34,8 @@ jobs:
           run-id: 35058000720
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: /tmp/input/f4
-      - name: Validate full witnesses and store only the planned Git blob
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python tools/hn_archive_affine_witnesses.py --input /tmp/input --out /tmp/output --store-git-blob
+      - name: Independently validate full witnesses and reproduce the local archive
+        run: python tools/hn_archive_affine_witnesses.py --input /tmp/input --out /tmp/output
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: archived-affine-witnesses-${{ github.run_id }}

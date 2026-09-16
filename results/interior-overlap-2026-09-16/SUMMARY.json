@@ -1,61 +1,44 @@
 {
-  "status": "BOUNDED_RUN_COMPLETE",
-  "run_id": 35049612048,
-  "source_commit": "fcb3e7fa3a494c46981fff4b6b22e901de5e02ea",
-  "run_url": "https://github.com/HeliCorgi/hadwiger-nelson-lab/actions/runs/35049612048",
-  "jobs_completed_successfully": 8,
+  "status": "VERIFIED_FIVE_COLOR_WITNESSES",
+  "date_JST": "2026-09-16",
   "new_HN_bound_claimed": false,
-  "direct_five_color_seconds": 90,
-  "direct_five_color_all_eight_timed_out": true,
-  "phase_seconds_per_case": 15,
-  "unknown_is_evidence": false,
-  "all_eight_geometry_audits_passed": true,
-  "locally_revalidated_full_models": {"five_color": 3, "six_color": 8},
-  "tests": {"phase_regressions": 8, "phase_tests_run_in_Actions": true, "witness_regressions": 8, "witness_tests_run_locally_only": true},
-  "saved_five_color_bundle": {
-    "path": "G3_FIVE_COLORINGS.json.gz",
-    "sha256": "c03df0aa616ad9071cef0401e55e2108526af40f276f17015b6c873644f12ecb",
-    "models": 3
-  },
-  "cases": [
-    {
-      "case": "g3-shift-2", "vertices": 3812, "edges": 24275,
-      "semantic_sha256": "1293c66a3bff348d4bc8bb58bc7f89e379e64e3ccd8903fd4f45040cc6bb62b3",
-      "target_A": "NOT_A", "six_color_witnesses": 2,
-      "jobs": [
-        {"solver": "cadical195", "artifact_id": 10427788574, "artifact_sha256": "c7ed39461f7eda362eb8dcae58df97e6356037dfe7dda996bbfc166ae1e84bd8", "direct5": "UNKNOWN_TIMEOUT", "phases": {"phase1": "SAT"}},
-        {"solver": "glucose4", "artifact_id": 10427944895, "artifact_sha256": "b8cee197c3b2db43ca1d61c8bf0d9130ce2e80e8fea53fc8cb74363c5ae99ca1", "direct5": "UNKNOWN_TIMEOUT", "phases": {"phase1": "UNKNOWN_TIMEOUT", "phase2": "UNKNOWN_TIMEOUT", "phase3": "UNKNOWN_TIMEOUT", "phase4": "UNKNOWN_TIMEOUT"}}
-      ]
-    },
-    {
-      "case": "g3-shift-3", "vertices": 5493, "edges": 36106,
-      "semantic_sha256": "f1ac78e9d05db29d203123003321d21944f0d9f4b3bd8d5b3bb638f55279fb2f",
-      "target_A": "NOT_A", "six_color_witnesses": 2,
-      "jobs": [
-        {"solver": "cadical195", "artifact_id": 10428586075, "artifact_sha256": "6a0627546cb6b4297d7ee7321f65db96b817c01ffee07868d4f52645754c87b0", "direct5": "UNKNOWN_TIMEOUT", "phases": {"phase1": "SAT"}},
-        {"solver": "glucose4", "artifact_id": 10428736220, "artifact_sha256": "fd89e99965e5bc64aa66ba0bdb623f545822f2f1f5930fd71bca08947e8765ed", "direct5": "UNKNOWN_TIMEOUT", "phases": {"phase1": "SAT"}}
-      ]
-    },
-    {
-      "case": "u", "vertices": 15908, "edges": 103045,
-      "semantic_sha256": "7a04684f1a91ec20697387f0af155e0d8d38447f1fb19cf38afe7ff6c67fd6dc",
-      "target_A": "UNKNOWN", "six_color_witnesses": 2,
-      "jobs": [
-        {"solver": "cadical195", "artifact_id": 10428427873, "artifact_sha256": "167fd1adea128bb8b30e06d8703faa66add2c75a5f00dc288315b82f2602b79c", "direct5": "UNKNOWN_TIMEOUT", "phases": {"phase1": "UNKNOWN_TIMEOUT", "phase2": "UNKNOWN_TIMEOUT", "phase3": "UNKNOWN_TIMEOUT", "phase4": "UNKNOWN_TIMEOUT"}},
-        {"solver": "glucose4", "artifact_id": 10428547519, "artifact_sha256": "52bd1e87d2c2b55fb7cb8399db8bf7f1ebd712126ee6f225d70efc7eaa71ac43", "direct5": "UNKNOWN_TIMEOUT", "phases": {"phase1": "UNKNOWN_TIMEOUT", "phase2": "UNKNOWN_TIMEOUT", "phase3": "UNKNOWN_TIMEOUT", "phase4": "UNKNOWN_TIMEOUT"}}
-      ]
-    },
-    {
-      "case": "fork", "vertices": 23090, "edges": 154809,
-      "semantic_sha256": "bf17bfe425178823c16d2b3c586ebc8e4706eb2bd6866f6571e4a6223b272af1",
-      "target_A": "UNKNOWN", "six_color_witnesses": 2,
-      "jobs": [
-        {"solver": "cadical195", "artifact_id": 10428482777, "artifact_sha256": "78fcf08a860a5af63630305498ea0c162a2946d1bec360f62f2abf5293522058", "direct5": "UNKNOWN_TIMEOUT", "phases": {"phase1": "UNKNOWN_TIMEOUT", "phase2": "UNKNOWN_TIMEOUT", "phase3": "UNKNOWN_TIMEOUT", "phase4": "UNKNOWN_TIMEOUT"}},
-        {"solver": "glucose4", "artifact_id": 10428363246, "artifact_sha256": "e498430b051eced6571570aa9f7b6fce77ad1341801a119444276371290d6db8", "direct5": "UNKNOWN_TIMEOUT", "phases": {"phase1": "UNKNOWN_TIMEOUT", "phase2": "UNKNOWN_TIMEOUT", "phase3": "UNKNOWN_TIMEOUT", "phase4": "UNKNOWN_TIMEOUT"}}
-      ]
-    }
+  "previous_checkpoint_commit": "a4f399e31f9cc5946910be98ea89404a9a33082c",
+  "current_cases": [
+    {"case":"g3-shift-2","vertices":3812,"edges":24275,"target_A":"NOT_A","evidence":"G3_FIVE_COLORINGS.json.gz"},
+    {"case":"g3-shift-3","vertices":5493,"edges":36106,"target_A":"NOT_A","evidence":"G3_FIVE_COLORINGS.json.gz"},
+    {"case":"u","vertices":15908,"edges":103045,"target_A":"NOT_A","full_new_five_colorings":2,"specified_pair_B":"NOT_FORCED_EQUAL","specified_pair_H_phi":"NOT_H_PHI","ports":[377,1000]},
+    {"case":"fork","vertices":23090,"edges":154809,"target_A":"NOT_A","full_new_five_colorings":2,"specified_pair_B":"NOT_FORCED_EQUAL","specified_pair_H_phi":"NOT_H_PHI","ports":[378,1084]},
+    {"case":"one","vertices":17040,"edges":109688,"target_A":"NOT_A","evidence":"historical explicit phase-shift construction","rerun_in_this_followup":false}
   ],
-  "previously_excluded_control": {"case": "one", "vertices": 17040, "edges": 109688, "target_A": "NOT_A", "rerun_in_this_Actions_run": false},
-  "next_checkpoint": {"remaining_candidates": ["u", "fork"], "automatic_reruns_disabled": true, "workflow_manual_default": "u and fork only", "known_NOT_A_cases_not_default_search": true, "time_limit_not_a_lower_bound": true},
-  "artifact_retention": {"expires_at": "2026-12-15T02:51:52Z", "full_graphs_and_eight_job_outputs": "Actions artifacts", "three_five_color_witnesses": "committed gzip bundle"}
+  "new_witnesses": {
+    "file":"AFFINE_FIVE_COLORINGS.json.gz","count":4,
+    "raw_json_sha256":"72240175a62057f5be4c5fe455df28569b49ad4057c6f94a7562c697f0b5fb7c",
+    "gzip_sha256":"cb49029f740741dd5c24c38128fd860d9af97a11fb6d235488d0c5c039b82ecc",
+    "git_blob_sha":"40f8ed8f892eb51bbf8cafc8027a75d326d0303d"
+  },
+  "runs": [
+    {"id":35057449450,"source_commit":"528997412960b6b34530eeca3e6557d8a6be606f","jobs":4,"template_probes":14,"SAT":2,"UNKNOWN_TIMEOUT":12,"seconds_per_probe":60},
+    {"id":35058000720,"source_commit":"dfdecef3d644a3fcb554a0ee283e3d9b72799d27","jobs":4,"template_probes":4,"SAT":2,"UNKNOWN_TIMEOUT":2,"seconds_per_probe":60,"frozen_variables":0}
+  ],
+  "exact_geometry": {
+    "u":{"all_pairs":126524278,"unit_edges":103045},
+    "fork":{"all_pairs":266562505,"unit_edges":154809},
+    "independent_audit_rerun_in_first_Actions_and_locally":true,
+    "new_geometry_not_constructed":true
+  },
+  "tests":{"affine_encoding_tests":12,"with_seed_tests":15,"run_locally_and_in_Actions":true},
+  "pair_scope":"Only the recorded a,b pair in each graph: a=(0,0), b=(phi,0). Other forced-equal pairs are not excluded.",
+  "negative_scope":"Every restricted UNSAT, failure and timeout is non-evidence about ordinary colorability.",
+  "next_checkpoint":{
+    "remaining_A_candidates_in_this_bounded_series":[],
+    "unchanged_A_reruns_not_useful":true,
+    "other_terminal_pairs_not_exhausted":true,
+    "new_constructions_not_excluded":true,
+    "new_workflows_manual_only_after_results_commit":true
+  },
+  "evidence_manifest":"AFFINE_AUDIT.json",
+  "historical_run":35049612048,
+  "archive_run":35058561996,
+  "search_jobs_completed_successfully":8,
+  "archive_witness_validation_completed":true
 }

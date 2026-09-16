@@ -1,8 +1,5 @@
 name: hn-affine-seeded-fork
 on:
-  push:
-    branches: [main]
-    paths: ['.github/workflows/hn-affine-seeded-fork.yml']
   workflow_dispatch:
 permissions:
   contents: read

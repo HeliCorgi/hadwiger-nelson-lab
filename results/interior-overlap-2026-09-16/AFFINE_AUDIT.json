@@ -1,0 +1,109 @@
+{
+  "status": "PASS",
+  "all_eight_artifact_zip_hashes_checked_locally": true,
+  "all_four_full_colorings_revalidated_on_every_original_edge": true,
+  "all_unseeded_CNFs_and_lift_recipes_reproduced_identically": true,
+  "all_seeded_CNFs_identical_to_unseeded_case": true,
+  "all_seed_phase_vectors_reproduced_identically": true,
+  "geometry_audit": [
+    {
+      "status": "PASS",
+      "vertices": 15908,
+      "unit_edges": 103045,
+      "all_unordered_pairs": 126524278,
+      "exact_filter_survivors": 103199,
+      "filter_primes": [631, 1051],
+      "independent_polynomial": "sympy.cyclotomic_poly(210)",
+      "arithmetic": "SymPy QQ polynomial remainder; no geometry-kernel imports",
+      "point_distinctness_checked": true,
+      "induced_completeness_checked": true,
+      "seconds": 4.513,
+      "sympy_version": "1.14.0",
+      "graph_file_sha256": "98842dfa72bda4dc198b4a3629dc0e7480c024dffe937750d422824dd03ec7a2"
+    },
+    {
+      "status": "PASS",
+      "vertices": 23090,
+      "unit_edges": 154809,
+      "all_unordered_pairs": 266562505,
+      "exact_filter_survivors": 155119,
+      "filter_primes": [631, 1051],
+      "independent_polynomial": "sympy.cyclotomic_poly(210)",
+      "arithmetic": "SymPy QQ polynomial remainder; no geometry-kernel imports",
+      "point_distinctness_checked": true,
+      "induced_completeness_checked": true,
+      "seconds": 7.041,
+      "sympy_version": "1.14.0",
+      "graph_file_sha256": "bf5f39aebdcc32a677efe2a82109cd65b88ab3acd957f06b73e266a597f78d9e"
+    }
+  ],
+  "phi_terminal_check": {
+    "engine": "Independent SymPy QQ[z]/Phi210 calculation",
+    "u_ports": [377, 1000],
+    "fork_ports": [378, 1084],
+    "difference_equals_zeta210_21_plus_zeta210_189": true,
+    "golden_ratio_polynomial_checked": true
+  },
+  "artifacts": [
+    {"case":"u","solver":"cadical195","artifact_id":10431436190,"artifact_zip_sha256":"152656a11969b0f6d642912feafc91104d064f097c37bb1149f6409269641b2e","run_id":35057449450,"results":[[1,"SAT"],[4,"SAT"]]},
+    {"case":"u","solver":"glucose4","artifact_id":10431097937,"artifact_zip_sha256":"c9b6187ba2c5b8ee278c4a912ca2e3f9e8dac5f071fa145a004d7fb855deb8da","run_id":35057449450,"results":[[1,"UNKNOWN_TIMEOUT"],[4,"UNKNOWN_TIMEOUT"],[2,"UNKNOWN_TIMEOUT"],[3,"UNKNOWN_TIMEOUT"]]},
+    {"case":"fork","solver":"cadical195","artifact_id":10431008532,"artifact_zip_sha256":"8ba5d40dbc3082ec07bb1314fa725195cd6104084cce9860caa4c4d83881d075","run_id":35057449450,"results":[[1,"UNKNOWN_TIMEOUT"],[4,"UNKNOWN_TIMEOUT"],[2,"UNKNOWN_TIMEOUT"],[3,"UNKNOWN_TIMEOUT"]]},
+    {"case":"fork","solver":"glucose4","artifact_id":10431770429,"artifact_zip_sha256":"3481b9a09aba62280eb39aea9b470f95ea5fdc6d30d31db0d4f1916e29b0736d","run_id":35057449450,"results":[[1,"UNKNOWN_TIMEOUT"],[4,"UNKNOWN_TIMEOUT"],[2,"UNKNOWN_TIMEOUT"],[3,"UNKNOWN_TIMEOUT"]]},
+    {"case":"fork","solver":"cadical195","run_id":35058000720,"artifact_id":10431546654,"artifact_zip_sha256":"8ce65b41df2d42da97cddc71e52646bb89d195ad63c1eaf81750c58fb56a5001","results":[[1,"SAT"]],"soft_seeded":true},
+    {"case":"fork","solver":"cadical195","run_id":35058000720,"artifact_id":10431347184,"artifact_zip_sha256":"d6c2486f561862e08758b9bba79e1167f09d7dad903b3130a337fd14dc61013d","results":[[4,"SAT"]],"soft_seeded":true},
+    {"case":"fork","solver":"glucose4","run_id":35058000720,"artifact_id":10431024059,"artifact_zip_sha256":"b9e9956f413110b19c1b702a73bf07fa548a7765935c96f67177ababcde7ba32","results":[[1,"UNKNOWN_TIMEOUT"]],"soft_seeded":true},
+    {"case":"fork","solver":"glucose4","run_id":35058000720,"artifact_id":10430878699,"artifact_zip_sha256":"ae1fd7a64618e2daf288cc9a3a29c647a857431bb35ee1f382149c646b3ef15f","results":[[4,"UNKNOWN_TIMEOUT"]],"soft_seeded":true}
+  ],
+  "accepted_models": [
+    {
+      "artifact_id":10431436190,"case":"u","clauses":66660,
+      "cnf_sha256":"5be4fc860086e4e50ef23a860f9a7159302ab201a97fb91b7d50208bd6bd4e85",
+      "coloring_sha256":"b940b3c0835798f6299c56ef4513dc1912cca1e0913fa82a7ffcc63adc3f5636",
+      "multiplier":1,"original_edges_checked":103045,"original_graph_negative_claim":false,
+      "python_sat_version":"1.9.dev7","roots":1584,"run_id":35057449450,"seconds":23.931,
+      "semantic_sha256":"7a04684f1a91ec20697387f0af155e0d8d38447f1fb19cf38afe7ff6c67fd6dc",
+      "solver":"cadical195","status":"SAT","terminal_colors":[0,2],"terminals_equal":false,"vertices":15908
+    },
+    {
+      "artifact_id":10431436190,"case":"u","clauses":66719,
+      "cnf_sha256":"e3b8c44d0192ae0782e1ca0d35391ca2d943a783ced44199217eafaa58f858ae",
+      "coloring_sha256":"7727f97588f4fa28d199444cdb450a718f578ecf67ddec2703f4b6837c9b0a89",
+      "multiplier":4,"original_edges_checked":103045,"original_graph_negative_claim":false,
+      "python_sat_version":"1.9.dev7","roots":1584,"run_id":35057449450,"seconds":51.33,
+      "semantic_sha256":"7a04684f1a91ec20697387f0af155e0d8d38447f1fb19cf38afe7ff6c67fd6dc",
+      "solver":"cadical195","status":"SAT","terminal_colors":[0,0],"terminals_equal":true,"vertices":15908
+    },
+    {
+      "CNF_unchanged_from_unseeded_run":true,"artifact_id":10431546654,"case":"fork",
+      "cnf_sha256":"1e4ee6b4109b91e16c0473391141afb371fec306a2f483305731b1340b662f13",
+      "coloring_sha256":"334a92d31ac121778f0c0570c843d81c6c444a23f44068b362602ed56be2176d",
+      "frozen_variables":0,"initial_unsatisfied_clauses":47,"multiplier":1,"original_edges_checked":154809,
+      "original_graph_negative_claim":false,"run_id":35058000720,"seconds":1.521,
+      "seed_coloring_sha256":"b940b3c0835798f6299c56ef4513dc1912cca1e0913fa82a7ffcc63adc3f5636",
+      "semantic_sha256":"bf17bfe425178823c16d2b3c586ebc8e4706eb2bd6866f6571e4a6223b272af1",
+      "solver":"cadical195","source_commit":"dfdecef3d644a3fcb554a0ee283e3d9b72799d27",
+      "status":"SAT","terminal_colors":[0,2],"terminals_equal":false,"vertices":23090
+    },
+    {
+      "CNF_unchanged_from_unseeded_run":true,"artifact_id":10431347184,"case":"fork",
+      "cnf_sha256":"fe9d6b5f7df153c73b100174283fb796a6f72a1e70f6de827456f0fbf74b1861",
+      "coloring_sha256":"2abf161bf6734629a67ab594345ed5bf674990dac6c89c9d666c5b87a8754864",
+      "frozen_variables":0,"initial_unsatisfied_clauses":43,"multiplier":4,"original_edges_checked":154809,
+      "original_graph_negative_claim":false,"run_id":35058000720,"seconds":0.771,
+      "seed_coloring_sha256":"7727f97588f4fa28d199444cdb450a718f578ecf67ddec2703f4b6837c9b0a89",
+      "semantic_sha256":"bf17bfe425178823c16d2b3c586ebc8e4706eb2bd6866f6571e4a6223b272af1",
+      "solver":"cadical195","source_commit":"dfdecef3d644a3fcb554a0ee283e3d9b72799d27",
+      "status":"SAT","terminal_colors":[0,0],"terminals_equal":true,"vertices":23090
+    }
+  ],
+  "artifact_retention":"Search-run artifacts expire 2026-12-15; committed full witness bundle has no Actions expiry.",
+  "archive_check": {
+    "run_id":35058561996,"artifact_id":10432015441,
+    "artifact_zip_sha256":"0f185eb3d251b642138d2626fc916cbe52d497801581306fc5a359c5afecdecd",
+    "uncompressed_JSON_identical_to_local":true,"gzip_header_OS_byte_local":255,"gzip_header_OS_byte_remote":3,
+    "witnesses":4,"raw_sha256":"72240175a62057f5be4c5fe455df28569b49ad4057c6f94a7562c697f0b5fb7c",
+    "gzip_sha256":"cb49029f740741dd5c24c38128fd860d9af97a11fb6d235488d0c5c039b82ecc",
+    "git_blob_sha":"40f8ed8f892eb51bbf8cafc8027a75d326d0303d","gzip_bytes":24972,
+    "all_original_edges_checked":true,"branch_ref_updated":false,"git_blob_created":true
+  }
+}

@@ -1,114 +1,121 @@
-# Translation/overlap candidates: verified continuation checkpoint
+# Translation/overlap series: u and fork now have verified five-colorings
 
 2026-09-16 JST. **No new Hadwiger–Nelson lower bound is claimed.**
-The resumed Actions run found proper five-colorings of both G3 translation
-candidates. Their old UNKNOWN A statuses are superseded by **NOT_A**.
-The two mixed-field candidates remain UNKNOWN.
+The affine follow-up found full proper five-colorings of both remaining mixed
+candidates. Their former UNKNOWN target-A statuses are superseded by **NOT_A**.
+All five graphs in this bounded translation series are now excluded for A.
+This does not exclude larger constructions, the ambient field, or other point pairs.
 
-This is the 3,812/5,493/15,908/23,090-vertex translation series, not the separate
-4,097/5,667-vertex reflection series. Existing reflection code and the seven-color
+## Current checkpoint
+
+| case | vertices | unit edges | current A status | decisive evidence |
+|---|---:|---:|---|---|
+| g3-shift-2 | 3,812 | 24,275 | NOT_A | 1 prior full five-coloring |
+| g3-shift-3 | 5,493 | 36,106 | NOT_A | 2 prior full five-colorings |
+| u | 15,908 | 103,045 | NOT_A | 2 new full five-colorings |
+| fork | 23,090 | 154,809 | NOT_A | 2 new full five-colorings |
+| one | 17,040 | 109,688 | NOT_A | historical explicit phase-shift construction |
+
+For **only the specified a,b pair** in each mixed graph, both equality and
+inequality have full proper five-color witnesses. Thus these interfaces are
+NOT_FORCED_EQUAL and NOT_H_PHI. This is not an exclusion of every possible B pair.
+The exact pairs are u: indices (377,1000), fork: (378,1084), each with a=(0,0),
+b=(phi,0). Their displacement was rechecked independently in QQ[z]/Phi210.
+
+`SUMMARY.json` is the current machine-readable checkpoint. The previous summary
+is preserved in Git at commit `a4f399e31f9cc5946910be98ea89404a9a33082c`.
+`ARCHIVE_INDEX.json`, the prior G3 witnesses, reflection work, and seven-color
 proof have not been replaced.
 
-## Current results
+## What changed in the search
 
-Run [35049612048](https://github.com/HeliCorgi/hadwiger-nelson-lab/actions/runs/35049612048),
-source commit `fcb3e7fa3a494c46981fff4b6b22e901de5e02ea`, completed all eight jobs
-successfully. Job success means the bounded experiment and validations finished,
-not that a six-chromatic graph was found.
+The old phase search shared an entire 8,520-point rhombus coloring between
+translations. The new search exposes its four constituent G3 copies and permits
+an affine permutation of the five color names for each copy:
 
-| case | vertices | unit edges | current A status | new full five-color witnesses |
-|---|---:|---:|---|---:|
-| g3-shift-2 | 3,812 | 24,275 | NOT_A | 1, CaDiCaL |
-| g3-shift-3 | 5,493 | 36,106 | NOT_A | 2, CaDiCaL and Glucose |
-| u | 15,908 | 103,045 | UNKNOWN | 0 |
-| fork | 23,090 | 154,809 | UNKNOWN | 0 |
-| one, historical control | 17,040 | 109,688 | NOT_A, already excluded | not rerun |
+    C(copy_s[i]) = a_s * X_i + b_s (mod 5).
 
-All eight ordinary five-color probes timed out at 90 seconds. All eight ordinary
-six-color probes produced validated models. The positive-only cyclic-copy search
-then found the three five-color models above. The remaining phase attempts timed
-out at 15 seconds each; neither direct nor auxiliary timeout is forcing evidence.
-A single valid five-color witness excludes target A regardless of another solver's
-timeout. No candidate ordinary non-five-colorability proof was obtained.
+For t in {1,2,3,4}, the four local slopes are [1,t,-1,-t] and offsets are
+[0,1,1+t,t]. External translations add offsets [0,1] for u and [0,1,t] for fork.
+The G3 source points 0 and 1 are pinned to colors 0 and 1 as part of this extra
+search restriction. Affine union-find enforces actual overlaps, including cycles
+that fix a root color. Every original edge is included in the resulting CNF.
 
-The three new five-colorings and all eight six-colorings were downloaded and
-checked locally on every original edge, including the recorded hard pins. Each
-artifact ZIP digest and each graph semantic hash was checked. The point and edge
-order agrees with the original archived geometry. Eight phase-encoding regression
-tests passed in Actions; eight additional witness-verifier regression tests passed
-locally after the run. The latter were not part of that Actions run.
+The source-level systems have 1,584 color variables for u and 1,572 for fork,
+compared with 7,388 and 6,309 in the previous whole-rhombus phase systems.
+A restricted model is lifted and checked on every original edge. Restricted
+UNSAT, an inconsistent template, or timeout never excludes ordinary colorability.
+No assumption is made that these templates cover all possible colorings.
 
-## Why the extra search helped
+## Completed runs
 
-For copy t of a common source, restrict colors to
-`C(copy_t[i]) = X_i + phase[t] (mod 5)`. Actual coincident points impose equations
-on the X_i; a weighted disjoint-set structure compresses them. Every original edge
-adds a constraint. The successful offsets were `[0,1]` and `[0,1,2]`.
+[35057449450](https://github.com/HeliCorgi/hadwiger-nelson-lab/actions/runs/35057449450),
+source `528997412960b6b34530eeca3e6557d8a6be606f`, ran both solvers on both graphs.
+CaDiCaL found u witnesses for t=1 and t=4 in 23.931 and 51.330 worker seconds.
+The other twelve restricted probes timed out at 60 seconds. Both exact original
+graphs were independently audited in these jobs, not approximated numerically.
 
-The auxiliary model is lifted to all original vertices and rechecked without
-trusting the quotient or solver. An inconsistent phase system, auxiliary UNSAT or
-timeout would only reject that extra restriction, never ordinary five-colorability.
-These colorings do not establish a plane-wide five-coloring or a field-wide theorem.
-The G3 translation terminals are at distance one, not phi.
+[35058000720](https://github.com/HeliCorgi/hadwiger-nelson-lab/actions/runs/35058000720),
+source `dfdecef3d644a3fcb554a0ee283e3d9b72799d27`, used those u witnesses as soft
+initial phase preferences for fork. The CNFs were unchanged and **no variables
+were frozen**. CaDiCaL found fork witnesses for t=1 and t=4 in 1.521 and 0.771
+worker seconds; both Glucose probes timed out at 60 seconds. These are measured
+run times, not evidence of rigidity or proximity to a six-chromatic graph.
 
-## Geometry and proof policy
+The eight search jobs completed. The 12 affine tests and then all 15 tests with
+the seed transformation passed locally and in their respective Actions runs.
+All eight ZIP hashes, all original graph identities, all reconstructed CNFs and
+all four full positive models were checked locally. Details: `AFFINE_AUDIT.json`.
 
-`tools/hn_translation_resume.py` reconstructs exactly the prior candidates from
-G3, merges actual coincident points and includes every exact unit-distance pair.
-`ARCHIVE_INDEX.json` preserves the historical semantic hashes and old outcomes;
-it is deliberately not rewritten to hide the original UNKNOWN results.
+## Two-port consequence and scope
 
-Every Actions job independently audited the complete point-pair set using
-`tools/hn_cyclotomic210_independent_audit.py`: SymPy generates Phi210, with separate
-polynomial arithmetic and necessary residue filters at primes 631 and 1051 rather
-than the construction's 211 and 421. Surviving norms are evaluated exactly. All
-saved induced unit-edge sets matched. The geometry is not based on float tolerance.
+For each mixed graph the witnesses realize terminal colors (0,2) and (0,0).
+Global color renaming therefore realizes all 25 ordered assignments of five
+colors to these two terminals. Their complete two-port relation is unrestricted.
 
-The corrected `hn_closed_trace_color_probe.py` is reused. CaDiCaL195 is only a
-positive-witness finder: negatives remain UNSAT_UNCHECKED because its proof-output
-path failed earlier controls. Glucose4 negatives require strict DRAT verification.
-Abstract K6/5 and K6/6 calibrations passed the stated policies in all jobs. K6 is a
-solver control, not a planar unit-distance realization.
+Consequently, joining copies only through these terminals, with disjoint interiors
+and no additional edges touching the interiors, adds no extra five-color
+restriction to the terminal skeleton. Different ports, new interior overlaps,
+additional cross edges, or genuinely new constructions are not covered.
 
-## Durable evidence and reproduction
+## Durable witnesses and reproduction
 
-`SUMMARY.json` contains the current status, all eight artifact IDs and ZIP hashes.
-`G3_FIVE_COLORINGS.json.gz` stores all three complete new five-colorings directly
-in Git. Its SHA-256 is
-`c03df0aa616ad9071cef0401e55e2108526af40f276f17015b6c873644f12ecb`.
-The digit strings omit the trailing newline; add one newline when checking their
-recorded text-file hashes. The verifier handles this detail.
+`AFFINE_FIVE_COLORINGS.json.gz` contains all four **full** color vectors, not just
+seeds. Its repository SHA-256 is
+`cb49029f740741dd5c24c38128fd860d9af97a11fb6d235488d0c5c039b82ecc`.
+The canonical uncompressed JSON SHA-256 is
+`72240175a62057f5be4c5fe455df28569b49ad4057c6f94a7562c697f0b5fb7c`.
+A Python-version-dependent gzip OS header can differ; compare uncompressed bytes
+when regenerating. No solver is needed to check the stored witnesses.
 
-After extracting a corresponding Actions artifact (for example 10427788574 for
-G3-shift-2 or 10428586075 for G3-shift-3):
+After extracting the matching graph from an artifact listed in `AFFINE_AUDIT.json`:
 
 ```sh
-python tools/hn_verify_translation_witness.py --graph /tmp/translation/GRAPH.json
-PYTHONPATH=tools python -m unittest discover -s tools -p 'test_hn_translation_*.py' -v
+python tools/hn_verify_translation_witness.py --graph /tmp/candidate/GRAPH.json \
+  --bundle results/interior-overlap-2026-09-16/AFFINE_FIVE_COLORINGS.json.gz
 python tools/hn_cyclotomic210_independent_audit.py \
-  --graph /tmp/translation/GRAPH.json --out /tmp/independent.json
+  --graph /tmp/candidate/GRAPH.json --out /tmp/geometry.json
+PYTHONPATH=tools python -m unittest discover -s tools -p 'test_hn_affine*.py' -v
 ```
 
-The witness-only verifier uses standard Python, no solver or geometry library;
-its semantic hash binds the graph to the separate geometry audit. The last command
-requires NumPy and SymPy and redoes the all-pairs geometry audit.
+The first command uses standard Python and validates two full colorings for the
+chosen graph. The second needs NumPy/SymPy and audits all 126,524,278 (u) or
+266,562,505 (fork) point pairs using sound filters and exact norm calculations.
 
-Full graphs, G3 source, CNFs, recipes, control proofs, six-colorings and logs are in
-the eight Actions artifacts, expiring **2026-12-15** under 90-day retention. These
-large archives are not all duplicated in Git; preserve them separately for longer
-storage. The three decisive five-color witnesses are not subject to artifact expiry.
-The original local bundle identity remains in `ARCHIVE_INDEX.json`.
+The archive run [35058561996](https://github.com/HeliCorgi/hadwiger-nelson-lab/actions/runs/35058561996)
+independently checked all four full color vectors without importing the solver or
+search encoder. Its uncompressed bytes match the locally audited bundle exactly.
+The full vectors are committed to Git and do not expire with Actions artifacts.
+Large graphs, CNFs and logs remain in artifacts expiring 2026-12-15.
 
 ## Next checkpoint
 
-Only `u` and `fork` remain unresolved in this bounded series. The current workflow
-is **manual-only**; `case=all` selects these two, not the already-excluded G3
-candidates. Explicit G3 and `one` choices remain available as reproductions/controls.
-The results commit does not launch another run. No polling or indefinite retries
-are configured.
+Do not rerun these unchanged five graphs as an A-search. There is no unresolved
+A candidate left in this bounded series. Other terminal selections remain
+unexamined; any new construction must add constraints not already defeated by
+these explicit witnesses. The two-port interfaces above are not forcing gadgets.
 
-Do not infer that the remaining cases need six colors from their timeouts. A useful
-next step must change the search restriction, use further interior constraints, or
-supply a new verified model/proof; an unchanged failed phase search is not progress.
-The run checkpoint preserves results and geometry, not a suspended SAT solver's
-learned-clause state.
+The new search workflows are manual-only after the results commit, and the
+archive workflow is returned to read-only, local archive reproduction. The results
+commit launches no further search. No six-color necessity, plane-wide five-coloring,
+or field-wide impossibility theorem follows from this finite checkpoint.
