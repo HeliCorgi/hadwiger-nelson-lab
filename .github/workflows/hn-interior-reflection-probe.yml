@@ -1,0 +1,84 @@
+name: hn-interior-reflection-probe
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-interior-reflection-probe.yml'
+      - 'tools/hn_interior_reflection_probe.py'
+      - 'tools/hn_overlap_probe_common.py'
+      - 'tools/hn_hex7_certificate.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        copies: [2, 3]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: marijnheule/drat-trim
+          ref: 2e3b2dc0ecf938addbd779d42877b6ed69d9a985
+          path: .proof-checker
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.11'
+      - name: Install pinned exact-geometry and SAT dependencies
+        run: |
+          python -m pip install numpy==1.26.4 python-sat==1.9.dev7
+          gcc -O2 .proof-checker/drat-trim.c -o /tmp/drat-trim
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: strategy-reset-geometry-35003232409
+          run-id: 35003232409
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/input
+      - name: Verify input identity, infinite seven-coloring, and solver controls
+        run: |
+          mkdir -p /tmp/output
+          python tools/hn_hex7_certificate.py --out /tmp/output/HEX7.json
+          PYTHONPATH=tools python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          from itertools import combinations
+          from hn_cyclotomic210 import selftest
+          from hn_certified_color_probe import run_case
+          assert hashlib.sha256(Path('/tmp/input/heptagon/G3.json').read_bytes()).hexdigest() == '90096518a3c10de93066f6fee70a0b16a218a094de5e5b35285089472d646b8a'
+          selftest()
+          # K6 is an abstract solver control, never a planar geometric witness.
+          p=Path('/tmp/output/control-K6.json')
+          p.write_text(json.dumps({'pts':list(range(6)),'edges':list(combinations(range(6),2))}))
+          for solver in ('cadical195','glucose4'):
+              r=run_case(p,5,[],solver,Path('/tmp/output/controls')/solver/'5',30,'/tmp/drat-trim')
+              assert r['status']=='UNSAT_PROOF_VERIFIED',r
+              r=run_case(p,6,[],solver,Path('/tmp/output/controls')/solver/'6',30,'/tmp/drat-trim')
+              assert r['status']=='SAT',r
+          PY
+      - name: Build actual multi-contact geometry and test color relations
+        env:
+          COPIES: ${{ matrix.copies }}
+        run: |
+          args=(--anchor 47,125)
+          if [ "$COPIES" = 3 ]; then args+=(--anchor 125,134); fi
+          python tools/hn_interior_reflection_probe.py \
+            --source /tmp/input/heptagon/G3.json "${args[@]}" \
+            --out-dir /tmp/output/candidate --seconds 45 \
+            --solvers cadical195,glucose4 --proof-checker /tmp/drat-trim
+          echo '${{ github.sha }}' > /tmp/output/SOURCE_COMMIT.txt
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: interior-reflection-${{ matrix.copies }}-${{ github.run_id }}
+          path: /tmp/output
+          retention-days: 90
