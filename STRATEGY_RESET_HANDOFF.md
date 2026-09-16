@@ -2,17 +2,21 @@
 
 Updated 2026-09-16 JST.
 
-This file is the short operational handoff for the current unconditional Hadwiger–Nelson mainline. Historical details remain in `HANDOFF.md`; the main strategy-reset checkpoint is in `results/strategy-reset-2026-09-16/SUMMARY.md` and `SUMMARY.json`, with later bounded follow-ups recorded separately.
+This file is the short operational handoff for the current unconditional Hadwiger–Nelson mainline. Historical details remain in `HANDOFF.md`; the main strategy-reset checkpoint is in `results/strategy-reset-2026-09-16/SUMMARY.md` and `SUMMARY.json`, with later bounded follow-ups recorded separately. The old-field B status is superseded by `results/mod11-no-forced-equal-2026-09-16/README.md`.
 
 ## Current status
 
 No new Hadwiger–Nelson lower bound has been proved. In particular, there is currently no ordinary planar unit-distance graph in this repository certified to require six colors.
 
-### 1. Same-field palette growth is closed for target A
+### 1. Same-field palette growth is closed for targets A and B
 
-The all1200 / wide494 Gen1 / wide494 Gen2 coordinate class admits an explicit mod-11 proper five-coloring. The valuation argument extends this to the whole real field `Q(sqrt3,sqrt5,sqrt11)`. Therefore unchanged same-field `p+d` growth cannot produce a non-5-colorable unit-distance graph, regardless of further generations. This does not settle target B.
+The all1200 / wide494 Gen1 / wide494 Gen2 coordinate class admits an explicit mod-11 proper five-coloring. The valuation argument extends this to the whole real field `Q(sqrt3,sqrt5,sqrt11)`. Therefore unchanged same-field `p+d` growth cannot produce a non-5-colorable unit-distance graph, regardless of further generations.
 
-Do not restart further 494-direction generations as an A-search unless the construction leaves that arithmetic class.
+The no-forced-equal follow-up strengthens this: for every distinct pair in that field, a proper five-coloring separating the pair exists. Thus target B is also impossible entirely within the old field. The argument uses translations of Madore's table and a single-vertex recoloring for coincident residue images; it applies more generally to any graph admitting a homomorphism to Gamma(F_11^2).
+
+For Gen2, 875 explicit five-colorings were checked on all 80,678 saved edges and their vertex signatures separate all 73,223,151 distinct pairs. The ten regression tests and the full audit were rerun locally before integration. The written general proof is not Lean formalized or independently peer reviewed; no six-color construction or mixed-field exclusion is claimed.
+
+Do not restart further 494-direction generations as an A- or B-search unless the construction leaves that arithmetic class. See `results/mod11-no-forced-equal-2026-09-16/PROOF_ja.md` and the accompanying evidence manifest and reproduction instructions.
 
 ### 2. Sevenfold geometry is the current field-escape reference
 
@@ -69,10 +73,12 @@ Detailed record: `results/strategy-reset-2026-09-16/PHI_RHOMBUS_FOLLOWUP.md`.
 
 ## Durable references
 
+- `results/mod11-no-forced-equal-2026-09-16/README.md`
+- `results/mod11-no-forced-equal-2026-09-16/SUMMARY.json`
 - `results/strategy-reset-2026-09-16/SUMMARY.md`
 - `results/strategy-reset-2026-09-16/SUMMARY.json`
 - `results/strategy-reset-2026-09-16/PHI_RHOMBUS_FOLLOWUP.md`
 - `research/strategy-reset-2026-09-16/ARITHMETIC_BARRIER.md`
 - `research/strategy-reset-2026-09-16/PHI_TARGET_AND_INTERFACE_GATES.md`
 
-This handoff supersedes the old p1q7/palette-growth section of `HANDOFF.md` for choosing new target-A experiments, while preserving those earlier results as historical diagnostics.
+This handoff supersedes the old p1q7/palette-growth section of `HANDOFF.md` for choosing new target-A experiments, while preserving those earlier results as historical diagnostics. The no-forced-equal follow-up supersedes older statements leaving B open within the old field.

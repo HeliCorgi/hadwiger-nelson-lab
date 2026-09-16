@@ -53,12 +53,37 @@ Gen2 semantic {pts,edges} SHA256:
 Generated Gen2 coloring text SHA256, including newline:
 `ce44cfc739f7038193d38a0bc7512290d51847fb263a1892ea51b06001110fbd`.
 
+## Follow-up: target B is also excluded in E
+
+The [no-forced-equal result](../../results/mod11-no-forced-equal-2026-09-16/README.md)
+strengthens the old-field obstruction. For every distinct a,b in E^2, there is
+an at-most-five-coloring c of Gamma(E^2) with c(a) != c(b). Different pairs may
+use different colorings. Thus neither A nor B can be realized entirely in E.
+
+Madore's table has no nonzero translation period: its color-0 class has size
+23, whereas a nonzero translation has only orbits of size 11. Therefore table
+translations separate any pair of different residue images. If the images
+coincide, translate them to (0,0), whose color is 3 and whose neighbor colors
+are exactly {0,1,4}; recolor just one actual vertex to 2. This separates the
+pair without a conflict. The argument applies to every graph mapping to
+Gamma(F11^2); the valuation-coset construction above supplies that map for E.
+
+The standalone follow-up verifies all 726 finite-table edges and 875 Gen2
+five-colorings on all 80,678 saved edges. Distinct vertex signatures certify
+separation of all 73,223,151 pairs. Code, proof, compressed witnesses, hashes,
+and reproduction instructions are retained in the linked result directory.
+The ten tests and full audit were rerun locally before integration. The written
+general proof is not Lean formalized or independently peer reviewed. No new
+six-color construction, H_phi gadget, or mixed-field exclusion is claimed.
+
 ## Consequences and corrections
 
-Do not launch Gen3/Gen4 in the same 494-direction language as an A search.
-All p+d candidates remain in R0 and are simultaneously five-colorable.
-This does not rule out every ambient K2 construction, every real UDG, or a
-forced-equal pair B. Spindling a B gadget may leave E.
+Do not launch Gen3/Gen4 in the same 494-direction language as an A or B search.
+All p+d candidates remain in R0 and are simultaneously five-colorable; the
+follow-up also excludes any forced-equal pair in that field. This does not
+rule out every ambient K2 construction or every real UDG. Earlier statements
+leaving B open in E are superseded by the follow-up, not by the original
+five-color upper-bound argument alone.
 
 Counts 358->258 and 310->214 compare different chosen colorings. They are NOT
 survival probabilities or universal recurrence, and do not support progress
@@ -68,7 +93,7 @@ bound on all possible recoloring supports.
 
 ## Prioritized next gates
 
-1. Reproduce and preserve this audit. Stop identical-field A growth.
+1. Reproduce and preserve this audit. Stop identical-field A/B growth.
 2. Reconstruct Haugland's sevenfold 740/1066/2131-vertex graphs exactly. Verify
    actual field escape, known four-color port statements, and ordinary colorings.
    A known four-color relation must never be assumed valid for five colors.

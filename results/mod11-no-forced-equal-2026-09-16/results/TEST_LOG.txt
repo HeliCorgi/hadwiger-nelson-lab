@@ -1,0 +1,15 @@
+test_all_pair_family (test_no_forced_equal.BarrierTests.test_all_pair_family) ... ok
+test_all_same_fiber_pairs_in_complete_bipartite_lift (test_no_forced_equal.BarrierTests.test_all_same_fiber_pairs_in_complete_bipartite_lift) ... ok
+test_finite_lemma (test_no_forced_equal.BarrierTests.test_finite_lemma) ... ok
+test_reject_bad_coloring (test_no_forced_equal.BarrierTests.test_reject_bad_coloring) ... ok
+test_reject_duplicate_actual_points (test_no_forced_equal.BarrierTests.test_reject_duplicate_actual_points) ... ok
+test_reject_false_unit_edge (test_no_forced_equal.BarrierTests.test_reject_false_unit_edge) ... ok
+test_reject_larger_field_vector (test_no_forced_equal.BarrierTests.test_reject_larger_field_vector) ... ok
+test_reject_nonintegral_direct_reduction (test_no_forced_equal.BarrierTests.test_reject_nonintegral_direct_reduction) ... ok
+test_reject_same_actual_vertex (test_no_forced_equal.BarrierTests.test_reject_same_actual_vertex) ... ok
+test_simple_integral_geometry (test_no_forced_equal.BarrierTests.test_simple_integral_geometry) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.012s
+
+OK

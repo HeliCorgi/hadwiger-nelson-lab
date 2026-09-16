@@ -1,0 +1,23 @@
+{
+  "files_sha256": {
+    "hn_mod11_no_forced_equal.py": "55e1d9a6b98e82157127209797e5d216b0f3755f5121bc8b6e29442e6ca25c1f",
+    "test_no_forced_equal.py": "4eee78b78333fc6ce7dbba3c9ec20c599b5608c0c60167a403c89b67379ce84c",
+    "PROOF_ja.md": "858b4a5e5376aecc2f1b56f25eef2c046eca84d5b13d66ddb689be25d5d97ad4",
+    "results/TEST_LOG.txt": "518c9fa424bf76020e264bee7f12c932ae67a658e5476dd58680a0ac6f65dab3",
+    "results/CERTIFICATE.json.gz": "d77f0731cd04a67a891f5721138940a5dbff0ff2d25a2c329086701cf8e909b6",
+    "results/ALL_PAIRS_RECIPES.json.gz": "c061dfb3be68567400639454626231330929c11707b66cdea148906b01cd3de1",
+    "results/PAIR_0_1_COLORING.txt.gz": "e6136f2b4bb6dfd1b493ea7612eaab0658354161cc99e3f220e6491d3100d9c1",
+    "results/PAIR_7_12_COLORING.txt.gz": "c3950edea9762da90e824e66074a3faef376b0bd8ad0b3a273e9123f9b1fb224"
+  },
+  "uncompressed_sha256": {
+    "results/CERTIFICATE.json": "939edbd4936fa2a193fafc16c47a5310cd9dec6ac0659e54d2454658ba2b3006",
+    "results/ALL_PAIRS_RECIPES.json": "5f6e8b06008950dd574cd9c32d14e057ac9f65fdd5490ec8aeb2b6b2da4c7317",
+    "results/PAIR_0_1_COLORING.txt": "ad3e689a1ce0c551aea2b1b44a40b1cb6e50b02a989f4838179c60b044de9538",
+    "results/PAIR_7_12_COLORING.txt": "3e387992ac6e93cfa4fefa043dd28c8b660d4d3faef632aa0187328108840fc9"
+  },
+  "notes": [
+    "Hashes cover proof, verifier, regression tests and original evidence; README and this manifest are not self-hashed.",
+    "The verifier differs from the original package only by its PROOF_ja.md documentation link.",
+    "Gzip decompression restores the original evidence bytes."
+  ]
+}

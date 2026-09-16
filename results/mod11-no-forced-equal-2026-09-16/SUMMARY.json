@@ -1,0 +1,49 @@
+{
+  "date_jst": "2026-09-16",
+  "classification": "OLD_FIELD_NOT_A_AND_NO_FORCED_EQUAL_PAIR",
+  "source_repository_commit": "3a1e42eab803cb17c49fd7c5cd4410e4feca8350",
+  "real_coordinate_field": "Q(sqrt3,sqrt5,sqrt11)",
+  "statement": "For every distinct a,b in E^2 there exists a proper at-most-five-coloring c of E^2 with c(a) != c(b). Different pairs may use different colorings.",
+  "generalization": "The same pair-separation property holds for every loopless graph admitting a homomorphism to Gamma(F_11^2).",
+  "proof": "PROOF_ja.md",
+  "evidence_manifest": "EVIDENCE_MANIFEST.json",
+  "finite_table": {
+    "vertices": 121,
+    "edges_checked": 726,
+    "flexible_vertex": [0, 0],
+    "original_color": 3,
+    "replacement_color": 2,
+    "neighbor_colors": [0, 1, 4],
+    "nonzero_displacements_separated": 120
+  },
+  "gen2": {
+    "input_run_id": 34957362184,
+    "input_artifact_id": 10391403066,
+    "semantic_pts_edges_sha256": "b46ea400f8b8fdd536916aa7b1dbc5eadc7658fa269186091a9fdb90e32f559f",
+    "vertices": 12102,
+    "saved_edges_exactly_checked": 80678,
+    "colorings_checked": 875,
+    "translation_colorings": 7,
+    "binary_fiber_colorings": 868,
+    "total_edge_color_checks": 70593250,
+    "distinct_vertex_signatures": 12102,
+    "distinct_pairs_separated": 73223151
+  },
+  "pre_push_local_recheck": {
+    "unit_tests_passed": 10,
+    "original_package_manifest_verified": true,
+    "gen2_full_audit_rerun": true,
+    "recipes_and_two_pair_colorings_reproduced_byte_for_byte": true,
+    "certificate_equal_except_elapsed_seconds": true,
+    "github_actions_run_claimed": false
+  },
+  "limits": {
+    "six_chromatic_unit_distance_graph_constructed": false,
+    "new_HN_lower_bound": false,
+    "H_phi_constructed": false,
+    "mixed_field_graphs_newly_excluded": false,
+    "lean_formalized": false,
+    "independent_peer_review_completed": false,
+    "literature_novelty_claimed": false
+  }
+}

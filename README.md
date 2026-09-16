@@ -17,11 +17,13 @@ For target B, any strictly positive Euclidean distance is sufficient by the Lean
 
 The former p1q7 / palette-growth mainline is no longer the preferred A-search.
 
-### Same-field growth is closed for A
+### Same-field growth is closed for A and B
 
 The all1200 / wide494 Gen1 / wide494 Gen2 coordinate class admits an explicit mod-11 proper five-coloring, and the valuation argument extends the five-color upper bound to the whole real field `Q(sqrt3,sqrt5,sqrt11)`.
 
-Therefore unchanged same-field `p+d` growth cannot produce target A, regardless of further generations. This does not settle target B.
+Therefore unchanged same-field `p+d` growth cannot produce target A, regardless of further generations. The [no-forced-equal follow-up](results/mod11-no-forced-equal-2026-09-16/README.md) also excludes target B throughout that field: for every distinct pair there is a proper five-coloring separating it. Different pairs may use different colorings.
+
+The follow-up retains a written proof, standalone verification code, ten regression tests, and a Gen2 family of 875 verified five-colorings separating all 73,223,151 distinct pairs. The full-field proof is not Lean formalized or independently peer reviewed. This is not a six-color construction and does not newly exclude the mixed-field route.
 
 ### Field escape has been reproduced exactly
 
@@ -31,7 +33,7 @@ For the natural terminal sets tested so far, exhaustive five-color boundary-stat
 
 ### A concrete six-color scaffold exists, but it is two-distance
 
-A 31-vertex scaffold has been reconstructed with:
+A 31-vertex scaffold has been reconstructed exactly with:
 
 - **57 unit-distance edges**;
 - **56 edges of length `phi=(1+sqrt5)/2`**.
@@ -71,13 +73,14 @@ Use [`STRATEGY_RESET_HANDOFF.md`](STRATEGY_RESET_HANDOFF.md) as the current shor
 
 Primary durable references:
 
+- [`results/mod11-no-forced-equal-2026-09-16/README.md`](results/mod11-no-forced-equal-2026-09-16/README.md)
 - [`results/strategy-reset-2026-09-16/SUMMARY.md`](results/strategy-reset-2026-09-16/SUMMARY.md)
 - [`results/strategy-reset-2026-09-16/SUMMARY.json`](results/strategy-reset-2026-09-16/SUMMARY.json)
 - [`results/strategy-reset-2026-09-16/PHI_RHOMBUS_FOLLOWUP.md`](results/strategy-reset-2026-09-16/PHI_RHOMBUS_FOLLOWUP.md)
 - [`research/strategy-reset-2026-09-16/ARITHMETIC_BARRIER.md`](research/strategy-reset-2026-09-16/ARITHMETIC_BARRIER.md)
 - [`research/strategy-reset-2026-09-16/PHI_TARGET_AND_INTERFACE_GATES.md`](research/strategy-reset-2026-09-16/PHI_TARGET_AND_INTERFACE_GATES.md)
 
-Historical operational details remain in [`HANDOFF.md`](HANDOFF.md), and broader background remains in [`RESEARCH.md`](RESEARCH.md).
+Historical operational details remain in [`HANDOFF.md`](HANDOFF.md), and broader background remains in [`RESEARCH.md`](RESEARCH.md). The no-forced-equal follow-up supersedes older checkpoint statements that the old-field obstruction did not settle B.
 
 ## Evidence policy
 
