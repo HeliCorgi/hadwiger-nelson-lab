@@ -1,12 +1,9 @@
 name: hn-translation-resume
 on:
-  push:
-    branches: [main]
-    paths: ['.github/workflows/hn-translation-resume.yml']
   workflow_dispatch:
     inputs:
       case:
-        description: Archived translation candidate; all runs the four unresolved candidates
+        description: Candidate; all now selects only the unresolved u and fork cases
         required: true
         default: all
         type: choice
@@ -25,7 +22,7 @@ jobs:
       fail-fast: false
       max-parallel: 4
       matrix:
-        case: ${{ fromJSON((inputs.case == '' || inputs.case == 'all') && '["g3-shift-2","g3-shift-3","u","fork"]' || format('["{0}"]', inputs.case)) }}
+        case: ${{ fromJSON((inputs.case == '' || inputs.case == 'all') && '["u","fork"]' || format('["{0}"]', inputs.case)) }}
         solver: [cadical195, glucose4]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -52,7 +49,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: /tmp/input
       - name: Regression tests
-        run: PYTHONPATH=tools python -m unittest discover -s tools -p test_hn_translation_phase.py -v
+        run: PYTHONPATH=tools python -m unittest discover -s tools -p 'test_hn_translation_*.py' -v
       - name: Rebuild archived candidate, audit independently and resume bounded probes
         env:
           CASE: ${{ matrix.case }}
