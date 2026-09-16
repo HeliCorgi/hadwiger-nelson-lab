@@ -1,0 +1,71 @@
+name: hn-translation-resume
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/hn-translation-resume.yml']
+  workflow_dispatch:
+    inputs:
+      case:
+        description: Archived translation candidate; all runs the four unresolved candidates
+        required: true
+        default: all
+        type: choice
+        options: [all, g3-shift-2, g3-shift-3, u, one, fork]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: hn-translation-resume-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        case: ${{ fromJSON((inputs.case == '' || inputs.case == 'all') && '["g3-shift-2","g3-shift-3","u","fork"]' || format('["{0}"]', inputs.case)) }}
+        solver: [cadical195, glucose4]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: marijnheule/drat-trim
+          ref: 2e3b2dc0ecf938addbd779d42877b6ed69d9a985
+          path: .proof-checker
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.11'
+      - name: Install pinned dependencies and proof checker
+        run: |
+          python -m pip install numpy==1.26.4 sympy==1.14.0 python-sat==1.9.dev7
+          gcc -O2 .proof-checker/drat-trim.c -o /tmp/drat-trim
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: strategy-reset-geometry-35003232409
+          run-id: 35003232409
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/input
+      - name: Regression tests
+        run: PYTHONPATH=tools python -m unittest discover -s tools -p test_hn_translation_phase.py -v
+      - name: Rebuild archived candidate, audit independently and resume bounded probes
+        env:
+          CASE: ${{ matrix.case }}
+          SOLVER: ${{ matrix.solver }}
+        run: |
+          mkdir -p /tmp/output
+          echo '${{ github.sha }}' > /tmp/output/SOURCE_COMMIT.txt
+          python tools/hn_translation_resume.py \
+            --source /tmp/input/heptagon/G3.json --case "$CASE" --solver "$SOLVER" \
+            --checker /tmp/drat-trim --seconds 90 --phase-seconds 15 --out /tmp/output
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: translation-resume-${{ matrix.case }}-${{ matrix.solver }}-${{ github.run_id }}
+          path: /tmp/output
+          retention-days: 90

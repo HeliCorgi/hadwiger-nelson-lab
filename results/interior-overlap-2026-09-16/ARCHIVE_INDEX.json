@@ -1,0 +1,50 @@
+{
+  "original_base": "9a7a1cd11b5000821888fad17c31e8e10dbc36d5",
+  "integration_base": "3529b70c22450b11bee296b3d17e49bdd51c5187",
+  "original_bundle_sha256": "d31ea9e7cf7bd868c5a95b19245132b0fdb7db17bce7793024c0509ffcbc477a",
+  "source_G3_sha256": "90096518a3c10de93066f6fee70a0b16a218a094de5e5b35285089472d646b8a",
+  "source_artifact": 10410248491,
+  "source_run": 35003232409,
+  "historical_five_probe_seconds": 10,
+  "new_lower_bound_claimed": false,
+  "cases": [
+    {
+      "case": "g3-shift-2", "vertices": 3812, "edges": 24275,
+      "semantic_sha256": "1293c66a3bff348d4bc8bb58bc7f89e379e64e3ccd8903fd4f45040cc6bb62b3",
+      "graph_file_sha256": "703216808a9b81335bad825678deab74ee23eaef7f938abd508782855a5d328a",
+      "target_A": "UNKNOWN",
+      "saved_witnesses_revalidated_now": [{"file":"SIX_COLORING.txt.gz","plain_sha256":"eb920aa98b62f64a5896473452089b33f10df089f53a3153eb9fd8698dc00944","colors":6,"pins":[[130,0],[223,1]]}]
+    },
+    {
+      "case": "g3-shift-3", "vertices": 5493, "edges": 36106,
+      "semantic_sha256": "f1ac78e9d05db29d203123003321d21944f0d9f4b3bd8d5b3bb638f55279fb2f",
+      "graph_file_sha256": "9146f34d9a8ff5ecaf54e00413b7dd0d40786568dac1f5605645c66961d5f814",
+      "target_A": "UNKNOWN",
+      "saved_witnesses_revalidated_now": [{"file":"SIX_COLORING.txt.gz","plain_sha256":"905527e3e71d00ffbcb162f3a5ac76e4e8cfe23772a1ad5bcac2e8f6ef568fea","colors":6,"pins":[[130,0],[229,1]]}]
+    },
+    {
+      "case": "u", "vertices": 15908, "edges": 103045,
+      "semantic_sha256": "7a04684f1a91ec20697387f0af155e0d8d38447f1fb19cf38afe7ff6c67fd6dc",
+      "graph_file_sha256": "4ebeb6baae6eb66cafeb97fa684c85ab8a6339f2d163a3721493325716aec605",
+      "target_A": "UNKNOWN",
+      "saved_witnesses_revalidated_now": [{"file":"SIX_COLORING.txt.gz","plain_sha256":"1997a19d6023666d36f3c38687f541de4f8589b83a3dc6bbb6c5049e4ea1ac37","colors":6,"pins":[[377,0],[1000,1]]}]
+    },
+    {
+      "case": "one", "vertices": 17040, "edges": 109688,
+      "semantic_sha256": "c305c8ea19fc21348c8eca703034bb162e4817abd58d2460e7a20dc26e833694",
+      "graph_file_sha256": "61033b2fd994bc808fb8a32e94d914b7e4e844238adc2197c70e18e1556b1b70",
+      "target_A": "NOT_A",
+      "saved_witnesses_revalidated_now": [
+        {"file":"FIVE_EQUAL_COLORING.txt.gz","plain_sha256":"f38cd33564632be67d54ed24ac6062a91e201c98c853064babe8be96fa75e285","colors":5,"pins":[[308,0],[996,0]]},
+        {"file":"FIVE_DIFFERENT_COLORING.txt.gz","plain_sha256":"93a25fb27a1a30a13d85608e89d01cfa3ddcbf953b96f13263da98247a9e0246","colors":5,"pins":[[308,0],[996,1]]}
+      ]
+    },
+    {
+      "case": "fork", "vertices": 23090, "edges": 154809,
+      "semantic_sha256": "bf17bfe425178823c16d2b3c586ebc8e4706eb2bd6866f6571e4a6223b272af1",
+      "graph_file_sha256": "dfeb4f026b7902042a16240d35b8758bf9de4bb23dcd66ec9c7e32c2da6a6d8d",
+      "target_A": "UNKNOWN",
+      "saved_witnesses_revalidated_now": [{"file":"SIX_COLORING.txt.gz","plain_sha256":"cebc8067d1b5d0e364b57b4b2ad9050506b40266fa266eeac9aa711017516ca8","colors":6,"pins":[[378,0],[1084,1]]}]
+    }
+  ]
+}
