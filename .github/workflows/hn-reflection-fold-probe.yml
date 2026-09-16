@@ -1,0 +1,63 @@
+name: hn-reflection-fold-probe
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hn-reflection-fold-probe.yml'
+      - 'tools/hn_reflection_fold_probe.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  fold:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        copies: [2, 3]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: marijnheule/drat-trim
+          ref: 2e3b2dc0ecf938addbd779d42877b6ed69d9a985
+          path: .proof-checker
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.11'
+      - run: |
+          python -m pip install python-sat==1.9.dev7
+          gcc -O2 .proof-checker/drat-trim.c -o /tmp/drat-trim
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: interior-reflection-${{ matrix.copies }}-35046524554
+          run-id: 35046524554
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/input
+      - name: Verify exact parent identity and search only for liftable positive colorings
+        env:
+          COPIES: ${{ matrix.copies }}
+        run: |
+          python - <<'PY'
+          import hashlib,os
+          from pathlib import Path
+          expected={'2':'9d03699ac6b249462dc1e7c3b2610ec2bb63f31ca2624d65b6c4b8b8fa804ccb','3':'58674bb2a1326adcf31b3a8f3e5a56e7200ee768fea8d1cfed0b9c6852549a78'}
+          assert hashlib.sha256(Path('/tmp/input/candidate/GRAPH.json').read_bytes()).hexdigest()==expected[os.environ['COPIES']]
+          PY
+          python tools/hn_reflection_fold_probe.py \
+            --assembly /tmp/input/candidate --out-dir /tmp/fold \
+            --seconds 60 --proof-checker /tmp/drat-trim
+          echo '${{ github.sha }}' > /tmp/fold/SOURCE_COMMIT.txt
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: reflection-fold-${{ matrix.copies }}-${{ github.run_id }}
+          path: /tmp/fold
+          retention-days: 90
